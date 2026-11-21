@@ -1,0 +1,15 @@
+:root {
+  --gq-brand-50: #f0fdf4;
+  --gq-brand-100: #dcfce7;
+  --gq-brand-500: #22c55e;
+  --gq-brand-600: #16a34a;
+  --gq-brand-700: #15803d;
+  --gq-navy: #0f172a;
+  --gq-slate: #1e293b;
+  --gq-surface: #f8fafc;
+  --gq-border: #e2e8f0;
+  --gq-danger: #dc2626;
+  --gq-warning: #d97706;
+  --gq-radius: 0.75rem;
+  --gq-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+}
