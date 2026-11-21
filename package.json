@@ -1,0 +1,23 @@
+{
+  "name": "greenquote-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GreenQuote FinTech Platform — Clean Energy Embedded Lending & Regulatory Compliance Engine",
+  "scripts": {
+    "install:all": "npm --prefix greenquote install",
+    "dev": "npm --prefix greenquote run dev",
+    "dev:web": "npm --prefix greenquote run dev:web",
+    "dev:api": "npm --prefix greenquote run dev:api",
+    "build": "npm --prefix greenquote run build",
+    "test": "npm --prefix greenquote run test",
+    "typecheck": "npm --prefix greenquote run typecheck",
+    "seed": "npm --prefix greenquote/apps/api run seed",
+    "evaluate": "node scripts/verify-evaluator.mjs",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
