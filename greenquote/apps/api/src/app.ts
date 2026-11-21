@@ -24,6 +24,8 @@ import * as adminController from "./modules/admin/admin.controller.js";
 import * as esignController from "./modules/esign/esign.controller.js";
 import * as aiController from "./modules/ai/quote-import.controller.js";
 import * as contractorController from "./modules/contractors/contractor.controller.js";
+import * as fsmController from "./modules/integrations/fsm-webhook.controller.js";
+import * as propertyController from "./modules/property/property.controller.js";
 
 export function createApp() {
   const app = express();
@@ -264,6 +266,13 @@ export function createApp() {
     requireRole("operations"),
     adminController.getPlatformAnalytics
   );
+
+  // Field Service Management (FSM) Webhook Integration (FR-310)
+  apiRouter.post("/integrations/fsm/webhook", fsmController.handleFsmWebhook);
+  apiRouter.get("/integrations/fsm/sources", fsmController.listSupportedFsmProviders);
+
+  // County Property Title & Ownership Verification (FR-504)
+  apiRouter.post("/property/verify-ownership", propertyController.checkOwnership);
 
   app.use("/v1", apiRouter);
   app.use(errorHandler);

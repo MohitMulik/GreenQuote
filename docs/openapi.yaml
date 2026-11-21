@@ -220,3 +220,26 @@ paths:
       responses:
         '200':
           description: Analytics KPIs and time series data
+
+  /integrations/fsm/webhook:
+    post:
+      summary: Ingest external quotes from Jobber, ServiceTitan, and Housecall Pro with price parity validation (FR-310)
+      responses:
+        '201':
+          description: External quote converted into GreenQuote loan option
+        '400':
+          description: Price parity violation or unbalanced line items
+
+  /integrations/fsm/sources:
+    get:
+      summary: List supported FSM platforms and webhook integration statuses
+      responses:
+        '200':
+          description: Supported FSM adapters and event subscriptions
+
+  /property/verify-ownership:
+    post:
+      summary: Automated County Deed & Tax Assessor Title Ownership Verification (FR-504)
+      responses:
+        '200':
+          description: Assessor deed title match result and confidence score

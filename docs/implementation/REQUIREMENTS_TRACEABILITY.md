@@ -47,7 +47,7 @@
 | **FR-307** | Quote link expires after 30 days with re-issue capability | P0 | Quote Security | `apps/api/src/modules/quotes/quotes.service.ts` | VERIFIED | Expiry check tests |
 | **FR-308** | Cash and financed prices must be identical; no dual pricing stored | P0 | Pricing Integrity | `packages/shared/src/schemas/index.ts` | VERIFIED | Parity check tests |
 | **FR-309** | Equipment nameplate photo reading via OCR | P1 | AI Document | AI-01 Extension | NOT_STARTED | P1 task |
-| **FR-310** | Field service software integration (Jobber, ServiceTitan, Housecall) | P1 | Integrations | FSM Adapters | NOT_STARTED | P1 task |
+| **FR-310** | Field service software integration (Jobber, ServiceTitan, Housecall) | P1 | Integrations | `apps/api/src/modules/integrations/fsm-webhook.service.ts` | VERIFIED | FSM HMAC & Parity test suite |
 
 ### 1.4 Equipment Verification, Incentives & Energy Savings (FR-400)
 | Req ID | Description | Priority | Target Module | Implementation File(s) | Status | Test Coverage |
@@ -65,7 +65,7 @@
 | **FR-501** | Interactive payment calculator (<100ms update, disclaimers) | P0 | Calculator | `packages/shared/src/money/calculator.ts` | VERIFIED | Math precision tests (QG-2) |
 | **FR-502** | 6-field pre-qualification form (DOB, income, housing, SSN last 4) | P0 | Pre-qualification | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Form validation tests |
 | **FR-503** | Explicit FCRA soft-pull consent checkbox; no impact on credit score | P0 | Consent & Legal | `apps/api/src/modules/prequal/prequal.service.ts` | VERIFIED | Consent verification tests |
-| **FR-504** | Property ownership check via public records | P1 | Verification | Property adapter | NOT_STARTED | P1 task |
+| **FR-504** | Property ownership check via public records | P1 | Verification | `apps/api/src/modules/property/property.service.ts` | VERIFIED | County deed assessor title suite |
 | **FR-505** | Co-applicant addition support | P1 | Pre-qualification | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Co-applicant toggle & DTI blending |
 | **FR-506** | Spanish language localization | P1 | Localization | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Bilingual EN/ES dictionary & UI toggle |
 
