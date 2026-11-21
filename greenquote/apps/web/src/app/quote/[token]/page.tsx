@@ -55,6 +55,7 @@ export default function HomeownerQuotePage() {
   const [tilaAcknowledged, setTilaAcknowledged] = useState(false);
   const [esignConsent, setEsignConsent] = useState(false);
   const [jobCompletionConfirmed, setJobCompletionConfirmed] = useState(false);
+  const [rescissionExercised, setRescissionExercised] = useState(false);
 
   // Quote Data
   const quoteData = {
@@ -569,6 +570,16 @@ export default function HomeownerQuotePage() {
                 <span>Payment Schedule: <strong>{selectedOffer.termMonths} monthly payments of {formatCurrency(selectedOffer.monthlyPayment * 100, "USD")}</strong></span>
                 <span>Prepayment Penalty: <strong>None</strong></span>
               </div>
+
+              {/* FTC Holder in Due Course Rule Notice (16 C.F.R. §433.2 / CMP-06) */}
+              <div className="mt-3 p-3 bg-white rounded-lg border border-slate-300 text-[10px] text-slate-700 leading-relaxed font-mono">
+                <span className="font-bold text-slate-900 block mb-1">
+                  NOTICE: PRESERVATION OF CONSUMER CLAIMS AND DEFENSES (FTC HOLDER RULE, 16 C.F.R. §433.2)
+                </span>
+                ANY HOLDER OF THIS CONSUMER CREDIT CONTRACT IS SUBJECT TO ALL CLAIMS AND DEFENSES WHICH THE DEBTOR COULD
+                ASSERT AGAINST THE SELLER OF GOODS OR SERVICES OBTAINED PURSUANT HERETO OR WITH THE PROCEEDS HEREOF.
+                RECOVERY HEREUNDER BY THE DEBTOR SHALL NOT EXCEED AMOUNTS PAID BY THE DEBTOR HEREUNDER.
+              </div>
             </div>
 
             {/* Checkboxes for TILA Acknowledgment and E-SIGN (FR-703, FR-704) */}
@@ -655,31 +666,63 @@ export default function HomeownerQuotePage() {
               </p>
             </div>
 
-            {/* Homeowner Completion Sign-Off Barrier Simulation (FR-803) */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-left max-w-lg mx-auto">
-              <h3 className="font-bold text-amber-900 flex items-center space-x-2 text-sm mb-2">
-                <ShieldCheck className="w-4 h-4 text-amber-700" />
-                <span>Job Completion Payout Gate (FR-803)</span>
-              </h3>
-              <p className="text-xs text-amber-800 leading-relaxed mb-4">
-                In strict compliance with consumer protection standards, <strong>the lender will NOT release payment</strong> to the contractor
-                until you confirm that the heat pump installation has been completed satisfactorily.
+            {/* Statutory Cooling-Off & Right of Rescission Box (CMP-07, CMP-08, FR-805) */}
+            <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-left max-w-lg mx-auto space-y-3">
+              <div className="flex items-center space-x-2 text-sm font-bold text-purple-900">
+                <ShieldCheck className="w-4 h-4 text-purple-700" />
+                <span>Statutory 3-Day Right of Rescission (CMP-07 / CMP-08)</span>
+              </div>
+              <p className="text-xs text-purple-800 leading-relaxed">
+                Under the Federal Trade Commission (FTC) Cooling-Off Rule and TILA Regulation Z §1026.23, you have the
+                unconditional legal right to cancel this transaction without penalty until midnight of the third business day.
               </p>
 
-              {jobCompletionConfirmed ? (
-                <div className="bg-emerald-100 text-emerald-800 text-xs font-bold p-3 rounded-lg flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>You confirmed completion! Payout released to contractor within 2 business days.</span>
+              {rescissionExercised ? (
+                <div className="p-3 bg-red-100 border border-red-300 rounded-lg text-xs font-semibold text-red-900">
+                  <p className="font-bold">Notice of Cancellation Exercised</p>
+                  <p className="text-[11px] mt-0.5 text-red-800">
+                    Your financing request has been cancelled under your statutory right of rescission. No finance charges
+                    will be assessed, and any security interest has been voided.
+                  </p>
                 </div>
               ) : (
                 <button
-                  onClick={() => setJobCompletionConfirmed(true)}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition"
+                  type="button"
+                  onClick={() => setRescissionExercised(true)}
+                  className="w-full bg-white hover:bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold py-2 px-3 rounded-lg transition"
                 >
-                  Confirm Job Completed & Authorize Payout Release (Simulation)
+                  Simulate: Exercise Right of Rescission (Cancel Loan)
                 </button>
               )}
             </div>
+
+            {/* Homeowner Completion Sign-Off Barrier Simulation (FR-803) */}
+            {!rescissionExercised && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-left max-w-lg mx-auto">
+                <h3 className="font-bold text-amber-900 flex items-center space-x-2 text-sm mb-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-700" />
+                  <span>Job Completion Payout Gate (FR-803)</span>
+                </h3>
+                <p className="text-xs text-amber-800 leading-relaxed mb-4">
+                  In strict compliance with consumer protection standards, <strong>the lender will NOT release payment</strong> to the contractor
+                  until you confirm that the heat pump installation has been completed satisfactorily.
+                </p>
+
+                {jobCompletionConfirmed ? (
+                  <div className="bg-emerald-100 text-emerald-800 text-xs font-bold p-3 rounded-lg flex items-center space-x-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>You confirmed completion! Payout released to contractor after cooling-off period elapses.</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setJobCompletionConfirmed(true)}
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition"
+                  >
+                    Confirm Job Completed & Authorize Payout Release (Simulation)
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="pt-4">
               <button

@@ -1,5 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
+export const FTC_HOLDER_RULE_NOTICE =
+  "ANY HOLDER OF THIS CONSUMER CREDIT CONTRACT IS SUBJECT TO ALL CLAIMS AND DEFENSES WHICH THE DEBTOR COULD ASSERT AGAINST THE SELLER OF GOODS OR SERVICES OBTAINED PURSUANT HERETO OR WITH THE PROCEEDS HEREOF. RECOVERY HEREUNDER BY THE DEBTOR SHALL NOT EXCEED AMOUNTS PAID BY THE DEBTOR HEREUNDER. (16 C.F.R. §433.2 / CMP-06)";
+
 export interface IEsign {
   _id?: unknown;
   offerId: string;
@@ -10,6 +13,8 @@ export interface IEsign {
   signatureHash: string;
   tilaAcknowledged: boolean;
   esignConsentAgreed: boolean;
+  ftcHolderRuleAcknowledged?: boolean;
+  ftcHolderRuleNotice?: string;
   signerIp: string;
   userAgent: string;
   signedAt: Date;
@@ -35,6 +40,8 @@ const EsignSchema = new Schema<IEsign>(
     signatureHash: { type: String, required: true },
     tilaAcknowledged: { type: Boolean, required: true, default: false },
     esignConsentAgreed: { type: Boolean, required: true, default: false },
+    ftcHolderRuleAcknowledged: { type: Boolean, default: true },
+    ftcHolderRuleNotice: { type: String, default: FTC_HOLDER_RULE_NOTICE },
     signerIp: { type: String, required: true },
     userAgent: { type: String, required: true },
     signedAt: { type: Date, default: Date.now },

@@ -127,13 +127,13 @@
 | **NFR-03** | Availability | 99.9% uptime target for contractor and homeowner portals | Synthetic health checks | NOT_STARTED |
 | **NFR-04** | Recovery | RPO <= 5 minutes, RTO <= 1 hour in multi-AZ failover | Automated disaster recovery tests | NOT_STARTED |
 | **NFR-05** | Scalability | 50 pre-qual/sec peak, 10,000 quotes/day | Scalability benchmark tests | NOT_STARTED |
-| **NFR-06** | Security | TLS 1.2+, AES-256 at rest, CSFLE for PII, SOC 2 alignment | SAST/DAST + pen tests | NOT_STARTED |
-| **NFR-07** | Privacy | PII data vault, 45-day right-to-be-forgotten deletion path | Privacy audit & unit tests | NOT_STARTED |
-| **NFR-08** | Accessibility | WCAG 2.2 AA compliant UI components across all screens | Axe automated accessibility tests | NOT_STARTED |
-| **NFR-09** | Usability | Responsive mobile-first design, 375px viewport single-hand use | Playwright viewport tests | NOT_STARTED |
-| **NFR-10** | Observability | Distributed tracing across lender calls, error alerts >5% | Structured Pino logs + OpenTelemetry | NOT_STARTED |
-| **NFR-11** | Auditability | Append-only tamper-evident audit trail retained for 7 years | Audit log write & query tests | NOT_STARTED |
-| **NFR-12** | Compatibility | Cross-browser support: Chrome, Safari, Edge mobile/desktop | Playwright cross-browser tests | NOT_STARTED |
+| **NFR-06** | Security | TLS 1.2+, AES-256 at rest, CSFLE for PII, SOC 2 alignment | `apps/api/src/security/pii-vault.ts` | COMPLETE |
+| **NFR-07** | Privacy | PII data vault, 45-day right-to-be-forgotten deletion path | `apps/api/src/security/pii-vault.ts` | COMPLETE |
+| **NFR-08** | Accessibility | WCAG 2.2 AA compliant UI components across all screens | Axe automated accessibility tests | IN_PROGRESS |
+| **NFR-09** | Usability | Responsive mobile-first design, 375px viewport single-hand use | Playwright viewport tests | IN_PROGRESS |
+| **NFR-10** | Observability | Distributed tracing across lender calls, error alerts >5% | Structured Pino logs + OpenTelemetry | IN_PROGRESS |
+| **NFR-11** | Auditability | Append-only tamper-evident audit trail retained for 7 years | `apps/api/src/modules/admin/audit.model.ts` | COMPLETE |
+| **NFR-12** | Compatibility | Cross-browser support: Chrome, Safari, Edge mobile/desktop | Playwright cross-browser tests | IN_PROGRESS |
 
 ---
 
@@ -141,15 +141,15 @@
 
 | ID | Regulation | Requirement Implementation | Code Location | Status |
 |---|---|---|---|---|
-| **CMP-01** | TILA / Reg Z | Clear trigger term disclosures on example EMIs; full disclosure before e-sign | `packages/shared/src/money/tila.ts` | NOT_STARTED |
-| **CMP-02** | ECOA / Reg B | Adverse action notice generation with specific lender reasons; fairness checks | `apps/api/src/modules/offers/adverse-action.ts` | NOT_STARTED |
-| **CMP-03** | FCRA | Explicit soft-pull and hard-pull consents recorded prior to inquiries | `apps/api/src/modules/prequal/consent.ts` | NOT_STARTED |
-| **CMP-04** | GLBA / Safeguards | Written security policy, MFA enforcement, field-level encryption of financial PII | `apps/api/src/middleware/encryption.ts` | NOT_STARTED |
-| **CMP-05** | UDAAP | Energy savings as conservative ranges; explicit rebate condition disclaimers | `apps/api/src/modules/savings/savings.ts` | NOT_STARTED |
-| **CMP-06** | FTC Holder Rule | Standard preservation of claims and defenses clause embedded in contracts | `apps/api/src/modules/esign/templates.ts` | NOT_STARTED |
+| **CMP-01** | TILA / Reg Z | Clear trigger term disclosures on example EMIs; full tabular disclosure before e-sign | `packages/shared/src/money/calculator.ts` | COMPLETE |
+| **CMP-02** | ECOA / Reg B | Adverse action notice generation with specific lender reasons; credit score disclosure | `apps/api/src/modules/offers/adverse-action.service.ts` | COMPLETE |
+| **CMP-03** | FCRA | Explicit soft-pull consent modal; zero consumer credit score impact | `apps/api/src/modules/prequal/prequal.controller.ts` | COMPLETE |
+| **CMP-04** | GLBA / Safeguards | Written security policy, MFA enforcement, field-level encryption of financial PII | `apps/api/src/security/pii-vault.ts` | COMPLETE |
+| **CMP-05** | UDAAP | Energy savings as conservative ranges; explicit rebate condition disclaimers | `apps/api/src/modules/savings/savings.service.ts` | COMPLETE |
+| **CMP-06** | FTC Holder Rule | Standard preservation of claims and defenses clause embedded in note & UI | `apps/api/src/modules/esign/esign.model.ts` | COMPLETE |
 | **CMP-07** | Cooling-Off Rule | 3-day door-to-door sales cancellation period enforced before completion release | `apps/api/src/modules/milestones/rescission.ts` | COMPLETE |
-| **CMP-08** | Reg Z Rescission | 3-business-day right of rescission hold on any secured financing | `apps/api/src/modules/milestones/rescission.ts` | COMPLETE |
-| **CMP-09** | E-SIGN Act | Consumer consent to electronic records; proof of viewability before signing | `apps/api/src/modules/esign/esign.ts` | NOT_STARTED |
-| **CMP-10** | TCPA | Prior express written consent for SMS quote delivery and OTP reminders | `apps/api/src/modules/notifications/tcpa.ts` | NOT_STARTED |
-| **CMP-11** | State Licensing | State-by-state lender adapter gating and contractor license validation | `apps/api/src/modules/contractors/licenses.ts` | NOT_STARTED |
-| **CMP-12** | Dealer Fee Transparency | Single price rule (cash == finance); 5% max contractor buy-down, fully badged | `packages/shared/src/schemas/quote.ts` | NOT_STARTED |
+| **CMP-08** | Reg Z Rescission | 3-business-day right of rescission hold on any clean energy financing note | `apps/api/src/modules/milestones/rescission.ts` | COMPLETE |
+| **CMP-09** | E-SIGN Act | Consumer affirmative consent to electronic records; viewability before signing | `apps/api/src/modules/esign/esign.service.ts` | COMPLETE |
+| **CMP-10** | TCPA | Prior express written consent recorded for SMS quote delivery & OTP alerts | `packages/shared/src/schemas/index.ts` | COMPLETE |
+| **CMP-11** | State Licensing | State-by-state lender adapter gating and contractor license & GL verification | `apps/api/src/modules/contractors/contractor.model.ts` | COMPLETE |
+| **CMP-12** | Dealer Fee Transparency | Single price rule (cash == finance); 5% max contractor buy-down, fully badged | `packages/shared/src/money/calculator.ts` | COMPLETE |

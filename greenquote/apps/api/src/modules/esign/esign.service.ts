@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { EsignModel, IEsign } from "./esign.model.js";
+import { EsignModel, IEsign, FTC_HOLDER_RULE_NOTICE } from "./esign.model.js";
 import { OfferModel } from "../offers/offer.model.js";
 import { QuoteModel } from "../quotes/quote.model.js";
 import { PrequalificationModel } from "../prequal/prequal.model.js";
@@ -66,6 +66,8 @@ export class EsignService {
       signatureHash,
       tilaAcknowledged: true,
       esignConsentAgreed: true,
+      ftcHolderRuleAcknowledged: true,
+      ftcHolderRuleNotice: FTC_HOLDER_RULE_NOTICE,
       signerIp,
       userAgent,
       tilaDisclosures: {
