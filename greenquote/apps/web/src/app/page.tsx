@@ -171,6 +171,14 @@ export default function Home() {
             >
               Access Operations Console <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <Link href="/admin/analytics" className="text-emerald-700 hover:text-emerald-800 font-semibold">
+                → Executive Analytics (S14)
+              </Link>
+              <Link href="/admin/review-queue" className="text-slate-600 hover:text-slate-900 font-medium">
+                → Review Queues
+              </Link>
+            </div>
           </div>
         </div>
       </main>

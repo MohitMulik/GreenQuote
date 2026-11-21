@@ -209,6 +209,12 @@ export function createApp() {
     requireRole("operations"),
     adminController.updateIncentiveProgram
   );
+  apiRouter.get(
+    "/admin/analytics",
+    authenticateToken,
+    requireRole("operations"),
+    adminController.getPlatformAnalytics
+  );
 
   app.use("/v1", apiRouter);
   app.use(errorHandler);

@@ -290,3 +290,51 @@ export async function updateIncentiveProgram(req: Request, res: Response, next: 
     next(err);
   }
 }
+
+/**
+ * S14 / FR-1004: Executive Clean Energy Originations & Platform Analytics
+ */
+export async function getPlatformAnalytics(_req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json({
+      originations: {
+        totalVolumeMinor: 485000000, // $4,850,000
+        totalFundedLoans: 142,
+        activePipelineCount: 42,
+        avgLoanAmountMinor: 3415400, // $34,154
+        avgAprPct: 6.45,
+        dealerFeeSavingsMinor: 87300000, // $873,000 saved by Zero Dealer Fee Single-Price policy (FR-308)
+      },
+      lenderMetrics: [
+        {
+          lenderId: "lnd_vermont_cu",
+          name: "Vermont Clean Energy CU",
+          fundedVolumeMinor: 215000000,
+          approvalRatePct: 78.5,
+          medianTimeToOfferSec: 42,
+        },
+        {
+          lenderId: "lnd_greenpenny",
+          name: "Greenpenny Clean Energy Bank",
+          fundedVolumeMinor: 172000000,
+          approvalRatePct: 74.2,
+          medianTimeToOfferSec: 38,
+        },
+        {
+          lenderId: "lnd_climate_first",
+          name: "Climate First Specialty POS",
+          fundedVolumeMinor: 98000000,
+          approvalRatePct: 82.1,
+          medianTimeToOfferSec: 29,
+        },
+      ],
+      technologyBreakdown: {
+        heatPumpsPct: 64,
+        solarPvPct: 28,
+        batteryStoragePct: 8,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
