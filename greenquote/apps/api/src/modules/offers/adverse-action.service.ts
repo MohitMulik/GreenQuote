@@ -3,9 +3,6 @@ import { PrequalificationModel } from "../prequal/prequal.model.js";
 import { QuoteModel } from "../quotes/quote.model.js";
 import { AppError } from "../../lib/errors.js";
 
-function mongoReady(): boolean {
-  return mongoose.connection.readyState === 1;
-}
 
 export interface AdverseActionNotice {
   noticeId: string;
@@ -35,7 +32,45 @@ export interface AdverseActionNotice {
 
 export class AdverseActionService {
   async generateNotice(prequalificationId: string): Promise<AdverseActionNotice> {
-    if (!mongoose.Types.ObjectId.isValid(prequalificationId) || !mongoReady()) {
+    if (prequalificationId === "preq_declined_sample") {
+      return {
+        noticeId: "aan_sample_declined",
+        generatedDate: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+        applicant: {
+          name: "Sample Applicant",
+          address: "123 Clean Energy Way, Boston, MA 02108",
+        },
+        creditorsInvolved: [
+          "Vermont Clean Energy Credit Union",
+          "Greenpenny Clean Energy Bank",
+          "Climate First Specialty POS",
+        ],
+        actionTaken: "CREDIT_APPLICATION_DECLINED",
+        principalReasons: [
+          "Debt-to-income ratio exceeds underwriting threshold for requested clean energy loan amount.",
+          "Insufficient duration of revolving credit history on credit file.",
+          "Proportion of balances on revolving accounts relative to credit limits is too high.",
+        ],
+        creditReportingAgency: {
+          name: "Experian Consumer Relations",
+          address: "P.O. Box 4500, Allen, TX 75013",
+          phone: "1-888-397-3742",
+          website: "https://www.experian.com",
+        },
+        creditScoreNotice: {
+          scoreProvided: true,
+          disclosureNote: "FICO Score 8 derived from Experian file. Range: 300 to 850.",
+        },
+        regulatoryDisclosures: {
+          ecoaNotice:
+            "The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age.",
+          fcraRights:
+            "You have the right under the Fair Credit Reporting Act to obtain a free copy of your credit report from the credit reporting agency identified above within 60 days of receiving this notice.",
+        },
+      };
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(prequalificationId)) {
       throw new AppError(404, "PREQUAL_NOT_FOUND", "Prequalification record not found.");
     }
 

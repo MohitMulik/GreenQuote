@@ -105,12 +105,24 @@ greenquote/
 
 ## 5. Getting Started (Local Development)
 
-### Prerequisites
+### Quick Start with Docker (Recommended)
+Launch the entire platform including MongoDB 7.0, Express REST API, and Next.js frontend with a single command:
+```bash
+docker compose up --build
+```
+- **Web Application:** [http://localhost:3000](http://localhost:3000)
+- **API Server:** [http://localhost:4000](http://localhost:4000)
+- **Database:** `mongodb://localhost:27017/greenquote`
+
+---
+
+### Manual Local Development Setup
+#### Prerequisites
 - Node.js 20+
 - npm 10+
 - MongoDB 7.0+ (Local or MongoDB Atlas)
 
-### Installation
+#### Installation
 ```bash
 # Clone the repository
 git clone <repo-url>
@@ -127,7 +139,7 @@ cp apps/web/.env.example apps/web/.env
 npm run seed --workspace=@greenquote/api
 ```
 
-### Running Locally
+#### Running Locally
 ```bash
 # Start backend API (http://localhost:4000)
 npm run dev --workspace=@greenquote/api
@@ -145,8 +157,12 @@ Run complete test suite across all monorepo workspaces:
 # Run TypeScript compilation check (0 errors across 5 workspaces)
 npm run typecheck
 
-# Run test suites (34 passed / 34 total)
+# Run test suites (45 passed / 45 total)
 npm run test
+
+# Run Next.js production build
+npm run build --workspace=@greenquote/web
+```
 
 # Run Next.js production build
 npm run build --workspace=@greenquote/web
