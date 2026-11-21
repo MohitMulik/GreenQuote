@@ -10,6 +10,20 @@ describe("GreenQuote Core API End-to-End Suite", () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe("healthy");
     });
+
+    it("should serve interactive API documentation on /docs", async () => {
+      const res = await request(app).get("/docs");
+      expect(res.status).toBe(200);
+      expect(res.headers["content-type"]).toContain("text/html");
+      expect(res.text).toContain("GreenQuote FinTech API Portal");
+    });
+
+    it("should serve OpenAPI 3.0 specification on /openapi.json", async () => {
+      const res = await request(app).get("/openapi.json");
+      expect(res.status).toBe(200);
+      expect(res.body.openapi).toBe("3.0.3");
+      expect(res.body.info.title).toContain("GreenQuote");
+    });
   });
 
   describe("Equipment Directory (FR-303, FR-401)", () => {

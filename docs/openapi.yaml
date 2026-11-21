@@ -1,0 +1,222 @@
+openapi: 3.0.3
+info:
+  title: GreenQuote FinTech Embedded Lending Platform API
+  version: 1.0.0
+  description: |
+    Production FinTech embedded lending and regulatory compliance engine.
+    Designed for zero dealer fees, strict cash/financed parity (FR-308),
+    5% rate buy-down ceiling (FR-603), statutory 3-day right of rescission (CMP-07),
+    TILA Reg Z §1026.18 disclosures, and dual-control 4-eyes authorization (FR-1002).
+servers:
+  - url: http://localhost:4000/v1
+    description: Local API Development Server
+  - url: https://api.greenquote.dev/v1
+    description: Production Sandbox Server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    TenantHeader:
+      type: apiKey
+      in: header
+      name: X-Contractor-Id
+      description: Tenant isolation ID for multi-tenant contractor isolation
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+        error:
+          type: string
+        meta:
+          type: object
+          properties:
+            requestId:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+
+    MoneyAmount:
+      type: integer
+      description: Integer minor currency units (paise in INR, cents in USD). Floating point strictly prohibited.
+      example: 2500000
+
+    LoanQuote:
+      type: object
+      properties:
+        id:
+          type: string
+        contractorId:
+          type: string
+        cashPriceCents:
+          $ref: '#/components/schemas/MoneyAmount'
+        financedPriceCents:
+          $ref: '#/components/schemas/MoneyAmount'
+        systemType:
+          type: string
+          enum: [solar, hvac, heat_pump, battery, ev_charger]
+        systemSizeKw:
+          type: number
+        status:
+          type: string
+          enum: [draft, sent, accepted, expired]
+
+    PrequalOffer:
+      type: object
+      properties:
+        offerId:
+          type: string
+        lenderId:
+          type: string
+        lenderName:
+          type: string
+        termMonths:
+          type: integer
+          example: 120
+        interestRateBps:
+          type: integer
+          description: Interest rate in basis points (e.g. 799 = 7.99%)
+          example: 799
+        aprBps:
+          type: integer
+          description: Actuarial TILA Annual Percentage Rate in basis points
+          example: 812
+        monthlyPaymentCents:
+          $ref: '#/components/schemas/MoneyAmount'
+        totalInterestCents:
+          $ref: '#/components/schemas/MoneyAmount'
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+
+  /auth/register:
+    post:
+      summary: Register a new contractor organization and owner account
+      responses:
+        '201':
+          description: Contractor registered successfully
+
+  /auth/login:
+    post:
+      summary: Authenticate contractor or operations staff
+      responses:
+        '200':
+          description: Authentication successful, returns JWT access token
+
+  /quotes:
+    post:
+      summary: Create a customer quote with cash/financed price parity enforcement (FR-308)
+      security:
+        - BearerAuth: []
+        - TenantHeader: []
+      responses:
+        '201':
+          description: Quote created and validated
+        '400':
+          description: Parity violation or dealer fee detected
+
+  /quotes/public/{token}:
+    get:
+      summary: Retrieve quote and loan comparison matrix via secure customer token (FR-401)
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete quote and loan options
+
+  /prequalifications:
+    post:
+      summary: Submit soft credit check prequalification application (CMP-02 / FR-501)
+      headers:
+        X-Idempotency-Key:
+          schema:
+            type: string
+          required: true
+          description: Financial idempotency key preventing duplicate loan submissions (QG-6)
+      responses:
+        '200':
+          description: Prequalification processed without affecting credit score
+
+  /prequalifications/{prequalificationId}/adverse-action:
+    get:
+      summary: Retrieve FCRA / ECOA Adverse Action Notice with top denial credit reasons (CMP-03 / FR-505)
+      parameters:
+        - name: prequalificationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Formatted Adverse Action Notice
+
+  /esign/submit:
+    post:
+      summary: Execute E-SIGN compliant signature with TILA §1026.18 disclosures (FR-701 / CMP-04)
+      responses:
+        '200':
+          description: Envelope executed with tamper-evident cryptographic hash
+
+  /milestones/{loanId}:
+    get:
+      summary: Get loan milestone disbursement schedule and statutory cooling-off status
+      parameters:
+        - name: loanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Milestones and rescission window status
+
+  /milestones/rescind:
+    post:
+      summary: Exercise statutory 3-day right of rescission cancellation (CMP-07 / CMP-08 / FR-805)
+      responses:
+        '200':
+          description: Loan rescinded, all security interests voided, milestones cancelled
+
+  /admin/lenders/{lenderId}/config-request:
+    post:
+      summary: Submit lender rate/tier change request under 4-Eyes dual authorization (FR-1002)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Change request created in pending state
+
+  /admin/lenders/{lenderId}/approve:
+    post:
+      summary: Peer approve lender rate/tier change request (Self-approval strictly forbidden)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Change approved and activated
+
+  /admin/analytics:
+    get:
+      summary: Retrieve platform origination analytics, dealer fee savings, and compliance metrics (S14)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Analytics KPIs and time series data

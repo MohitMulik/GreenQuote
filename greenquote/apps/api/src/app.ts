@@ -51,6 +51,55 @@ export function createApp() {
     res.json({ status: "healthy", timestamp: new Date(), version: "1.0.0" });
   });
 
+  app.get("/docs", (_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>GreenQuote FinTech API Portal</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <style>body { margin: 0; padding: 0; background: #0f172a; font-family: Roboto, sans-serif; color: #fff; }</style>
+  </head>
+  <body>
+    <div id="redoc-container"></div>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+    <script>
+      Redoc.init('/openapi.json', {
+        theme: {
+          colors: {
+            primary: { main: '#10b981' }
+          }
+        }
+      }, document.getElementById('redoc-container'));
+    </script>
+  </body>
+</html>`);
+  });
+
+  app.get("/openapi.json", (_req, res) => {
+    res.json({
+      openapi: "3.0.3",
+      info: {
+        title: "GreenQuote FinTech Embedded Lending Platform API",
+        version: "1.0.0",
+        description: "Production FinTech embedded lending and regulatory compliance engine (FR-101 to FR-1102, CMP-01 to CMP-12)."
+      },
+      paths: {
+        "/health": { get: { summary: "Health Check" } },
+        "/v1/quotes": { post: { summary: "Create Quote with Zero Dealer Fee & Parity Check (FR-308)" } },
+        "/v1/quotes/public/{token}": { get: { summary: "Consumer Multi-Lender Quote View (FR-401)" } },
+        "/v1/prequalifications": { post: { summary: "Soft Credit Check Prequalification with Idempotency (QG-6)" } },
+        "/v1/esign/submit": { post: { summary: "TILA Reg Z §1026.18 & E-SIGN Execution (FR-701 / CMP-04)" } },
+        "/v1/milestones/{loanId}": { get: { summary: "Milestone Disbursements Schedule (FR-805)" } },
+        "/v1/milestones/rescind": { post: { summary: "Statutory 3-Day Right of Rescission Cancellation (CMP-07)" } },
+        "/v1/admin/analytics": { get: { summary: "Originations & Regulatory Compliance Analytics (S14)" } },
+        "/v1/admin/lenders/{lenderId}/config-request": { post: { summary: "Dual-Control 4-Eyes Config Change (FR-1002)" } }
+      }
+    });
+  });
+
   const apiRouter = express.Router();
 
   apiRouter.post("/auth/register", strictLimiter, authController.registerContractor);
