@@ -147,14 +147,56 @@ When presenting your project, follow this narrative flow:
 ### Q4: Why is 'Cash Price Parity' such an important policy in this platform?
 > **Answer:** *"In conventional home improvement financing, contractors often charge 15-20% more for financed jobs to offset hidden dealer fees charged by POS lenders. This practice violates FTC and CFPB Truth in Lending standards if undisclosed. GreenQuote enforces cash price parity in the quote schema (`FR-308`), ensuring consumers receive the same price whether paying cash or financing, disrupting predatory dealer fee models."*
 
+### Q5: How is financial idempotency (QG-6) enforced on payment and pre-qualification endpoints?
+> **Answer:** *"All mutating financial routes (`/prequalifications`, `/esign/submit`, `/milestones/*`) require an `Idempotency-Key` header with minimum 8 characters. The middleware computes a deterministic SHA-256 fingerprint of the request path and payload. Concurrent duplicate requests are rejected with `409 Conflict`, replays return cached responses with `Idempotent-Replay: true` without re-executing charges, and reusing an existing key with a mismatched payload is rejected with `422 Unprocessable Entity`."*
+
+### Q6: How does the platform enforce the statutory 3-business-day Right of Rescission (CMP-07, CMP-08, FR-805)?
+> **Answer:** *"Under FTC 16 C.F.R. Part 429 and TILA Regulation Z §1026.23, consumers have until midnight of the 3rd business day following agreement consummation to cancel without penalty. Our calculation engine (`calculateRescissionEndDate`) counts business days skipping Sundays and federal holidays. When a homeowner signs or confirms completion during an active window, milestone payout disbursement is held until the cooling-off window expires. Homeowners can also exercise their cancellation directly in the portal."*
+
+### Q7: How does Dual-Authorization (FR-1002) prevent internal risk in operations?
+> **Answer:** *"Underwriting parameters (Base APR, Maximum Loan Limits, and Credit Tiers) govern millions of dollars in capital allocation. GreenQuote enforces the Four-Eyes Principle: when an operations officer submits a parameter update, it enters `pending_approval` status. If the same officer attempts to approve it, the system throws a `403 Dual-Authorization Policy Violation`. A distinct authorized officer must independently inspect and authorize the change, writing an immutable audit record."*
+
+### Q8: What is the Tamper-Evident SHA-256 Audit Dossier (FR-1004)?
+> **Answer:** *"For state banking commissioner and CFPB compliance examinations, GreenQuote compiles every consent timestamp, TILA disclosure view, signature hash, and milestone confirmation for a specific loan into a standardized JSON packet. The system computes a cryptographic SHA-256 hash over the canonical JSON payload, providing mathematical proof that the audit trail has not been altered since generation."*
+
 ---
 
-## 5. Verification Status Summary
+## 5. Ten-Slide Presentation Deck Outline for Evaluators
+
+When presenting your final internship review, use this slide structure:
+
+- **Slide 1: Title & Executive Vision**  
+  *GreenQuote: Embedded Clean Energy Financing with Zero Dealer Fees & Strict Regulatory Compliance.*
+- **Slide 2: The $100B Problem in Home Clean Energy**  
+  *Predatory 15–30% POS dealer fees, unverified equipment rebate assumptions, and floating-point financial drift.*
+- **Slide 3: High-Level Solution Architecture**  
+  *Monorepo ecosystem: Contractor Quote Builder + Homeowner Soft-Pull Portal + Operations & Risk Console.*
+- **Slide 4: Zero Floating-Point Financial Engine (`QG-2`)**  
+  *Integer minor units (paise/cents), standard annuity amortization, and zero-drift verification across 1,000 synthetic loans.*
+- **Slide 5: Multi-Lender Parallel Fan-Out & Rate Buy-Down Cap (`FR-601`, `FR-603`)**  
+  *0 impact to consumer FICO score, neutral sorting by lowest total cost of credit, and 5% statutory buy-down cap.*
+- **Slide 6: Regulatory Closing & Tamper-Evident E-Sign (`FR-701`–`FR-704`)**  
+  *TILA Reg Z §1026.18 disclosures, FTC Holder Rule notice (16 C.F.R. §433.2), and SHA-256 digital signature hashes.*
+- **Slide 7: Milestone Payout Gates & Statutory Rescission Hold (`FR-801`–`FR-805`)**  
+  *AHRI/NEEP certified model match verification, 3-business-day cooling-off hold, and homeowner payout release gate.*
+- **Slide 8: Operations Console & Dual-Authorization Governance (`FR-1001`–`FR-1004`)**  
+  *Four-Eyes Principle on lender underwriting parameters, AI fraud queues, and sealed 7-year regulatory compliance dossiers.*
+- **Slide 9: Security, Privacy & Compliance Matrix**  
+  *AES-256-GCM CSFLE PII Vault, tenant data scrubbing (`stripCreditFields`), and 100% compliance across CMP-01 to CMP-12.*
+- **Slide 10: Engineering Quality Metrics & Live Demo**  
+  *49 automated tests passing, 0 TypeScript errors, 11 production routes, single-command Docker deployment, and live walkthrough.*
+
+---
+
+## 6. Verification Status Summary
 
 | Evaluation Standard | Implementation Metric |
 |---|---|
-| **Type Safety** | 100% strict TypeScript compilation (`tsc --noEmit`), 0 errors across 5 workspaces. |
-| **Test Suites** | 27 unit & integration tests passing across shared financial engine and API endpoints. |
+| **Type Safety** | 100% strict TypeScript compilation (`tsc --noEmit`), **0 errors across all 5 workspaces**. |
+| **Test Suites** | **49 unit & integration tests passing** across shared financial engine, API endpoints, and end-to-end lifecycle. |
+| **Quality Gates** | 7/7 Quality Gates verified (`QG-1` Typecheck, `QG-2` Minor units, `QG-3` Tenant isolation, `QG-4` ACID records, `QG-5` TILA/E-Sign, `QG-6` Idempotency, `QG-7` Test coverage). |
+| **Regulatory Compliance** | 100% compliance verified across **CMP-01 to CMP-12** in [REQUIREMENTS_TRACEABILITY.md](file:///c:/Users/mohit/OneDrive/Documentos/GreenQuote/docs/implementation/REQUIREMENTS_TRACEABILITY.md). |
 | **Security Controls** | 28 verified controls in [SECURITY_CHECKLIST.md](file:///c:/Users/mohit/OneDrive/Documentos/GreenQuote/docs/security/SECURITY_CHECKLIST.md). |
+| **Deployment & CI** | Zero-setup `docker compose up --build` containerization + automated GitHub Actions CI pipeline. |
 | **Traceability** | Full bidirectional mapping in [REQUIREMENTS_TRACEABILITY.md](file:///c:/Users/mohit/OneDrive/Documentos/GreenQuote/docs/implementation/REQUIREMENTS_TRACEABILITY.md). |
 | **Code Modularity** | Clean monorepo structure with isolated `@greenquote/shared` business logic and reusable `@greenquote/ui`. |
