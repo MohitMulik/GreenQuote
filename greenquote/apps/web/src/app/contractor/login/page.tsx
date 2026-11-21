@@ -25,7 +25,7 @@ export default function ContractorLoginPage() {
           body: JSON.stringify({ mfaToken, code }),
         });
         if (!res.ok) {
-          const body = await res.json();
+          const body = await res.json().catch(() => ({}));
           throw new Error(body.message ?? "MFA verification failed.");
         }
         router.push("/contractor/pipeline");
@@ -36,9 +36,9 @@ export default function ContractorLoginPage() {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
-      const body = await res.json();
+      const body = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(body.message ?? "Sign-in failed.");
+        throw new Error(body.message ?? "Sign-in failed. Please check your credentials.");
       }
       if (body.mfaRequired) {
         setMfaToken(body.mfaToken);

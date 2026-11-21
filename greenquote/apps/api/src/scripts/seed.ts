@@ -80,7 +80,7 @@ async function seed() {
   ]);
 
   console.log("Seeding Active Incentive Programs (Post-Dec 2025 Compliant)...");
-  await IncentiveProgramModel.deleteMany({});
+  await IncentiveProgramModel.collection.drop().catch(() => {});
   await IncentiveProgramModel.create([
     {
       name: "Mass Save Whole-Home Heat Pump Rebate",
@@ -192,7 +192,7 @@ async function seed() {
     status: "signed",
     version: 1,
     linkToken: "demo-token",
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    linkExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     homeowner: {
       fullName: "Sarah Jenkins",
       phone: "+16175550188",
