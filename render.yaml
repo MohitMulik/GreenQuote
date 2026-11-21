@@ -1,0 +1,31 @@
+# ==============================================================================
+# Render.com Blueprint — GreenQuote Backend API Deployment
+# ==============================================================================
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: greenquote-api
+    runtime: node
+    plan: free
+    region: oregon # or ohio, frankfurt, singapore
+    rootDir: greenquote
+    buildCommand: npm install && npm run build --workspace=@greenquote/shared && npm run build --workspace=@greenquote/api
+    startCommand: npm run start --workspace=@greenquote/api
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false # Paste your MongoDB Atlas connection string here
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false # Set to your Vercel URL, e.g. https://greenquote.vercel.app
+      - key: PII_ENCRYPTION_KEY
+        generateValue: true # 32-byte secret for AES-256 PII Vault
