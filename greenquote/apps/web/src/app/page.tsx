@@ -18,6 +18,12 @@ export default function Home() {
           </div>
           <div className="flex items-center space-x-4">
             <Link
+              href="/lender/dashboard"
+              className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+            >
+              Lender Portal
+            </Link>
+            <Link
               href="/contractor/login"
               className="text-sm font-medium text-slate-600 hover:text-slate-900"
             >
@@ -68,7 +74,7 @@ export default function Home() {
         </div>
 
         {/* Portals Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {/* Portal 1: Contractor */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
             <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 font-bold text-lg">
@@ -177,6 +183,46 @@ export default function Home() {
               </Link>
               <Link href="/admin/review-queue" className="text-slate-600 hover:text-slate-900 font-medium">
                 → Review Queues
+              </Link>
+            </div>
+          </div>
+
+          {/* Portal 4: Lender Console */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+            <div className="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center mb-4 font-bold text-lg">
+              04
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Lender Capital Portal</h3>
+            <p className="text-sm text-slate-600 mb-6">
+              Credit union & underwriter tools: Soft-pull credit boxes, dual-authorization 4-eyes rate governance (FR-1002),
+              and statutory cooling-off milestone disbursement release.
+            </p>
+            <div className="space-y-2 mb-6 text-sm text-slate-600">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-brand-600" />
+                <span>Credit Box & Rate Tiers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-brand-600" />
+                <span>Dual-Control 4-Eyes Changes</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-brand-600" />
+                <span>3-Day Rescission Payout Gates</span>
+              </div>
+            </div>
+            <Link
+              href="/lender/dashboard"
+              className="inline-flex items-center text-sm font-semibold text-amber-700 hover:text-amber-800"
+            >
+              Access Lender Portal <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <Link href="/lender/dashboard" className="text-emerald-700 hover:text-emerald-800 font-semibold">
+                → Rate Sheets
+              </Link>
+              <Link href="/lender/dashboard" className="text-slate-600 hover:text-slate-900 font-medium">
+                → Milestone Draws
               </Link>
             </div>
           </div>
