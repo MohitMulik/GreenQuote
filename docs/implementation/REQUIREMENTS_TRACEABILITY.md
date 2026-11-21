@@ -66,8 +66,8 @@
 | **FR-502** | 6-field pre-qualification form (DOB, income, housing, SSN last 4) | P0 | Pre-qualification | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Form validation tests |
 | **FR-503** | Explicit FCRA soft-pull consent checkbox; no impact on credit score | P0 | Consent & Legal | `apps/api/src/modules/prequal/prequal.service.ts` | VERIFIED | Consent verification tests |
 | **FR-504** | Property ownership check via public records | P1 | Verification | Property adapter | NOT_STARTED | P1 task |
-| **FR-505** | Co-applicant addition support | P1 | Pre-qualification | Flow extension | NOT_STARTED | P1 task |
-| **FR-506** | Spanish language localization | P1 | Localization | i18n configs | NOT_STARTED | P1 task |
+| **FR-505** | Co-applicant addition support | P1 | Pre-qualification | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Co-applicant toggle & DTI blending |
+| **FR-506** | Spanish language localization | P1 | Localization | `apps/web/src/app/quote/[token]/page.tsx` | VERIFIED | Bilingual EN/ES dictionary & UI toggle |
 
 ### 1.6 Lender Marketplace & Offers (FR-600)
 | Req ID | Description | Priority | Target Module | Implementation File(s) | Status | Test Coverage |
