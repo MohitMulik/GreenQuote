@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { randomId } from "../../lib/ids.js";
 import { QuoteModel, IQuoteDocument } from "./quote.model.js";
-import { calculateEmi } from "@greenquote/shared";
+import { calculateFinancingBreakdown, IncentiveItem } from "@greenquote/shared";
 import { savingsService } from "../savings/savings.service.js";
 import { incentiveService } from "../incentives/incentive.service.js";
 import { AuditEventModel } from "../admin/audit.model.js";
@@ -52,14 +52,23 @@ export class QuotesService {
         existingFuel: input.property.existingHeatingFuel,
       });
 
-      // 3. Compute TILA-compliant Example EMI (CMP-01)
+      // 3. Compute TILA-compliant Example EMI using centralized financing engine
       // Standard example assumption: 10% down, 60 months, 7.99% APR (or 5.75% for INR)
-      const downPaymentMinor = Math.round(opt.priceMinor * 0.1);
-      const financedMinor = opt.priceMinor - downPaymentMinor;
       const exampleRate = input.currency === "INR" ? 5.75 : 7.99;
-      
-      const emiCalc = calculateEmi({
-        amountFinancedMinor: financedMinor,
+      const downPaymentMinor = Math.round(opt.priceMinor * 0.1);
+
+      const mappedIncentives: IncentiveItem[] = incentives.map((item) => ({
+        id: item.programmeId,
+        name: item.name,
+        amountMinor: item.amountMinor,
+        category: item.paymentTiming === "instant" ? "pos_utility_rebate" : "post_install_rebate",
+        timing: item.paymentTiming,
+      }));
+
+      const financingResult = calculateFinancingBreakdown({
+        grossPriceMinor: opt.priceMinor,
+        downPaymentMinor,
+        incentives: mappedIncentives,
         annualRatePct: exampleRate,
         termMonths: 60,
       });
@@ -85,8 +94,8 @@ export class QuotesService {
         exampleEmi: {
           ratePct: exampleRate,
           termMonths: 60,
-          downPaymentMinor,
-          emiMinor: emiCalc.monthlyPaymentMinor,
+          downPaymentMinor: financingResult.clampedDownPaymentMinor,
+          emiMinor: financingResult.monthlyPaymentMinor,
           aprPct: exampleRate,
         },
       });

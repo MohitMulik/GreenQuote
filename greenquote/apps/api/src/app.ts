@@ -259,6 +259,12 @@ export function createApp() {
     adminController.approveLenderConfigChange
   );
   apiRouter.post(
+    "/admin/lenders/:lenderId/reject",
+    authenticateToken,
+    requireRole("operations"),
+    adminController.rejectLenderConfigChange
+  );
+  apiRouter.post(
     "/admin/incentives",
     authenticateToken,
     requireRole("operations"),

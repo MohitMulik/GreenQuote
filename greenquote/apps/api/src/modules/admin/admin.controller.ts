@@ -25,6 +25,10 @@ interface LenderConfig {
     proposedAt: string;
     newBaseAprPct: number;
     newMaxLoanAmountMinor: number;
+    previousValues?: {
+      baseAprPct: number;
+      maxLoanAmountMinor: number;
+    };
   };
 }
 
@@ -206,11 +210,21 @@ export async function requestLenderConfigChange(req: Request, res: Response, nex
     }
 
     const lender = mockLenders[lenderId];
+    const previousValues = {
+      baseAprPct: lender.baseAprPct,
+      maxLoanAmountMinor: lender.maxLoanAmountMinor,
+    };
+    const updatedValues = {
+      newBaseAprPct,
+      newMaxLoanAmountMinor,
+    };
+
     lender.pendingChange = {
       proposedBy: userId,
       proposedAt: new Date().toISOString(),
       newBaseAprPct,
       newMaxLoanAmountMinor,
+      previousValues,
     };
 
     if (mongoReady()) {
@@ -219,7 +233,11 @@ export async function requestLenderConfigChange(req: Request, res: Response, nex
         action: "LENDER_CONFIG_PROPOSED",
         entityType: "lender",
         entityId: lenderId,
-        payload: lender.pendingChange,
+        metadata: {
+          proposedBy: userId,
+          previousValues,
+          updatedValues,
+        },
       });
     }
 
@@ -248,12 +266,34 @@ export async function approveLenderConfigChange(req: Request, res: Response, nex
 
     // Critical Dual-Authorization check: Approver cannot be the same user who proposed the change!
     if (lender.pendingChange.proposedBy === approverId) {
+      if (mongoReady()) {
+        await AuditEventModel.create({
+          actor: { userId: approverId, role: "operations" },
+          action: "LENDER_CONFIG_APPROVAL_FAILED",
+          entityType: "lender",
+          entityId: lenderId,
+          metadata: {
+            reason: "DUAL_AUTHORIZATION_VIOLATION_SELF_APPROVAL",
+            proposedBy: lender.pendingChange.proposedBy,
+            approverId,
+          },
+        });
+      }
       throw new AppError(
         403,
         "DUAL_AUTHORIZATION_VIOLATION",
         "Dual-authorization policy violation: The approving officer cannot be the same officer who requested the change (FR-1002)."
       );
     }
+
+    const previousValues = lender.pendingChange.previousValues || {
+      baseAprPct: lender.baseAprPct,
+      maxLoanAmountMinor: lender.maxLoanAmountMinor,
+    };
+    const updatedValues = {
+      baseAprPct: lender.pendingChange.newBaseAprPct,
+      maxLoanAmountMinor: lender.pendingChange.newMaxLoanAmountMinor,
+    };
 
     // Apply change
     lender.baseAprPct = lender.pendingChange.newBaseAprPct;
@@ -267,13 +307,65 @@ export async function approveLenderConfigChange(req: Request, res: Response, nex
         action: "LENDER_CONFIG_APPROVED",
         entityType: "lender",
         entityId: lenderId,
-        payload: { appliedChange, approvedBy: approverId },
+        metadata: {
+          approvedBy: approverId,
+          proposedBy: appliedChange.proposedBy,
+          previousValues,
+          updatedValues,
+        },
       });
     }
 
     res.json({
       message: "Configuration update approved and activated successfully under dual-authorization.",
       lender,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function rejectLenderConfigChange(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { lenderId } = req.params;
+    const { reason } = req.body;
+    const rejectorId = req.user?.userId || "operations_2";
+
+    if (!lenderId || !mockLenders[lenderId]) {
+      throw new AppError(404, "LENDER_NOT_FOUND", "Lender not found.");
+    }
+
+    const lender = mockLenders[lenderId];
+    if (!lender.pendingChange) {
+      throw new AppError(400, "NO_PENDING_CHANGE", "No pending configuration changes found for this lender.");
+    }
+
+    const rejectedChange = lender.pendingChange;
+    delete lender.pendingChange;
+
+    if (mongoReady()) {
+      await AuditEventModel.create({
+        actor: { userId: rejectorId, role: "operations" },
+        action: "LENDER_CONFIG_REJECTED",
+        entityType: "lender",
+        entityId: lenderId,
+        metadata: {
+          rejectedBy: rejectorId,
+          proposedBy: rejectedChange.proposedBy,
+          reason: reason || "Rejected by compliance officer",
+          previousValues: rejectedChange.previousValues,
+          proposedValues: {
+            newBaseAprPct: rejectedChange.newBaseAprPct,
+            newMaxLoanAmountMinor: rejectedChange.newMaxLoanAmountMinor,
+          },
+        },
+      });
+    }
+
+    res.json({
+      message: "Lender configuration change rejected. Previous parameters preserved.",
+      lender,
+      rejectedChange,
     });
   } catch (err) {
     next(err);

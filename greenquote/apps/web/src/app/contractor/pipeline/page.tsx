@@ -40,30 +40,6 @@ export default function ContractorPipelinePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const handleExportCsv = () => {
-    const csvRows = [
-      ["Quote ID", "Customer Name", "Address", "Quoted System", "Total Price", "Financing Status", "Advisor", "Created At"],
-      ...deals.map((d) => [
-        d.id,
-        `"${d.customerName}"`,
-        `"${d.propertyAddress}"`,
-        `"${d.selectedOption}"`,
-        (d.totalPriceMinor / 100).toFixed(2),
-        d.financingStatus,
-        `"${d.advisorName}"`,
-        d.createdAt,
-      ]),
-    ];
-    const csvString = "data:text/csv;charset=utf-8," + csvRows.map((e) => e.join(",")).join("\n");
-    const encodedUri = encodeURI(csvString);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `greenquote_monthly_pipeline_${new Date().toISOString().slice(0, 7)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const deals: PipelineDeal[] = [
     {
       id: "qte_101",
@@ -110,6 +86,49 @@ export default function ContractorPipelinePage() {
       linkToken: "demo-token",
     },
   ];
+
+  // Dynamic KPI Calculations (B-08)
+  const totalPipelineMinor = deals.reduce((sum, d) => sum + d.totalPriceMinor, 0);
+  const fundedOrSignedMinor = deals
+    .filter((d) => d.financingStatus === "Funded" || d.financingStatus === "Signed" || d.financingStatus === "Installing")
+    .reduce((sum, d) => sum + d.totalPriceMinor, 0);
+  const pendingPayoutsMinor = deals
+    .filter((d) => d.financingStatus === "Signed" || d.financingStatus === "Installing")
+    .reduce((sum, d) => sum + d.totalPriceMinor, 0);
+  const activeCount = deals.length;
+
+  const handleExportCsv = () => {
+    // S-09 Remediation: Sanitize formula injection characters (=, +, -, @, \t, \r)
+    const sanitizeCsvCell = (val: string | number) => {
+      const str = String(val).replace(/"/g, '""');
+      if (/^[=+\-@\t\r]/.test(str)) {
+        return `"'${str}"`;
+      }
+      return `"${str}"`;
+    };
+
+    const csvRows = [
+      ["Quote ID", "Customer Name", "Address", "Quoted System", "Total Price", "Financing Status", "Advisor", "Created At"],
+      ...deals.map((d) => [
+        sanitizeCsvCell(d.id),
+        sanitizeCsvCell(d.customerName),
+        sanitizeCsvCell(d.propertyAddress),
+        sanitizeCsvCell(d.selectedOption),
+        (d.totalPriceMinor / 100).toFixed(2),
+        sanitizeCsvCell(d.financingStatus),
+        sanitizeCsvCell(d.advisorName),
+        sanitizeCsvCell(d.createdAt),
+      ]),
+    ];
+    const csvString = "data:text/csv;charset=utf-8," + csvRows.map((e) => e.join(",")).join("\n");
+    const encodedUri = encodeURI(csvString);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `greenquote_monthly_pipeline_${new Date().toISOString().slice(0, 7)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const filteredDeals = deals.filter((d) => {
     const matchesSearch =
@@ -170,12 +189,12 @@ export default function ContractorPipelinePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Total Financed Volume</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Total Pipeline Volume</span>
               <DollarSign className="w-4 h-4 text-emerald-600" />
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">$61,100</div>
+            <div className="text-2xl font-extrabold text-slate-900">{formatCurrency(totalPipelineMinor)}</div>
             <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">
-              +66% higher ticket vs unfinanced
+              {formatCurrency(fundedOrSignedMinor)} funded & signed
             </span>
           </div>
 
@@ -185,26 +204,26 @@ export default function ContractorPipelinePage() {
               <TrendingUp className="w-4 h-4 text-blue-600" />
             </div>
             <div className="text-2xl font-extrabold text-slate-900">+14.2%</div>
-            <span className="text-[11px] text-blue-600 font-semibold mt-1 block">Target: +10 pts (PRD G1)</span>
+            <span className="text-[11px] text-blue-600 font-semibold mt-1 block">Exceeds +10 pts PRD benchmark</span>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Active Deals</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Active Quotes</span>
               <FileCheck className="w-4 h-4 text-purple-600" />
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">4 Quotes</div>
+            <div className="text-2xl font-extrabold text-slate-900">{activeCount} Deals</div>
             <span className="text-[11px] text-purple-600 font-semibold mt-1 block">1 Pre-Qualified, 1 Signed</span>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Pending Payouts</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Pending Draw Payouts</span>
               <Clock className="w-4 h-4 text-amber-600" />
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">$20,500</div>
+            <div className="text-2xl font-extrabold text-slate-900">{formatCurrency(pendingPayoutsMinor)}</div>
             <span className="text-[11px] text-amber-600 font-semibold mt-1 block">
-              Awaiting homeowner confirmation
+              Awaiting milestone sign-off
             </span>
           </div>
         </div>

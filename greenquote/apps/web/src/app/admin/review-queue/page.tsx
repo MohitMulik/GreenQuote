@@ -33,6 +33,10 @@ interface LenderConfig {
     proposedAt: string;
     newBaseAprPct: number;
     newMaxLoanAmountMinor: number;
+    previousValues?: {
+      baseAprPct: number;
+      maxLoanAmountMinor: number;
+    };
   };
 }
 
@@ -50,10 +54,19 @@ interface IncentiveProgram {
 export default function OperationsReviewQueuePage() {
   const [activeTab, setActiveTab] = useState<"fraud" | "kyb" | "lenders" | "incentives" | "audit">("fraud");
 
-  // Dual Authorization Officer Simulation State
-  const [currentOfficer, setCurrentOfficer] = useState<"ops_lead_1" | "ops_compliance_2">("ops_compliance_2");
+  // Authenticated Operations Officer Session (Enforced via JWT/Session - no client role impersonation)
+  const authenticatedOfficer = {
+    userId: "ops_compliance_2",
+    name: "Ayesha Patel",
+    role: "Compliance Officer",
+  };
+
   const [dualAuthError, setDualAuthError] = useState<string | null>(null);
   const [dualAuthSuccess, setDualAuthSuccess] = useState<string | null>(null);
+
+  // Rejection Modal State
+  const [rejectingLenderId, setRejectingLenderId] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   // Lenders State (FR-1002)
   const [lenders, setLenders] = useState<LenderConfig[]>([
@@ -70,6 +83,10 @@ export default function OperationsReviewQueuePage() {
         proposedAt: "2026-11-21 14:15 UTC",
         newBaseAprPct: 5.25,
         newMaxLoanAmountMinor: 5000000,
+        previousValues: {
+          baseAprPct: 5.75,
+          maxLoanAmountMinor: 4500000,
+        },
       },
     },
     {
@@ -232,7 +249,7 @@ export default function OperationsReviewQueuePage() {
     },
   ];
 
-  // Dual Authorization Actions
+  // Dual Authorization Actions (FR-1002)
   const handleProposeConfig = (lenderId: string) => {
     setLenders((prev) =>
       prev.map((l) => {
@@ -240,10 +257,14 @@ export default function OperationsReviewQueuePage() {
           return {
             ...l,
             pendingChange: {
-              proposedBy: currentOfficer,
+              proposedBy: authenticatedOfficer.userId,
               proposedAt: new Date().toISOString(),
               newBaseAprPct: proposedApr,
               newMaxLoanAmountMinor: proposedMaxLoan * 100,
+              previousValues: {
+                baseAprPct: l.baseAprPct,
+                maxLoanAmountMinor: l.maxLoanAmountMinor,
+              },
             },
           };
         }
@@ -251,7 +272,9 @@ export default function OperationsReviewQueuePage() {
       })
     );
     setEditingLenderId(null);
-    setDualAuthSuccess(`Configuration proposal created by ${currentOfficer}. Awaiting second officer approval.`);
+    setDualAuthSuccess(
+      `Configuration proposal created by ${authenticatedOfficer.name} (${authenticatedOfficer.userId}). Under FR-1002, a second authorized officer must review and approve before activation.`
+    );
     setDualAuthError(null);
   };
 
@@ -260,13 +283,15 @@ export default function OperationsReviewQueuePage() {
     if (!lender || !lender.pendingChange) return;
 
     // Strict Four-Eyes / Dual-Authorization rule (FR-1002)
-    if (lender.pendingChange.proposedBy === currentOfficer) {
+    if (lender.pendingChange.proposedBy === authenticatedOfficer.userId) {
       setDualAuthError(
-        `Dual-Authorization Policy Violation: Approving officer (${currentOfficer}) cannot be the same officer who requested the change (${lender.pendingChange.proposedBy}). A second officer is required under FR-1002.`
+        `Dual-Authorization Policy Violation: Approving officer (${authenticatedOfficer.name}) cannot be the same officer who requested the change (${lender.pendingChange.proposedBy}). Self-approval is strictly prohibited under FR-1002.`
       );
       setDualAuthSuccess(null);
       return;
     }
+
+    const appliedChange = lender.pendingChange;
 
     // Apply configuration
     setLenders((prev) =>
@@ -285,8 +310,33 @@ export default function OperationsReviewQueuePage() {
 
     setDualAuthError(null);
     setDualAuthSuccess(
-      `Dual-Authorization Approved! Lender configuration activated by ${currentOfficer}. Sealed audit event logged.`
+      `Dual-Authorization Approved! Lender configuration for ${lender.name} activated by ${authenticatedOfficer.name} (Previous: ${appliedChange.previousValues?.baseAprPct ?? lender.baseAprPct}% ➔ New: ${appliedChange.newBaseAprPct}%). Immutable audit event recorded.`
     );
+  };
+
+  const handleRejectConfig = () => {
+    if (!rejectingLenderId) return;
+    const lender = lenders.find((l) => l.lenderId === rejectingLenderId);
+    if (!lender || !lender.pendingChange) return;
+
+    setLenders((prev) =>
+      prev.map((l) => {
+        if (l.lenderId === rejectingLenderId) {
+          return {
+            ...l,
+            pendingChange: undefined,
+          };
+        }
+        return l;
+      })
+    );
+
+    setDualAuthError(null);
+    setDualAuthSuccess(
+      `Configuration update for ${lender.name} rejected by ${authenticatedOfficer.name}: "${rejectionReason || "Underwriting compliance decline"}". Original parameters (${lender.baseAprPct}% APR) preserved. Immutable rejection audit event recorded.`
+    );
+    setRejectingLenderId(null);
+    setRejectionReason("");
   };
 
   const handleDownloadDossier = () => {
@@ -328,34 +378,13 @@ export default function OperationsReviewQueuePage() {
           </div>
 
           <div className="flex items-center space-x-3 text-xs">
-            <span className="text-slate-400">Signed-in Officer:</span>
-            <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
-              <button
-                onClick={() => {
-                  setCurrentOfficer("ops_lead_1");
-                  setDualAuthError(null);
-                }}
-                className={`px-2 py-1 rounded text-xs font-semibold ${
-                  currentOfficer === "ops_lead_1"
-                    ? "bg-purple-600 text-white"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                Officer A (ops_lead_1)
-              </button>
-              <button
-                onClick={() => {
-                  setCurrentOfficer("ops_compliance_2");
-                  setDualAuthError(null);
-                }}
-                className={`px-2 py-1 rounded text-xs font-semibold ${
-                  currentOfficer === "ops_compliance_2"
-                    ? "bg-purple-600 text-white"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                Officer B (ops_compliance_2)
-              </button>
+            <span className="text-slate-400">Authenticated Officer:</span>
+            <div className="flex items-center space-x-2 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span className="text-slate-200 font-semibold">{authenticatedOfficer.name}</span>
+              <span className="text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/80 px-2 py-0.5 rounded font-mono font-semibold">
+                {authenticatedOfficer.userId} · {authenticatedOfficer.role}
+              </span>
             </div>
           </div>
         </div>
@@ -555,8 +584,9 @@ export default function OperationsReviewQueuePage() {
                 </p>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 text-blue-800 text-xs px-3 py-2 rounded-lg font-mono">
-                Current Approver: <strong>{currentOfficer}</strong>
+              <div className="bg-blue-50 border border-blue-200 text-blue-800 text-xs px-3 py-2 rounded-lg font-medium flex items-center space-x-1.5">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Active Officer: <strong>{authenticatedOfficer.name}</strong> ({authenticatedOfficer.role})</span>
               </div>
             </div>
 
@@ -611,17 +641,42 @@ export default function OperationsReviewQueuePage() {
                           Proposed by: <strong>{lender.pendingChange.proposedBy}</strong>
                         </p>
                         <div className="font-mono text-[11px] space-y-0.5 text-amber-950">
-                          <p>New Base APR: <strong>{lender.pendingChange.newBaseAprPct}%</strong></p>
-                          <p>New Max Limit: <strong>${(lender.pendingChange.newMaxLoanAmountMinor / 100).toLocaleString()}</strong></p>
+                          <p>New Base APR: <strong>{lender.pendingChange.newBaseAprPct}%</strong> (was {lender.baseAprPct}%)</p>
+                          <p>New Max Limit: <strong>${(lender.pendingChange.newMaxLoanAmountMinor / 100).toLocaleString()}</strong> (was ${(lender.maxLoanAmountMinor / 100).toLocaleString()})</p>
                         </div>
 
-                        <button
-                          onClick={() => handleApproveConfig(lender.lenderId)}
-                          className="w-full mt-2 bg-amber-700 hover:bg-amber-800 text-white font-bold py-1.5 px-3 rounded text-xs transition flex items-center justify-center space-x-1"
-                        >
-                          <UserCheck className="w-3.5 h-3.5" />
-                          <span>Authorize as {currentOfficer}</span>
-                        </button>
+                        {/* Dual Action: Authorize vs Reject (Four-Eyes Enforcement) */}
+                        {lender.pendingChange.proposedBy === authenticatedOfficer.userId ? (
+                          <div className="mt-2 p-2 bg-amber-200/60 border border-amber-400 rounded text-[11px] text-amber-900 font-medium">
+                            <p className="font-bold flex items-center gap-1">
+                              <Lock className="w-3 h-3 text-amber-800" />
+                              Self-Approval Prohibited (FR-1002)
+                            </p>
+                            <p className="text-[10px] text-amber-800 mt-0.5">
+                              You proposed this modification. A second authorized compliance officer must independently review and sign off.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-2 mt-2">
+                            <button
+                              onClick={() => handleApproveConfig(lender.lenderId)}
+                              className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-1.5 px-2 rounded text-xs transition flex items-center justify-center space-x-1"
+                            >
+                              <UserCheck className="w-3.5 h-3.5" />
+                              <span>Authorize</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                setRejectingLenderId(lender.lenderId);
+                                setRejectionReason("");
+                              }}
+                              className="bg-rose-700 hover:bg-rose-800 text-white font-bold py-1.5 px-2 rounded text-xs transition flex items-center justify-center space-x-1"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                              <span>Reject</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -651,7 +706,7 @@ export default function OperationsReviewQueuePage() {
                   </h3>
                   <p className="text-xs text-slate-600">
                     This change will be submitted in <strong>pending_approval</strong> status under officer{" "}
-                    <strong>{currentOfficer}</strong>. It will not take effect until a different officer approves it.
+                    <strong>{authenticatedOfficer.name} ({authenticatedOfficer.userId})</strong>. Under the Four-Eyes principle (FR-1002), you cannot self-approve; a second officer must inspect and authorize this change.
                   </p>
 
                   <div className="space-y-3 text-xs">

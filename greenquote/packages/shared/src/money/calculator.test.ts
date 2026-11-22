@@ -1,5 +1,6 @@
 import {
   calculateEmi,
+  calculateEmiSafe,
   calculateBuyDown,
   calculateApr,
   generateAmortizationSchedule,
@@ -98,9 +99,11 @@ describe("Financial Calculation Engine", () => {
       expect(formatted).toContain("2,00,000");
     });
 
-    it("should format USD in standard format", () => {
+    it("should format USD in standard format and support exact cents", () => {
       const formatted = formatCurrency(1250000, "USD"); // $12,500
       expect(formatted).toContain("12,500");
+      const centFormatted = formatCurrency(26527, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      expect(centFormatted).toBe("$265.27");
     });
   });
 
@@ -135,6 +138,25 @@ describe("Financial Calculation Engine", () => {
         expect(totalPrincipal).toBe(amountFinancedMinor);
         expect(schedule[schedule.length - 1]?.remainingBalanceMinor).toBe(0);
       }
+    });
+  });
+
+  describe("Safe Calculator (B-01, B-02 Protection)", () => {
+    it("should return zero payment for zero or negative amount financed without throwing", () => {
+      const resZero = calculateEmiSafe({
+        amountFinancedMinor: 0,
+        annualRatePct: 7.99,
+        termMonths: 60,
+      });
+      expect(resZero.monthlyPaymentMinor).toBe(0);
+      expect(resZero.totalRepaymentMinor).toBe(0);
+
+      const resNegative = calculateEmiSafe({
+        amountFinancedMinor: -5000,
+        annualRatePct: 7.99,
+        termMonths: 60,
+      });
+      expect(resNegative.monthlyPaymentMinor).toBe(0);
     });
   });
 

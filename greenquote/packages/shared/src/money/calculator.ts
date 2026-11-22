@@ -53,6 +53,11 @@ export interface AmortizationRow {
   remainingBalanceMinor: number;
 }
 
+export interface FormatCurrencyOptions {
+  minimumFractionDigits?: number;
+  maximumFractionDigits?: number;
+}
+
 /**
  * Calculates the Equated Monthly Installment (EMI) using the standard annuity formula.
  * Rounds to the nearest whole minor unit using half-up rounding.
@@ -99,6 +104,35 @@ export function calculateEmi(input: EmiCalculationInput): EmiCalculationResult {
     totalRepaymentMinor,
     totalInterestMinor: Math.max(0, totalInterestMinor),
   };
+}
+
+/**
+ * Safe version of calculateEmi that returns zero values for zero or negative amounts,
+ * preventing unhandled client-side render crashes during interactive slider adjustment (B-01, B-02).
+ */
+export function calculateEmiSafe(input: EmiCalculationInput): EmiCalculationResult {
+  if (input.amountFinancedMinor <= 0) {
+    return {
+      amountFinancedMinor: 0,
+      annualRatePct: Math.max(0, input.annualRatePct),
+      termMonths: input.termMonths > 0 ? input.termMonths : 60,
+      monthlyPaymentMinor: 0,
+      totalRepaymentMinor: 0,
+      totalInterestMinor: 0,
+    };
+  }
+  try {
+    return calculateEmi(input);
+  } catch {
+    return {
+      amountFinancedMinor: 0,
+      annualRatePct: Math.max(0, input.annualRatePct),
+      termMonths: 60,
+      monthlyPaymentMinor: 0,
+      totalRepaymentMinor: 0,
+      totalInterestMinor: 0,
+    };
+  }
 }
 
 /**
@@ -230,23 +264,32 @@ export function calculateApr(
 }
 
 /**
- * Format minor units into human readable currency string with proper localization.
+ * Format minor units into human readable currency string with proper localization and exact cent support.
  */
-export function formatCurrency(amountMinor: number, currency: "USD" | "INR" = "USD"): string {
-  const major = amountMinor / 100;
+export function formatCurrency(
+  amountMinor: number,
+  currency: "USD" | "INR" = "USD",
+  options?: FormatCurrencyOptions
+): string {
+  const major = Number.isFinite(amountMinor) ? amountMinor / 100 : 0;
+  const minDigits = options?.minimumFractionDigits ?? 0;
+  const maxDigits = options?.maximumFractionDigits ?? minDigits;
+
   if (currency === "INR") {
     // Indian numbering format (e.g. ₹2,00,000)
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-      maximumFractionDigits: 0,
+      minimumFractionDigits: minDigits,
+      maximumFractionDigits: maxDigits,
     }).format(major);
   }
 
-  // Standard USD format (e.g. $10,000)
+  // Standard USD format (e.g. $10,000 or $265.27)
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: minDigits,
+    maximumFractionDigits: maxDigits,
   }).format(major);
 }

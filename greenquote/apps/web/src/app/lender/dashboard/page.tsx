@@ -15,6 +15,8 @@ import {
   FileCheck,
   ChevronRight,
   Lock,
+  Landmark,
+  Download,
 } from "lucide-react";
 import { formatCurrency } from "@greenquote/shared";
 
@@ -45,8 +47,39 @@ interface MilestonePayout {
 
 export default function LenderDashboardPage() {
   const [selectedLender, setSelectedLender] = useState<string>("lnd_ce_fcu");
-  const [activeTab, setActiveTab] = useState<"rates" | "milestones" | "originations">("milestones");
+  const [activeTab, setActiveTab] = useState<"rates" | "milestones" | "reconciliation">("milestones");
   const [rateChangeRequested, setRateChangeRequested] = useState(false);
+
+  // Funding Reconciliation Batches (FR-804)
+  const settlementBatches = [
+    {
+      batchId: "BTH-2026-1121",
+      settlementDate: "2026-11-21 17:00 EST",
+      totalDisbursedMinor: 14250000, // $142,500.00
+      loanCount: 8,
+      achTraceRange: "011000015-8812001 .. 8812008",
+      status: "balanced_matched",
+      clearingHouse: "FedACH",
+    },
+    {
+      batchId: "BTH-2026-1120",
+      settlementDate: "2026-11-20 17:00 EST",
+      totalDisbursedMinor: 9820000, // $98,200.00
+      loanCount: 6,
+      achTraceRange: "011000015-8811901 .. 8811906",
+      status: "balanced_matched",
+      clearingHouse: "FedACH",
+    },
+    {
+      batchId: "BTH-2026-1119",
+      settlementDate: "2026-11-19 17:00 EST",
+      totalDisbursedMinor: 11500000, // $115,000.00
+      loanCount: 7,
+      achTraceRange: "011000015-8811801 .. 8811807",
+      status: "balanced_matched",
+      clearingHouse: "FedACH",
+    },
+  ];
 
   // Sample Rate Tiers
   const [rateTiers, setRateTiers] = useState<RateTier[]>([
@@ -287,6 +320,18 @@ export default function LenderDashboardPage() {
             <Sliders className="w-4 h-4" />
             <span>Credit Box & Rate Tiers (FR-1002)</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab("reconciliation")}
+            className={`pb-3 border-b-2 transition flex items-center space-x-2 ${
+              activeTab === "reconciliation"
+                ? "border-emerald-600 text-emerald-700"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            <Landmark className="w-4 h-4" />
+            <span>Settlement & Reconciliation (FR-804)</span>
+          </button>
         </div>
 
         {/* TAB 1: MILESTONE FUNDING DISBURSEMENT QUEUE */}
@@ -471,6 +516,100 @@ export default function LenderDashboardPage() {
                             <span>Active in Market</span>
                           </span>
                         )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: FUNDING RECONCILIATION & BATCH SETTLEMENT (FR-804) */}
+        {activeTab === "reconciliation" && (
+          <div className="space-y-6">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start justify-between text-xs text-emerald-950">
+              <div className="flex items-start space-x-3">
+                <Landmark className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="font-bold">Daily FedACH Settlement & Reconciliation (FR-804):</strong> Automated
+                  three-way match between contractor milestone completion proofs, lender escrow disbursements, and
+                  Federal Reserve ACH trace identifiers. 100% matched with zero unallocated variance.
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  const sampleCsv = "BatchID,SettlementDate,LoanCount,TotalDisbursed,ClearingHouse,Status\n" +
+                    settlementBatches.map(b => `${b.batchId},${b.settlementDate},${b.loanCount},$${(b.totalDisbursedMinor/100).toFixed(2)},${b.clearingHouse},${b.status}`).join("\n");
+                  const blob = new Blob([sampleCsv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `ACH_Settlement_Reconciliation_${new Date().toISOString().slice(0, 10)}.csv`;
+                  a.click();
+                }}
+                className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center space-x-1.5 whitespace-nowrap shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export Settlement Ledger</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <span className="text-xs text-slate-500 font-semibold block">Total Reconciled Volume</span>
+                <span className="text-xl font-black text-slate-900 mt-1 block">$355,700.00</span>
+                <span className="text-[11px] text-emerald-600 font-medium">21 Loans · Past 72h</span>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <span className="text-xs text-slate-500 font-semibold block">Settlement Ledger Variance</span>
+                <span className="text-xl font-black text-emerald-600 mt-1 block">$0.00 (Balanced)</span>
+                <span className="text-[11px] text-slate-500 font-medium">100% FedACH Traces Verified</span>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <span className="text-xs text-slate-500 font-semibold block">Next Batch Window</span>
+                <span className="text-xl font-black text-slate-900 mt-1 block">17:00 EST Today</span>
+                <span className="text-[11px] text-blue-600 font-medium">Same-Day ACH Window 3</span>
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-200 font-bold text-slate-900 flex items-center justify-between">
+                <span>Settlement Batches & ACH Clearing History</span>
+                <span className="text-xs font-mono font-medium text-slate-500">Routing: 011000015 (Federal Reserve Bank)</span>
+              </div>
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase tracking-wider">
+                  <tr>
+                    <th className="px-6 py-3.5">Batch Identifier</th>
+                    <th className="px-6 py-3.5">Settlement Timestamp</th>
+                    <th className="px-6 py-3.5">Funded Loans</th>
+                    <th className="px-6 py-3.5">ACH Trace Range</th>
+                    <th className="px-6 py-3.5">Total Disbursed</th>
+                    <th className="px-6 py-3.5">Clearing Network</th>
+                    <th className="px-6 py-3.5 text-right">Reconciliation</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {settlementBatches.map((batch) => (
+                    <tr key={batch.batchId} className="hover:bg-slate-50">
+                      <td className="px-6 py-4 font-mono font-bold text-slate-900">{batch.batchId}</td>
+                      <td className="px-6 py-4 text-slate-700">{batch.settlementDate}</td>
+                      <td className="px-6 py-4 font-semibold text-slate-800">{batch.loanCount} disbursements</td>
+                      <td className="px-6 py-4 font-mono text-slate-600 text-[11px]">{batch.achTraceRange}</td>
+                      <td className="px-6 py-4 font-bold text-slate-900">
+                        {formatCurrency(batch.totalDisbursedMinor, "USD")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="bg-slate-100 text-slate-800 font-mono text-[11px] px-2 py-0.5 rounded border border-slate-200">
+                          {batch.clearingHouse}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <span className="inline-flex items-center space-x-1 text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded text-[11px]">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>Balanced (0.00 var)</span>
+                        </span>
                       </td>
                     </tr>
                   ))}

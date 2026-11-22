@@ -150,11 +150,35 @@ describe("GreenQuote Full End-to-End Regulatory & Lifecycle Journey", () => {
       expect(proposeRes.status).toBe(200);
       expect(proposeRes.body.lender.pendingChange).toBeDefined();
 
-      // 3. Officer B approves parameter update under Four-Eyes principle
+      // 3. Self-approval attempt by Officer A MUST FAIL under Four-Eyes policy (FR-1002)
+      const selfApproveRes = await request(app)
+        .post("/v1/admin/lenders/lnd_vermont_cu/approve")
+        .set("Authorization", `Bearer ${opsToken}`)
+        .send({});
+      expect(selfApproveRes.status).toBe(403);
+      expect(selfApproveRes.body.code).toBe("DUAL_AUTHORIZATION_VIOLATION");
+
+      // 4. Officer B rejects parameter update with justification
       const approveOfficerToken = jwt.sign(
         { userId: "ops_compliance_officer_2", role: "operations", type: "access" },
         config.jwtSecret
       );
+      const rejectRes = await request(app)
+        .post("/v1/admin/lenders/lnd_vermont_cu/reject")
+        .set("Authorization", `Bearer ${approveOfficerToken}`)
+        .send({ reason: "Proposed APR exceeds Q4 underwriting ceiling" });
+      expect(rejectRes.status).toBe(200);
+      expect(rejectRes.body.lender.pendingChange).toBeUndefined();
+
+      // 5. Re-propose and successfully approve under Four-Eyes principle
+      await request(app)
+        .post("/v1/admin/lenders/lnd_vermont_cu/config-request")
+        .set("Authorization", `Bearer ${opsToken}`)
+        .send({
+          newBaseAprPct: 5.5,
+          newMaxLoanAmountMinor: 5500000,
+        });
+
       const approveRes = await request(app)
         .post("/v1/admin/lenders/lnd_vermont_cu/approve")
         .set("Authorization", `Bearer ${approveOfficerToken}`)
