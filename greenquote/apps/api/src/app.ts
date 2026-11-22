@@ -53,6 +53,16 @@ export function createApp() {
     res.json({ status: "healthy", timestamp: new Date(), version: "1.0.0" });
   });
 
+  app.post("/v1/system/seed", async (_req, res) => {
+    try {
+      const { seedDatabase } = await import("./scripts/seed.js");
+      await seedDatabase(false);
+      res.json({ success: true, message: "Database seeded successfully with demo users." });
+    } catch (err) {
+      res.status(500).json({ success: false, error: (err as Error).message });
+    }
+  });
+
   app.get("/docs", (_req, res) => {
     res.setHeader("Content-Type", "text/html");
     res.send(`<!DOCTYPE html>

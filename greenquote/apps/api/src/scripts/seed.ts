@@ -12,9 +12,11 @@ import { MilestoneModel } from "../modules/milestones/milestone.model.js";
 import { AuditEventModel } from "../modules/admin/audit.model.js";
 import { encryptPii } from "../security/pii-vault.js";
 
-async function seed() {
-  console.log("Connecting to MongoDB for seeding...");
-  await mongoose.connect(config.mongoUri);
+export async function seedDatabase(disconnectAfter = false) {
+  if (mongoose.connection.readyState !== 1) {
+    console.log("Connecting to MongoDB for seeding...");
+    await mongoose.connect(config.mongoUri);
+  }
 
   console.log("Seeding Equipment Directory (AHRI & Solar)...");
   await EquipmentModel.deleteMany({});
@@ -305,10 +307,16 @@ async function seed() {
   console.log("Contractor Pipeline URL: http://localhost:3000/contractor/pipeline");
   console.log("Milestones URL: http://localhost:3000/contractor/milestones/" + sampleOffer._id.toString());
 
-  await mongoose.disconnect();
+  if (disconnectAfter) {
+    await mongoose.disconnect();
+  }
 }
 
-seed().catch((err) => {
-  console.error("Seeding failed:", err);
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1]?.endsWith("seed.ts") || process.argv[1]?.endsWith("seed.js");
+if (isDirectRun) {
+  seedDatabase(true).catch((err) => {
+    console.error("Seeding failed:", err);
+    process.exit(1);
+  });
+}
