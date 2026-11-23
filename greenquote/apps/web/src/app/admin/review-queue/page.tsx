@@ -366,31 +366,31 @@ export default function OperationsReviewQueuePage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       {/* Header */}
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 min-h-16 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <Link href="/" className="flex items-center space-x-2 text-slate-300 hover:text-white">
               <ArrowLeft className="w-5 h-5 mr-1" />
-              <span className="font-bold text-lg text-white">GreenQuote Operations Console</span>
+              <span className="font-bold text-base sm:text-lg text-white">Operations Console</span>
             </Link>
-            <span className="text-xs bg-purple-900 text-purple-200 border border-purple-700 font-semibold px-2.5 py-0.5 rounded-full">
+            <span className="text-[11px] bg-purple-900 text-purple-200 border border-purple-700 font-semibold px-2 py-0.5 rounded-full hidden sm:inline-block">
               Risk & Compliance Engine
             </span>
           </div>
 
-          <div className="flex items-center space-x-3 text-xs">
-            <span className="text-slate-400">Authenticated Officer:</span>
-            <div className="flex items-center space-x-2 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+          <div className="flex items-center space-x-2 text-xs">
+            <span className="text-slate-400 hidden sm:inline">Authenticated Officer:</span>
+            <div className="flex items-center space-x-2 bg-slate-800 rounded-lg px-2.5 py-1.5 border border-slate-700">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span className="text-slate-200 font-semibold">{authenticatedOfficer.name}</span>
-              <span className="text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/80 px-2 py-0.5 rounded font-mono font-semibold">
-                {authenticatedOfficer.userId} · {authenticatedOfficer.role}
+              <span className="text-slate-200 font-semibold text-xs">{authenticatedOfficer.name}</span>
+              <span className="text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/80 px-1.5 py-0.5 rounded font-mono font-semibold">
+                {authenticatedOfficer.userId}
               </span>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 pt-8 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Dual-Auth Feedback Alerts */}
         {dualAuthError && (
           <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start space-x-3">

@@ -65,7 +65,7 @@ export default function ContractorOnboardingPage() {
         </div>
 
         {/* Progress Tracker */}
-        <div className="grid grid-cols-4 gap-2 mb-8 text-center text-xs font-semibold">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 text-center text-[11px] sm:text-xs font-semibold">
           <div className={`p-2 rounded-lg border ${step >= 1 ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-slate-400"}`}>
             1. Business Profile
           </div>

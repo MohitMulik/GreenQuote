@@ -159,15 +159,15 @@ export default function ContractorPipelinePage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       {/* Top Navbar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 min-h-16 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                 GQ
               </div>
-              <span className="font-bold text-lg text-slate-900">GreenQuote Contractor Hub</span>
+              <span className="font-bold text-base sm:text-lg text-slate-900">GreenQuote Contractor Hub</span>
             </Link>
-            <span className="text-xs bg-slate-100 border border-slate-200 text-slate-700 font-semibold px-2.5 py-0.5 rounded-full ml-2">
+            <span className="text-[11px] bg-slate-100 border border-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded-full hidden sm:inline-block">
               Apex Clean Energy & HVAC LLC
             </span>
           </div>
@@ -175,7 +175,7 @@ export default function ContractorPipelinePage() {
           <div className="flex items-center space-x-3">
             <Link
               href="/contractor/quote/new"
-              className="flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition"
+              className="flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg shadow-sm transition"
             >
               <Plus className="w-4 h-4" />
               <span>Create New Quote</span>
@@ -184,7 +184,7 @@ export default function ContractorPipelinePage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 pt-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
@@ -266,8 +266,66 @@ export default function ContractorPipelinePage() {
             </div>
           </div>
 
-          {/* Deals Table */}
-          <div className="overflow-x-auto pt-2">
+          {/* Mobile Deals Cards (md:hidden) */}
+          <div className="block md:hidden space-y-3 pt-2">
+            {filteredDeals.map((deal) => (
+              <div key={deal.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="font-bold text-slate-900 text-sm block">{deal.customerName}</span>
+                    <span className="text-xs text-slate-500">{deal.propertyAddress}</span>
+                  </div>
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${getStatusBadge(
+                      deal.financingStatus
+                    )}`}
+                  >
+                    {deal.financingStatus}
+                  </span>
+                </div>
+
+                <div className="text-xs space-y-1 bg-white p-2.5 rounded-lg border border-slate-100">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">System:</span>
+                    <span className="font-medium text-slate-800 text-right">{deal.selectedOption}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Total Price:</span>
+                    <span className="font-bold text-slate-900">{formatCurrency(deal.totalPriceMinor, "USD")}</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-400">Advisor:</span>
+                    <span className="text-slate-600">{deal.advisorName}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {(deal.financingStatus === "Signed" ||
+                    deal.financingStatus === "Funded" ||
+                    deal.financingStatus === "Installing") && (
+                    <Link
+                      href={`/contractor/milestones/${deal.id}`}
+                      className="flex-1 inline-flex items-center justify-center space-x-1 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-2 rounded-lg transition border border-emerald-200"
+                    >
+                      <span>Milestones</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                  <Link
+                    href={`/quote/${deal.linkToken}`}
+                    target="_blank"
+                    className="flex-1 inline-flex items-center justify-center space-x-1 text-xs font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 px-3 py-2 rounded-lg transition border border-brand-200"
+                  >
+                    <span>Customer Link</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Deals Table (hidden md:block) */}
+          <div className="hidden md:block overflow-x-auto pt-2">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-400">

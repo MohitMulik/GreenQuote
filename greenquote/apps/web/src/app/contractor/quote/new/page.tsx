@@ -228,30 +228,30 @@ export default function QuoteBuilderPage() {
   return (
     <div className={`min-h-screen ${isPresentationMode ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-900"}`}>
       {/* Top Header */}
-      <header className={`border-b ${isPresentationMode ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white"} px-6 py-4 flex items-center justify-between sticky top-0 z-40`}>
-        <div className="flex items-center space-x-4">
+      <header className={`border-b ${isPresentationMode ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white"} px-4 sm:px-6 py-2.5 min-h-16 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-40`}>
+        <div className="flex items-center space-x-3">
           <Link
             href="/contractor/pipeline"
-            className={`p-2 rounded-lg ${isPresentationMode ? "hover:bg-slate-800" : "hover:bg-slate-100"}`}
+            className={`p-1.5 rounded-lg ${isPresentationMode ? "hover:bg-slate-800" : "hover:bg-slate-100"}`}
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold flex items-center space-x-2">
-              <span>Good / Better / Best Quote Builder</span>
+            <h1 className="text-base sm:text-xl font-bold flex items-center space-x-2">
+              <span>Quote Builder</span>
               {isPresentationMode && (
-                <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
-                  Customer Presentation Mode
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                  Customer Mode
                 </span>
               )}
             </h1>
-            <p className={`text-xs ${isPresentationMode ? "text-slate-400" : "text-slate-500"}`}>
+            <p className={`text-xs ${isPresentationMode ? "text-slate-400" : "text-slate-500"} line-clamp-1`}>
               Customer: {customerName} · {propertyAddress}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Autosave Status Indicator (FR-301) */}
           {!isPresentationMode && (
             <div className="hidden md:flex items-center space-x-1.5 text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
@@ -330,10 +330,10 @@ export default function QuoteBuilderPage() {
       )}
 
       {/* Main Quote Columns */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Compliance Notice */}
         {!isPresentationMode && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 mb-6 flex items-center justify-between text-xs text-blue-900">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3.5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-blue-900">
             <div className="flex items-center space-x-2">
               <ShieldAlert className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <span>
@@ -341,7 +341,7 @@ export default function QuoteBuilderPage() {
                 Zero dealer markups or dual pricing stored.
               </span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 shrink-0">
               <span className="text-slate-500 font-medium">Currency:</span>
               <span className="bg-white border border-blue-300 px-2 py-0.5 rounded font-bold text-blue-700">
                 USD ($)

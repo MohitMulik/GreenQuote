@@ -89,27 +89,28 @@ export default function ContractorMilestonePage({
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
       {/* Header */}
       <header className="border-b bg-white sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 min-h-16 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/contractor/pipeline"
-              className="text-slate-500 hover:text-slate-800 text-sm flex items-center gap-1"
+              className="text-slate-500 hover:text-slate-800 text-xs sm:text-sm flex items-center gap-1 shrink-0"
             >
               <ArrowLeft className="w-4 h-4" /> Pipeline
             </Link>
             <div className="h-4 w-px bg-slate-200" />
             <div>
-              <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <FileCheck className="w-5 h-5 text-emerald-600" /> Installation Milestone & Payout Tracker
+              <h1 className="text-sm sm:text-xl font-bold text-slate-900 flex items-center gap-1.5 sm:gap-2">
+                <FileCheck className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-600 shrink-0" />
+                <span>Milestone & Payout Tracker</span>
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-[11px] text-slate-500 line-clamp-1">
                 Loan ID: {loan.id} · Customer: {loan.homeowner} · Lender: {loan.lender}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span
-              className={`text-xs px-3 py-1 font-semibold rounded-full border ${
+              className={`text-[10px] sm:text-xs px-2.5 sm:px-3 py-1 font-semibold rounded-full border whitespace-nowrap ${
                 milestone.status === "payout_released"
                   ? "bg-emerald-50 text-emerald-700 border-emerald-300"
                   : milestone.status === "confirmed_by_homeowner"

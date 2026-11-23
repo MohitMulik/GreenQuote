@@ -78,11 +78,11 @@ export default function PlatformAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
-      <main className="max-w-7xl mx-auto px-6 pt-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Page Title & Timeframe Selector */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-2">
               <span>Clean Energy Originations & Platform Analytics</span>
               <span className="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold px-2 py-0.5 rounded-full">
                 S14 Executive View
@@ -93,7 +93,7 @@ export default function PlatformAnalyticsPage() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-1 bg-white border border-slate-200 p-1 rounded-xl shadow-sm text-xs font-semibold text-slate-600">
+          <div className="flex items-center space-x-1 bg-white border border-slate-200 p-1 rounded-xl shadow-sm text-xs font-semibold text-slate-600 overflow-x-auto whitespace-nowrap">
             <button
               onClick={() => setTimeframe("30d")}
               className={`px-3 py-1.5 rounded-lg transition ${

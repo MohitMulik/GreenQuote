@@ -146,21 +146,22 @@ export default function AiQuoteImportPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
       {/* Top Header */}
       <header className="border-b bg-white sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 min-h-16 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/contractor/pipeline"
-              className="text-slate-500 hover:text-slate-800 text-sm flex items-center gap-1"
+              className="text-slate-500 hover:text-slate-800 text-xs sm:text-sm flex items-center gap-1"
             >
               <ArrowLeft className="w-4 h-4" /> Pipeline
             </Link>
             <div className="h-4 w-px bg-slate-200" />
-            <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-emerald-600" /> AI Quote Reader & Digitizer (AI-01)
+            <h1 className="text-sm sm:text-xl font-bold text-slate-900 flex items-center gap-1.5 sm:gap-2">
+              <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-emerald-600 shrink-0" />
+              <span>AI Quote Reader & Digitizer</span>
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-full border border-emerald-200">
+            <span className="text-[10px] sm:text-xs px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-full border border-emerald-200 hidden sm:inline-block">
               PRD FR-304 Compliant
             </span>
           </div>

@@ -186,10 +186,10 @@ export default function LenderDashboardPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       {/* Top Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 min-h-16 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                 GQ
               </div>
               <span className="font-bold text-base text-slate-900 hidden sm:inline">GreenQuote</span>
@@ -197,23 +197,23 @@ export default function LenderDashboardPage() {
             <span className="text-slate-300">/</span>
             <div className="flex items-center space-x-2">
               <Building2 className="w-4 h-4 text-emerald-600" />
-              <span className="font-bold text-sm text-slate-800">Lender Capital Portal</span>
+              <span className="font-bold text-xs sm:text-sm text-slate-800">Lender Capital Portal</span>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <select
               value={selectedLender}
               onChange={(e) => setSelectedLender(e.target.value)}
-              className="text-xs font-semibold bg-slate-100 border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:ring-1 focus:ring-emerald-500"
+              className="text-xs font-semibold bg-slate-100 border border-slate-300 rounded-lg px-2 sm:px-3 py-1.5 text-slate-800 focus:ring-1 focus:ring-emerald-500 max-w-[190px] sm:max-w-none"
             >
-              <option value="lnd_ce_fcu">Clean Energy Federal Credit Union</option>
+              <option value="lnd_ce_fcu">Clean Energy FCU</option>
               <option value="lnd_comm_green">Community Green Bank</option>
-              <option value="lnd_ecofinance">EcoFinance Specialty POS</option>
+              <option value="lnd_ecofinance">EcoFinance POS</option>
             </select>
-            <span className="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-full">
+            <span className="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Tier 1 Underwriter</span>
+              <span>Tier 1</span>
             </span>
           </div>
         </div>
@@ -293,7 +293,7 @@ export default function LenderDashboardPage() {
         </div>
 
         {/* Tab Selector */}
-        <div className="flex border-b border-slate-200 space-x-8 text-sm font-bold">
+        <div className="flex border-b border-slate-200 space-x-4 sm:space-x-8 text-sm font-bold overflow-x-auto pb-1 scrollbar-none whitespace-nowrap">
           <button
             onClick={() => setActiveTab("milestones")}
             className={`pb-3 border-b-2 transition flex items-center space-x-2 ${
