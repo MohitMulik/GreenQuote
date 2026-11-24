@@ -164,20 +164,4 @@ npm run test
 npm run build --workspace=@greenquote/web
 ```
 
----
 
-## 7. Cloud Production Deployment (Vercel & Render)
-
-GreenQuote is fully prepared for one-click cloud deployment:
-- **Backend Core API:** Deploy to **[Render.com](https://render.com)** using the included [`render.yaml`](render.yaml) blueprint.
-- **Frontend Next.js App:** Deploy to **[Vercel](https://vercel.com)** pointing to `greenquote/apps/web`.
-- **Database:** Connect to a free MongoDB Atlas M0 cluster.
-
-👉 **[Read the Complete Cloud Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** for step-by-step instructions.
-
----
-
-## 8. Evaluator & Internship Defense Guide
-
-For evaluation walkthroughs, 5-minute live demo scripts, and architectural defense questions:
-👉 **[Read the Master Internship Project Guide](docs/INTERNSHIP_PROJECT_GUIDE.md)**
