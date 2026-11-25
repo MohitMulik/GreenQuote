@@ -35,6 +35,9 @@ jobs:
       - name: Install Monorepo Dependencies
         run: npm ci
 
+      - name: Build Shared Packages
+        run: npm run build --workspace=@greenquote/shared
+
       - name: TypeScript Typecheck Across All Workspaces (QG-1)
         run: npm run typecheck
 
