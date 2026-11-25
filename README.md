@@ -1,30 +1,34 @@
 # GreenQuote India — Embedded Clean Energy POS Lending & PM Surya Ghar Subsidy Infrastructure
 
-> **Production-grade residential clean energy point-of-sale loan marketplace connecting rooftop solar installers, homeowners, and green lenders (State Bank of India, Tata Capital, IREDA) with ₹0 dealer fees, verified MNRE ALMM equipment, automated PM Surya Ghar DBT subsidies, and RBI Digital Lending compliance.**
+> **A production-grade FinTech point-of-sale (POS) lending and subsidy orchestration platform connecting rooftop solar installers, residential homeowners, and institutional green lenders (State Bank of India, Tata Capital, IREDA) with ₹0 dealer fees, verified MNRE ALMM hardware catalogs, and strict RBI Digital Lending compliance.**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg)](https://nextjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Currency](https://img.shields.io/badge/Currency-INR%20(%E2%82%B9)-emerald.svg)]()
-[![Subsidy](https://img.shields.io/badge/Subsidy-PM%20Surya%20Ghar-orange.svg)](https://pmsuryaghar.gov.in/)
-[![Compliance](https://img.shields.io/badge/Compliance-RBI%20Digital%20Lending%20%7C%20CIBIL%20%7C%20IT%20Act%202000-purple.svg)]()
-[![License](https://img.shields.io/badge/License-Proprietary-red.svg)]()
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas%207.0-green.svg)](https://www.mongodb.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
+[![Jest](https://img.shields.io/badge/Jest-29.7-red.svg)](https://jestjs.io/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
-## 1. Executive Summary
+## 1. Overview & Core Engineering Highlights
 
-Residential clean energy adoption across India (rooftop solar, hybrid PCUs, lithium battery storage, 5-star inverter heat pump ACs) is experiencing exponential growth, supercharged by the Government of India's **PM Surya Ghar: Muft Bijli Yojana** (1 Crore solar rooftop households target). However, adoption has historically been constrained by fragmented financing: opaque contractor pricing, unverified subsidy deductions, predatory loan dealer markups, manual paper underwriting, and lengthy DISCOM approval delays.
+Residential clean energy adoption in India (rooftop solar, hybrid inverters, battery storage) has historically faced major friction: opaque contractor pricing, unverified subsidy promises, high upfront capital expenditure, hidden dealer fees, and complex bank loan applications.
 
-**GreenQuote India** solves this by embedding transparent, multi-bank point-of-sale credit directly into the solar installer quote-building and customer journey:
-- **₹0 Hidden Dealer Fees & Single-Price Policy:** Financed pricing is strictly identical to cash pricing (guaranteed zero dealer fee markups).
-- **PM Surya Ghar Instant POS Netting:** Upfront ₹60,000 to ₹78,000 central DBT subsidy deduction from the homeowner invoice, avoiding consumer liquidity lockup.
-- **Multi-Bank CIBIL Soft-Pull:** Pre-qualifies homeowners across top institutional clean energy lenders (**State Bank of India**, **Tata Capital**, **IREDA**) in under 60 seconds with **0 impact** to CIBIL credit scores.
-- **Verified MNRE ALMM Equipment Catalog:** Catalog integration with the Ministry of New & Renewable Energy Approved List of Models and Manufacturers (**Waaree Energies**, **Tata Power Solar**, **Adani Solar**, **Havells**).
-- **Reserve Bank of India (RBI) Key Fact Statement (KFS):** Strict reducing balance APR disclosures, nil foreclosure fees, and statutory 3-day cooling-off exit rights prior to digital execution.
-- **Aadhaar OTP Digital Execution:** Compliant electronic signature execution under Section 3A of the Information Technology Act 2000 with SHA-256 tamper-evident integrity seals.
-- **Milestone Payouts via RTGS/NEFT:** Payout releases gated by verified equipment serials and DISCOM net-metering inspection reports.
-- **Operations Console with Dual-Authorization:** Four-eyes governance on lender credit parameters and sealed 7-year regulatory compliance dossiers.
+**GreenQuote India** solves this by embedding transparent, multi-lender credit and instant government subsidy netting directly into the installer's quote generation workflow and customer experience.
+
+### Key Engineering Features
+
+- **Integer Minor-Unit Financial Engine (`@greenquote/shared`):** Implements integer arithmetic in minor units (paise) across all loan calculations, completely eliminating IEEE 754 floating-point rounding errors in APR amortization, monthly EMI determination, and payment schedules.
+- **₹0 Hidden Dealer Fees & Single-Price Policy:** Real-time parity validation ensuring that financed customer pricing matches cash pricing with zero hidden dealer fee markups.
+- **PM Surya Ghar Instant POS Netting:** Upfront automated netting of central Direct Benefit Transfer (DBT) subsidies (₹60,000 to ₹78,000) directly on the customer invoice, eliminating consumer capital lockup.
+- **Multi-Bank CIBIL Soft-Pull Integration:** Simultaneous parallel query fan-out across participating lenders (**State Bank of India**, **Tata Capital**, **IREDA**) returning personalized EMI offers in under 60 seconds with **zero impact** on the consumer's CIBIL credit score.
+- **MNRE ALMM Hardware Catalog Verification:** Automatic validation of solar modules and inverters against the Ministry of New & Renewable Energy Approved List of Models and Manufacturers (**Waaree Energies**, **Tata Power Solar**, **Adani Solar**, **Havells**).
+- **RBI Digital Lending & Key Fact Statement (KFS) Engine:** Generates legally binding Key Fact Statements detailing reducing-balance APR, zero foreclosure penalty, and a mandatory 3-day cooling-off cancellation period prior to execution.
+- **Aadhaar OTP Digital E-Sign:** Seamless electronic signature workflow under Section 3A of the Information Technology Act 2000, sealed with SHA-256 tamper-evident integrity hashes.
+- **AI-Powered Quote Digitizer & OCR:** Computer vision and multimodal parsing engine converting legacy paper/PDF contractor quotes into structured 3-tier Good / Better / Best digital proposals.
+- **Four-Eyes Governance & Audit Logging:** Dual-authorization controls on lender credit policy changes, contractor KYB verification (GSTIN & MNRE Empanelment), and tamper-proof immutable audit logging.
 
 ---
 
@@ -32,137 +36,119 @@ Residential clean energy adoption across India (rooftop solar, hybrid PCUs, lith
 
 ```mermaid
 flowchart TD
-    subgraph Frontend ["Next.js 14 Web Applications (apps/web)"]
-        CB["Installer Quote Builder & AI OCR"]
-        CP["Installer Pipeline & Milestones"]
-        HP["Homeowner CIBIL & KFS Portal"]
-        OP["Operations & Compliance Console"]
+    subgraph Client ["Client Layer (Next.js 14 App Router)"]
+        UI_HOME["Homeowner Portal /quote/[token]"]
+        UI_BUILDER["Installer Quote Builder /contractor/quote/new"]
+        UI_PIPELINE["Installer Pipeline /contractor/pipeline"]
+        UI_LENDER["Lender Underwriting /lender/dashboard"]
+        UI_ADMIN["Admin & Compliance /admin/review-queue"]
     end
 
-    subgraph API ["Express / TypeScript REST API (apps/api)"]
+    subgraph Gateway ["API & Service Layer (Express.js / TypeScript)"]
         AUTH["Auth & MFA Service"]
-        QUOTES["Quote & 3-Tier Engine (₹)"]
-        PREQUAL["Multi-Bank CIBIL Soft-Pull Fan-Out"]
-        ESIGN["RBI KFS & Aadhaar e-Sign Engine"]
-        MLS["DISCOM Milestone & Cooling-Off Service"]
-        ADMIN["Dual-Auth Governance & Audit Dossier"]
+        QUOTES["Quote & Pricing Engine (₹)"]
+        PREQUAL["Multi-Lender Fan-Out Service"]
+        KFS["KFS & E-Sign Engine"]
+        DISCOM["Milestone & Settlement Engine"]
+        GOV["Dual-Auth Governance"]
     end
 
-    subgraph Core ["Shared Engine (packages/shared)"]
-        CALC["Integer Paise Financial Engine (en-IN)"]
-        SCHEMAS["Zod Validation & Injection Guards"]
+    subgraph Core ["Shared Financial Core (@greenquote/shared)"]
+        CALC["Actuarial EMI Engine (Integer Paise)"]
+        SCHEMAS["Zod Validation & Sanitization"]
     end
 
-    subgraph Storage ["Data Layer"]
-        MONGO[("MongoDB Atlas")]
-        VAULT["AES-256-GCM CSFLE PAN/PII Vault"]
+    subgraph Data ["Data & Security Layer"]
+        DB[("MongoDB Atlas (Mongoose)")]
+        VAULT["AES-256-GCM Field-Level PII Encryption"]
     end
 
-    CB --> API
-    CP --> API
-    HP --> API
-    OP --> API
-    API --> CALC
-    API --> SCHEMAS
-    API --> MONGO
-    API --> VAULT
+    Client --> Gateway
+    Gateway --> Core
+    Gateway --> DB
+    Gateway --> VAULT
 ```
 
 ---
 
-## 3. Monorepo Structure
+## 3. Monorepo Organization
 
 ```
 greenquote/
 ├── apps/
-│   ├── api/             # Express.js REST API (Port 4000)
-│   │   ├── src/modules/ # Quotes, Prequal, Offers, KFS, Milestones, Admin, AI
-│   │   ├── src/security/# AES-256-GCM PII Vault & CSFLE (PAN, bank credentials)
-│   │   └── src/scripts/ # Database seed script (SunVolt, PM Surya Ghar, SBI/Tata Capital)
-│   ├── web/             # Next.js 14 App Router Frontend (Port 3000)
-│   │   ├── src/app/     # Homeowner quote, Installer builder, Lender portal, Admin console
-│   │   └── src/components/
-│   └── worker/          # Background worker (Agenda / Cron jobs)
+│   ├── web/             # Next.js 14 App Router frontend (Tailwind CSS, Lucide Icons)
+│   │   ├── src/app/     # Homeowner quote, Installer pipeline, Lender dashboard, Admin console
+│   │   └── src/lib/     # API client and responsive layout helpers
+│   ├── api/             # Modular Express.js REST API
+│   │   ├── src/modules/ # Quotes, Prequalification, Offers, Milestones, KYB, OCR
+│   │   ├── src/security/# AES-256-GCM PII encryption vault (PAN, banking credentials)
+│   │   └── src/scripts/ # Database seed automation
+│   └── worker/          # Background worker queue for async webhooks and reconciliation
 ├── packages/
-│   ├── shared/          # Financial calculator (₹), actuarial EMI formulas, Zod schemas, types
-│   └── ui/              # Shared Tailwind CSS design system tokens
-└── docs/                # Architecture, API, Database Schema, Regulatory Guides
+│   ├── shared/          # Financial calculator, APR amortization, Zod schemas, types
+│   └── ui/              # Shared design tokens and Tailwind component styling
+└── docs/                # Architecture specifications, API documentation, and database schemas
 ```
 
 ---
 
-## 4. Indian Regulatory Compliance Matrix
+## 4. Indian Regulatory & Compliance Standards
 
-| Regulation / Standard | Authority | Implementation in GreenQuote |
+| Standard / Regulation | Regulatory Body | Implementation in GreenQuote |
 |---|---|---|
-| **RBI Digital Lending Guidelines (2022/2024)** | Reserve Bank of India | Mandatory Key Fact Statement (KFS), reducing balance APR, zero hidden dealer fees, direct bank-to-installer disbursals |
-| **CICRA 2005 (CIBIL Soft Bureau Pull)** | RBI / Credit Information Companies | Explicit digital consent for soft credit bureau pull; zero score impact |
-| **RBI Fair Practices Code** | Reserve Bank of India | Standardized disclosures, adverse action transparency, grievance redressal officer contact |
-| **RBI 3-Day Cooling-Off Directive** | Reserve Bank of India | Unconditional right to exit loan contract within 3 business days without prepayment penalty |
-| **Information Technology Act 2000 (Section 3A)** | Ministry of Electronics & IT (MeitY) | Aadhaar OTP electronic signature with SHA-256 tamper-evident digital seal |
-| **Digital Personal Data Protection (DPDP) Act 2023** | Government of India | AES-256-GCM field-level encryption for PAN, income, and bank credentials |
-| **MNRE ALMM Mandate** | Ministry of New & Renewable Energy | Hardware catalog strictly filtered by Approved List of Models and Manufacturers |
+| **RBI Digital Lending Directions (2022/2024)** | Reserve Bank of India | Standardized Key Fact Statement (KFS), reducing balance APR, zero hidden dealer fees, direct milestone payouts |
+| **CICRA 2005 (CIBIL Soft Bureau Inquiry)** | RBI / Credit Bureaus | Explicit consumer consent for soft bureau inquiry; zero score impact |
+| **RBI Fair Practices Code** | Reserve Bank of India | Transparent fee schedule, adverse action notifications, grievance redressal mechanism |
+| **RBI 3-Day Cooling-Off Directive** | Reserve Bank of India | Unconditional right to exit clean energy credit contracts within 3 business days without penalty |
+| **Information Technology Act 2000 (Section 3A)** | MeitY | Aadhaar OTP electronic signature with SHA-256 tamper-evident digital seal |
+| **DPDP Act 2023 (Data Protection)** | Government of India | AES-256-GCM field-level encryption for PAN, income, and bank credentials |
+| **MNRE ALMM Mandate** | Ministry of New & Renewable Energy | Hardware catalog strictly verified against the Approved List of Models and Manufacturers |
 
 ---
 
-## 5. Getting Started (Local Development)
+## 5. Getting Started
 
-### Quick Start with Docker (Recommended)
-Launch the entire platform including MongoDB 7.0, Express REST API, and Next.js frontend with a single command:
+### Prerequisites
+- **Node.js**: v20.0.0 or higher
+- **npm**: v10.0.0 or higher
+- **MongoDB**: v7.0 or higher (Local or MongoDB Atlas)
+
+### Installation & Local Setup
+
 ```bash
-docker compose up --build
-```
-- **Web Application:** [http://localhost:3000](http://localhost:3000)
-- **API Server:** [http://localhost:4000](http://localhost:4000)
-- **Database:** `mongodb://localhost:27017/greenquote`
-
----
-
-### Manual Local Development Setup
-#### Prerequisites
-- Node.js 20+
-- npm 10+
-- MongoDB 7.0+ (Local or MongoDB Atlas)
-
-#### Installation
-```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/MohitMulik/GreenQuote.git
 cd GreenQuote/greenquote
 
-# Install all workspace dependencies
+# 2. Install dependencies across all monorepo workspaces
 npm install
 
-# Build shared packages
+# 3. Build shared packages
 npm run build --workspace=@greenquote/shared
 
-# Copy environment files
+# 4. Configure environment variables
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 
-# Seed sample data (SunVolt Green Energy, PM Surya Ghar quotes, SBI/Tata Capital offers)
+# 5. Seed sample demonstration data
 npm run seed --workspace=@greenquote/api
-```
 
-#### Running Locally
-```bash
-# Start backend API (http://localhost:4000)
-npm run dev --workspace=@greenquote/api
-
-# Start Next.js frontend (http://localhost:3000)
-npm run dev --workspace=@greenquote/web
+# 6. Start development servers
+npm run dev:api    # Starts REST API on http://localhost:4000
+npm run dev:web    # Starts Next.js frontend on http://localhost:3000
 ```
 
 ---
 
-## 6. Testing & Quality Verification
+## 6. Testing & Quality Assurance
 
-Run complete test suite across all monorepo workspaces:
+The codebase includes comprehensive unit and integration test suites:
+
 ```bash
-# Run TypeScript compilation check
+# Type check all workspaces
 npm run typecheck
 
-# Run test suites (financial calculations, EMI precision, parity checks)
+# Run test suites (financial engine, APR solver, parity validation)
 npm run test
 
 # Run Next.js production build
