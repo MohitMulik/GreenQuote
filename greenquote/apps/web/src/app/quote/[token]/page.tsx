@@ -458,7 +458,7 @@ export default function HomeownerQuotePage() {
                     <Sparkles className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-emerald-900 block">
-                        Additional State / Tax Incentive: {formatCurrency(financingBreakdown.taxCreditsMinor, "INR")} (Section 80EEB / State DISCOM)
+                        Additional State / Tax Incentive: {formatCurrency(financingBreakdown.taxCreditsMinor, "INR")} (State DISCOM / Post-Commissioning)
                       </span>
                       <p className="text-[11px] text-emerald-800 mt-0.5">
                         Claimed post-commissioning on your tax filing or from your state nodal agency. Under RBI digital lending standards, this future incentive does <strong>not</strong> reduce your upfront point-of-sale invoice or initial loan principal.

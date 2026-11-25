@@ -11,7 +11,7 @@ import {
   Clock,
   ArrowRight,
   Sliders,
-  DollarSign,
+  IndianRupee,
   FileCheck,
   ChevronRight,
   Lock,
@@ -24,7 +24,7 @@ interface RateTier {
   id: string;
   termMonths: number;
   aprPct: number;
-  minFico: number;
+  minCibil: number;
   maxDtiPct: number;
   maxLoanAmount: number;
   buyDownAllowed: boolean;
@@ -46,7 +46,7 @@ interface MilestonePayout {
 }
 
 export default function LenderDashboardPage() {
-  const [selectedLender, setSelectedLender] = useState<string>("lnd_ce_fcu");
+  const [selectedLender, setSelectedLender] = useState<string>("lnd_sbi");
   const [activeTab, setActiveTab] = useState<"rates" | "milestones" | "reconciliation">("milestones");
   const [rateChangeRequested, setRateChangeRequested] = useState(false);
 
@@ -87,7 +87,7 @@ export default function LenderDashboardPage() {
       id: "tier_60",
       termMonths: 60,
       aprPct: 7.00,
-      minFico: 700, // Min CIBIL
+      minCibil: 700,
       maxDtiPct: 50,
       maxLoanAmount: 650000, // ₹6,50,000
       buyDownAllowed: true,
@@ -97,7 +97,7 @@ export default function LenderDashboardPage() {
       id: "tier_84",
       termMonths: 84,
       aprPct: 7.50,
-      minFico: 720,
+      minCibil: 720,
       maxDtiPct: 45,
       maxLoanAmount: 1000000, // ₹10,00,000
       buyDownAllowed: true,
@@ -107,7 +107,7 @@ export default function LenderDashboardPage() {
       id: "tier_120",
       termMonths: 120,
       aprPct: 8.25,
-      minFico: 740,
+      minCibil: 740,
       maxDtiPct: 42,
       maxLoanAmount: 1500000, // ₹15,00,000
       buyDownAllowed: true,
@@ -207,9 +207,9 @@ export default function LenderDashboardPage() {
               onChange={(e) => setSelectedLender(e.target.value)}
               className="text-xs font-semibold bg-slate-100 border border-slate-300 rounded-lg px-2 sm:px-3 py-1.5 text-slate-800 focus:ring-1 focus:ring-emerald-500 max-w-[190px] sm:max-w-none"
             >
-              <option value="lnd_ce_fcu">Clean Energy FCU</option>
-              <option value="lnd_comm_green">Community Green Bank</option>
-              <option value="lnd_ecofinance">EcoFinance POS</option>
+              <option value="lnd_sbi">State Bank of India (Surya Ghar)</option>
+              <option value="lnd_tata_capital">Tata Capital Clean Tech</option>
+              <option value="lnd_ireda">IREDA Green Finance</option>
             </select>
             <span className="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -254,7 +254,7 @@ export default function LenderDashboardPage() {
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-slate-500 text-xs font-semibold mb-2">
               <span>Capital Deployed</span>
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <IndianRupee className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="text-2xl font-black text-slate-900">₹18.42 Cr</div>
             <span className="text-[11px] text-emerald-700 font-semibold mt-1 block">
@@ -482,7 +482,7 @@ export default function LenderDashboardPage() {
                   <tr>
                     <th className="px-6 py-3.5">Term</th>
                     <th className="px-6 py-3.5">Contract Rate (APR)</th>
-                    <th className="px-6 py-3.5">Min FICO Score</th>
+                    <th className="px-6 py-3.5">Min CIBIL Score</th>
                     <th className="px-6 py-3.5">Max DTI Ceiling</th>
                     <th className="px-6 py-3.5">Max Loan Size</th>
                     <th className="px-6 py-3.5">Buy-Down Cap</th>
@@ -494,7 +494,7 @@ export default function LenderDashboardPage() {
                     <tr key={tier.id} className="hover:bg-slate-50">
                       <td className="px-6 py-4 font-bold text-slate-900">{tier.termMonths} Months</td>
                       <td className="px-6 py-4 font-extrabold text-emerald-600 text-sm">{tier.aprPct}% APR</td>
-                      <td className="px-6 py-4 font-semibold text-slate-800">{tier.minFico}+ CIBIL</td>
+                      <td className="px-6 py-4 font-semibold text-slate-800">{tier.minCibil}+ CIBIL</td>
                       <td className="px-6 py-4 text-slate-700">{tier.maxDtiPct}%</td>
                       <td className="px-6 py-4 font-semibold text-slate-800">
                         {formatCurrency(tier.maxLoanAmount * 100, "INR")}

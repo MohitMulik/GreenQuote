@@ -220,7 +220,7 @@ export function calculateFinancingBreakdown(input: FinancingCalculationInput): F
     : "No point-of-sale subsidies applied.";
 
   const taxCreditNotice = taxCreditsMinor > 0
-    ? `Tax deductions / central clean energy incentives of ₹${(taxCreditsMinor / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (e.g. Income Tax Section 80EEB) must be claimed on annual tax filings and do not reduce the immediate loan principal.`
+    ? `State nodal clean energy incentives of ₹${(taxCreditsMinor / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} must be claimed post-installation through DISCOM/nodal agencies and do not reduce the upfront point-of-sale invoice or immediate loan principal.`
     : "No post-installation tax incentives estimated.";
 
   return {
@@ -246,5 +246,161 @@ export function calculateFinancingBreakdown(input: FinancingCalculationInput): F
       taxCreditNotice,
       isZeroFinanced,
     },
+  };
+}
+
+/**
+ * 2.1 Centralized Financial Calculation Engine - Authoritative Implementations
+ */
+
+/**
+ * Sums line item amounts to determine total project price.
+ */
+export function calculateProjectPrice(lineItems: Array<{ amountMinor: number }>): number {
+  if (!Array.isArray(lineItems) || lineItems.length === 0) return 0;
+  let total = 0;
+  for (const item of lineItems) {
+    if (!Number.isFinite(item.amountMinor)) {
+      throw new Error("Line item amount must be a finite number.");
+    }
+    if (item.amountMinor < 0) {
+      throw new Error("Line item amount cannot be negative.");
+    }
+    total += Math.round(item.amountMinor);
+  }
+  return total;
+}
+
+/**
+ * Classifies and aggregates eligible incentives by payment timing and category.
+ */
+export function calculateEligibleIncentives(incentives?: IncentiveItem[]): {
+  upfrontRebatesMinor: number;
+  futureTaxCreditsMinor: number;
+  postInstallMinor: number;
+  totalIncentivesMinor: number;
+} {
+  let upfrontRebatesMinor = 0;
+  let futureTaxCreditsMinor = 0;
+  let postInstallMinor = 0;
+
+  if (incentives && Array.isArray(incentives)) {
+    for (const inc of incentives) {
+      const amount = Math.max(0, Math.round(inc.amountMinor || 0));
+      if (inc.timing === "instant" && inc.category === "pos_utility_rebate") {
+        upfrontRebatesMinor += amount;
+      } else if (inc.category === "federal_tax_credit" || inc.category === "state_tax_credit") {
+        futureTaxCreditsMinor += amount;
+      } else {
+        postInstallMinor += amount;
+      }
+    }
+  }
+
+  return {
+    upfrontRebatesMinor,
+    futureTaxCreditsMinor,
+    postInstallMinor,
+    totalIncentivesMinor: upfrontRebatesMinor + futureTaxCreditsMinor + postInstallMinor,
+  };
+}
+
+/**
+ * Calculates upfront instant point-of-sale rebates, clamped to project price.
+ */
+export function calculateUpfrontRebates(incentives?: IncentiveItem[], projectPriceMinor?: number): number {
+  const { upfrontRebatesMinor } = calculateEligibleIncentives(incentives);
+  if (projectPriceMinor !== undefined) {
+    return Math.min(Math.max(0, projectPriceMinor), upfrontRebatesMinor);
+  }
+  return upfrontRebatesMinor;
+}
+
+/**
+ * Calculates future tax credits and post-commissioning incentives (never deducted upfront).
+ */
+export function calculateFutureTaxCredits(incentives?: IncentiveItem[]): number {
+  const { futureTaxCreditsMinor } = calculateEligibleIncentives(incentives);
+  return futureTaxCreditsMinor;
+}
+
+/**
+ * Calculates down payment, clamping to ensure it does not exceed net invoice.
+ */
+export function calculateDownPayment(
+  requestedDownPaymentMinor: number,
+  netInvoiceMinor: number,
+  minFinancedMinor: number = 0
+): { requestedMinor: number; clampedMinor: number; maxAllowedMinor: number } {
+  const requested = Math.max(0, Math.round(requestedDownPaymentMinor || 0));
+  const netInvoice = Math.max(0, Math.round(netInvoiceMinor || 0));
+  const maxAllowedMinor = Math.max(0, netInvoice - minFinancedMinor);
+  const clampedMinor = Math.min(requested, maxAllowedMinor);
+
+  return {
+    requestedMinor: requested,
+    clampedMinor,
+    maxAllowedMinor,
+  };
+}
+
+/**
+ * Authoritative calculation of Amount Financed:
+ * Amount Financed = Project Price - Eligible Upfront Rebates - Customer Down Payment + Applicable Financed Fees
+ * 
+ * Rules:
+ * - A future tax credit must not automatically be deducted from the amount financed.
+ * - Negative project price produces validation failure (throws Error).
+ * - Upfront rebate exceeding project price produces validation failure (throws Error).
+ */
+export function calculateAmountFinanced(
+  projectPriceMinor: number,
+  upfrontRebatesMinor: number,
+  downPaymentMinor: number,
+  financedFeesMinor: number = 0
+): number {
+  if (!Number.isFinite(projectPriceMinor) || projectPriceMinor < 0) {
+    throw new Error("Project price must be non-negative.");
+  }
+  if (!Number.isFinite(upfrontRebatesMinor) || upfrontRebatesMinor < 0) {
+    throw new Error("Upfront rebates cannot be negative.");
+  }
+  if (!Number.isFinite(downPaymentMinor) || downPaymentMinor < 0) {
+    throw new Error("Down payment cannot be negative.");
+  }
+
+  // Explicit business rule validation: Subsidy greater than project price
+  if (upfrontRebatesMinor > projectPriceMinor) {
+    throw new Error("Upfront subsidies cannot exceed total project price.");
+  }
+
+  const netInvoice = projectPriceMinor - upfrontRebatesMinor;
+  if (downPaymentMinor > netInvoice) {
+    throw new Error("Down payment cannot exceed net invoice amount.");
+  }
+
+  const fees = Math.max(0, Math.round(financedFeesMinor || 0));
+  const amountFinanced = (netInvoice - downPaymentMinor) + fees;
+
+  return Math.max(0, Math.round(amountFinanced));
+}
+
+/**
+ * Validates contractor rate buy-down and enforces the 5% regulatory cap.
+ */
+export function validateBuyDown(
+  amountFinancedMinor: number,
+  requestedBuyDownMinor: number,
+  maxCapPct: number = 5
+): { isWithinCap: boolean; maxAllowedMinor: number; clampedMinor: number } {
+  const maxAllowedMinor = Math.floor(Math.max(0, amountFinancedMinor) * (maxCapPct / 100));
+  const requested = Math.max(0, Math.round(requestedBuyDownMinor || 0));
+  const isWithinCap = requested <= maxAllowedMinor;
+  const clampedMinor = isWithinCap ? requested : maxAllowedMinor;
+
+  return {
+    isWithinCap,
+    maxAllowedMinor,
+    clampedMinor,
   };
 }

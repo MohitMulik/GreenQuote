@@ -52,20 +52,20 @@ export class AdverseActionService {
           "Proportion of balances on revolving accounts relative to credit limits is too high.",
         ],
         creditReportingAgency: {
-          name: "Experian Consumer Relations",
-          address: "P.O. Box 4500, Allen, TX 75013",
-          phone: "1-888-397-3742",
-          website: "https://www.experian.com",
+          name: "TransUnion CIBIL Limited",
+          address: "One World Centre, Tower 2A, 19th Floor, Senapati Bapat Marg, Elphinstone Road, Mumbai 400013",
+          phone: "+91-22-6140-4300",
+          website: "https://www.cibil.com",
         },
         creditScoreNotice: {
           scoreProvided: true,
-          disclosureNote: "FICO Score 8 derived from Experian file. Range: 300 to 850.",
+          disclosureNote: "CIBIL TransUnion Score derived under Credit Information Companies (Regulation) Act, 2005 (CICRA). Range: 300 to 900.",
         },
         regulatoryDisclosures: {
           ecoaNotice:
-            "The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age.",
+            "Under RBI Fair Practices Code and digital lending guidelines, lenders must treat all borrowers equitably without discrimination on religion, caste, gender, or regional origin.",
           fcraRights:
-            "You have the right under the Fair Credit Reporting Act to obtain a free copy of your credit report from the credit reporting agency identified above within 60 days of receiving this notice.",
+            "Under the Credit Information Companies (Regulation) Act, 2005 (CICRA), you are entitled to request your full credit disclosure report directly from TransUnion CIBIL or the credit bureau named above.",
         },
       };
     }

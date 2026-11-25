@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   ShieldCheck,
   Zap,
   Landmark,
@@ -128,7 +128,7 @@ export default function PlatformAnalyticsPage() {
             <div className="flex items-center justify-between text-slate-500">
               <span className="text-xs font-semibold uppercase tracking-wider">Origination Volume</span>
               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                <DollarSign className="w-4 h-4" />
+                <IndianRupee className="w-4 h-4" />
               </div>
             </div>
             <div className="text-2xl font-black text-slate-900">

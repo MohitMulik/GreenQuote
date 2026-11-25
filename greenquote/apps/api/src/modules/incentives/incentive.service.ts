@@ -26,7 +26,7 @@ export class IncentiveService {
   }>> {
     if (!mongoReady()) {
       return FALLBACK_INCENTIVES.filter((prog) => {
-        const stateOk = prog.state === input.state.toUpperCase();
+        const stateOk = prog.state === "NATIONAL" || prog.state === input.state.toUpperCase();
         const categoryOk = prog.equipmentCategories.includes(input.equipmentCategory);
         const climateOk = !prog.requireColdClimate || Boolean(input.isColdClimate);
         return stateOk && categoryOk && climateOk;

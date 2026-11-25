@@ -294,3 +294,56 @@ export function formatCurrency(
     maximumFractionDigits: maxDigits,
   }).format(major);
 }
+
+/**
+ * Standard reducing-balance monthly EMI calculation (Phase 2.1 / 2.3).
+ * Formula: EMI = P * r * (1 + r)^n / ((1 + r)^n - 1)
+ */
+export function calculateMonthlyEMI(
+  amountFinancedMinor: number,
+  annualRatePct: number,
+  termMonths: number
+): number {
+  if (amountFinancedMinor <= 0 || termMonths <= 0) return 0;
+  if (annualRatePct < 0) throw new Error("Annual rate percentage cannot be negative.");
+
+  if (annualRatePct === 0) {
+    return Math.round(amountFinancedMinor / termMonths);
+  }
+
+  const monthlyRate = annualRatePct / (12 * 100);
+  const factor = Math.pow(1 + monthlyRate, termMonths);
+  if (!Number.isFinite(factor) || factor <= 1) {
+    return Math.round(amountFinancedMinor / termMonths);
+  }
+
+  const emiExact = (amountFinancedMinor * monthlyRate * factor) / (factor - 1);
+  return Math.round(emiExact);
+}
+
+/**
+ * Total repayment over the loan tenure (Phase 2.1).
+ */
+export function calculateTotalRepayment(monthlyPaymentMinor: number, termMonths: number): number {
+  if (monthlyPaymentMinor <= 0 || termMonths <= 0) return 0;
+  return Math.round(monthlyPaymentMinor * termMonths);
+}
+
+/**
+ * Total interest payable over the loan tenure (Phase 2.1).
+ */
+export function calculateTotalInterest(totalRepaymentMinor: number, amountFinancedMinor: number): number {
+  return Math.max(0, Math.round(totalRepaymentMinor - Math.max(0, amountFinancedMinor)));
+}
+
+/**
+ * Actuarial APR disclosure calculation (Phase 2.1).
+ */
+export function calculateAPRDisclosure(
+  amountFinancedMinor: number,
+  monthlyPaymentMinor: number,
+  termMonths: number,
+  prepaidFinanceChargeMinor: number = 0
+): number {
+  return calculateApr(amountFinancedMinor, monthlyPaymentMinor, termMonths, prepaidFinanceChargeMinor);
+}

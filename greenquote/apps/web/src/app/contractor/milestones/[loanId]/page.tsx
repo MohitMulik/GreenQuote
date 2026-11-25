@@ -11,7 +11,6 @@ import {
   ArrowLeft,
   AlertTriangle,
   Building2,
-  DollarSign,
   Camera,
 } from "lucide-react";
 import { formatCurrency } from "@greenquote/shared";
