@@ -417,32 +417,32 @@ export async function getPlatformAnalytics(_req: Request, res: Response, next: N
   try {
     res.json({
       originations: {
-        totalVolumeMinor: 485000000, // $4,850,000
+        totalVolumeMinor: 4850000000, // ₹48.5 Crore
         totalFundedLoans: 142,
         activePipelineCount: 42,
-        avgLoanAmountMinor: 3415400, // $34,154
-        avgAprPct: 6.45,
-        dealerFeeSavingsMinor: 87300000, // $873,000 saved by Zero Dealer Fee Single-Price policy (FR-308)
+        avgLoanAmountMinor: 23400000, // ₹2,34,000
+        avgAprPct: 7.25,
+        dealerFeeSavingsMinor: 873000000, // ₹8.73 Crore saved by Zero Dealer Fee Single-Price policy (FR-308)
       },
       lenderMetrics: [
         {
-          lenderId: "lnd_vermont_cu",
-          name: "Vermont Clean Energy CU",
-          fundedVolumeMinor: 215000000,
+          lenderId: "lnd_sbi",
+          name: "State Bank of India (Surya Ghar)",
+          fundedVolumeMinor: 2150000000, // ₹21.5 Cr
           approvalRatePct: 78.5,
           medianTimeToOfferSec: 42,
         },
         {
-          lenderId: "lnd_greenpenny",
-          name: "Greenpenny Clean Energy Bank",
-          fundedVolumeMinor: 172000000,
+          lenderId: "lnd_tata_capital",
+          name: "Tata Capital Clean Energy",
+          fundedVolumeMinor: 1720000000, // ₹17.2 Cr
           approvalRatePct: 74.2,
           medianTimeToOfferSec: 38,
         },
         {
-          lenderId: "lnd_climate_first",
-          name: "Climate First Specialty POS",
-          fundedVolumeMinor: 98000000,
+          lenderId: "lnd_ireda",
+          name: "IREDA Green Finance",
+          fundedVolumeMinor: 980000000, // ₹9.8 Cr
           approvalRatePct: 82.1,
           medianTimeToOfferSec: 29,
         },

@@ -52,7 +52,7 @@ describe("Centralized Financial Calculation Engine", () => {
       expect(result.financeChargeMinor).toBe(403860 - 340000); // 63,860 minor ($638.60)
 
       expect(result.disclosures.isZeroFinanced).toBe(false);
-      expect(result.disclosures.posDeductionExplanation).toContain("$10000.00");
+      expect(result.disclosures.posDeductionExplanation).toContain("10,000.00");
     });
   });
 
@@ -60,15 +60,15 @@ describe("Centralized Financial Calculation Engine", () => {
     it("does NOT deduct federal tax credits from the POS invoice or loan principal", () => {
       // Scenario:
       // Gross price: $15,400 (1,540,000 minor)
-      // IRA Section 25C Tax Credit: $2,000 (200,000 minor) claimed on tax return
-      // Down payment: $2,000 (200,000 minor)
+      // Clean Energy Tax Incentive / Section 80EEB: 200,000 minor claimed on tax return
+      // Down payment: 200,000 minor
       const input: FinancingCalculationInput = {
         grossPriceMinor: 1540000,
         downPaymentMinor: 200000,
         incentives: [
           {
-            id: "inc_ira_25c",
-            name: "IRA Section 25C Tax Credit",
+            id: "inc_tax_deduction",
+            name: "Section 80EEB Green Tax Deduction",
             amountMinor: 200000,
             category: "federal_tax_credit",
             timing: "after_installation",
@@ -84,14 +84,14 @@ describe("Centralized Financial Calculation Engine", () => {
       expect(result.posRebatesMinor).toBe(0);
       expect(result.taxCreditsMinor).toBe(200000);
 
-      // Net invoice remains full gross price: $15,400
+      // Net invoice remains full gross price: 1,540,000
       expect(result.netInvoiceMinor).toBe(1540000);
 
-      // Amount financed is $15,400 - $2,000 down payment = $13,400 (1,340,000 minor)
+      // Amount financed is 1,540,000 - 200,000 down payment = 1,340,000
       expect(result.amountFinancedMinor).toBe(1340000);
 
       // Tax credit notice is generated
-      expect(result.disclosures.taxCreditNotice).toContain("IRS Form 5695");
+      expect(result.disclosures.taxCreditNotice).toContain("Section 80EEB");
       expect(result.disclosures.taxCreditNotice).toContain("do not reduce the immediate loan principal");
 
       // Lifetime effective cost properly incorporates the $2,000 tax credit refund

@@ -20,7 +20,7 @@ export class SavingsService {
       const kw = input.solarCapacityKw || 3;
       // 4 units/kWh per kW per day = 120 units/month per kW
       const annualKwh = kw * 4 * 365;
-      const ratePerKwhMinor = input.state === "IN" ? 800 : 25; // 8 INR (800 paise) or $0.25 (25 cents)
+      const ratePerKwhMinor = input.state === "US" ? 25 : 800; // 8 INR (800 paise) average DISCOM tariff
       const expectedAnnualMinor = annualKwh * ratePerKwhMinor;
 
       const minAnnualSavingsMinor = Math.round(expectedAnnualMinor * 0.85);

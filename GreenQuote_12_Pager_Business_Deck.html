@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GreenQuote India — 12-Page Business Pitch Deck</title>
+  <style>
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b1120;
+      color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      width: 16in;
+      height: 9in;
+      max-height: 9in;
+      padding: 0.75in 0.9in;
+      position: relative;
+      background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 50%, #0b1120 100%);
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    /* Subtle background grid pattern */
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 0.5in 0.5in;
+      pointer-events: none;
+    }
+
+    /* Top Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.22in;
+      z-index: 10;
+    }
+
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.08in;
+      padding: 0.06in 0.16in;
+      border-radius: 9999px;
+      font-size: 0.13in;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      margin-bottom: 0.08in;
+    }
+
+    .slide-title {
+      font-size: 0.36in;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 0.16in;
+      color: #94a3b8;
+      margin-top: 0.05in;
+      font-weight: 400;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.12in;
+    }
+
+    .logo-mark {
+      width: 0.42in;
+      height: 0.42in;
+      border-radius: 0.1in;
+      background: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.19in;
+      color: #ffffff;
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 0.24in;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+    }
+
+    .slide-body {
+      flex: 1;
+      padding: 0.3in 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 0.16in;
+      font-size: 0.13in;
+      color: #64748b;
+      z-index: 10;
+    }
+
+    .page-number {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    /* Cards & Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.32in; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.28in; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.22in; }
+
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.18in;
+      padding: 0.28in;
+      position: relative;
+    }
+
+    .card-highlight {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+
+    .card-title {
+      font-size: 0.19in;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.1in;
+      display: flex;
+      align-items: center;
+      gap: 0.1in;
+    }
+
+    .card-desc {
+      font-size: 0.14in;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .stat-number {
+      font-size: 0.44in;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: #34d399;
+      margin-bottom: 0.06in;
+    }
+
+    .stat-label {
+      font-size: 0.13in;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.04in 0.12in;
+      border-radius: 0.06in;
+      font-size: 0.12in;
+      font-weight: 600;
+      margin-right: 0.06in;
+      margin-bottom: 0.06in;
+    }
+
+    .tag-emerald { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .tag-blue { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .tag-amber { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .tag-purple { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    /* Tables */
+    .deck-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.135in;
+    }
+
+    .deck-table th {
+      background: rgba(15, 23, 42, 0.9);
+      padding: 0.14in 0.18in;
+      text-align: left;
+      font-weight: 700;
+      color: #94a3b8;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.12in;
+    }
+
+    .deck-table td {
+      padding: 0.15in 0.18in;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    .deck-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDE 1 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Series A Offering · ₹50 Crore · Confidential</div>
+        <h1 class="slide-title" style="font-size: 0.46in;">GreenQuote India</h1>
+        <p class="slide-subtitle" style="font-size: 0.2in; color: #34d399; font-weight: 600;">
+          The Embedded Point-of-Sale Lending & PM Surya Ghar Subsidy Infrastructure for Clean Energy
+        </p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body" style="justify-content: space-around;">
+      <p style="font-size: 0.22in; color: #cbd5e1; max-width: 13.5in; line-height: 1.5;">
+        Transforming residential rooftop solar, 5-star inverter heat pumps, and energy storage across 100M+ Indian homes with
+        <span style="color: #34d399; font-weight: 700;">zero contractor dealer fees</span>,
+        <span style="color: #60a5fa; font-weight: 700;">instant PM Surya Ghar DBT subsidy netting</span>, and
+        <span style="color: #fbbf24; font-weight: 700;">60-second CIBIL pre-approvals</span> directly at the quotation stage.
+      </p>
+
+      <div class="grid-4">
+        <div class="card card-highlight">
+          <div class="stat-number">₹0</div>
+          <div class="stat-label">Installer Dealer Fees</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            Eliminating traditional 10–18% NBFC markups. 100% price parity between cash and credit quotes.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="stat-number">₹78,000</div>
+          <div class="stat-label">Instant Subsidy Netting</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            Direct POS deduction of PM Surya Ghar Central DBT & State DISCOM incentives upfront from invoice.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="stat-number">60 Sec</div>
+          <div class="stat-label">CIBIL Soft-Pull Decision</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            Zero credit score impact. Multi-bank waterfall covering State Bank of India, Tata Capital & IREDA.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="stat-number">4 Portals</div>
+          <div class="stat-label">Unified Operating System</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            End-to-end orchestration connecting Solar Installers, Homeowners, Bank Underwriters, and Operations.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>GreenQuote Technologies India Pvt. Ltd. · Series A Investment Memorandum</span>
+      <span class="page-number">01 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Market Inefficiency & Bottlenecks</div>
+        <h2 class="slide-title">The Problem: India's Clean Energy Financing Chokepoint</h2>
+        <p class="slide-subtitle">Why 68% of residential rooftop solar proposals drop off at the kitchen table</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card" style="border-top: 4px solid #ef4444;">
+          <div style="font-size: 0.36in; font-weight: 800; color: #ef4444; margin-bottom: 0.08in;">₹1.5L – ₹3.8L</div>
+          <h3 class="card-title" style="color: #fca5a5;">Upfront Capital Barrier</h3>
+          <p class="card-desc">
+            85% of Indian middle-class households lack liquid savings to pay cash for high-efficiency 3 kW solar arrays or 5-star heat pump systems. Without instant POS retail financing, projects are abandoned immediately.
+          </p>
+          <div style="margin-top: 0.16in;">
+            <span class="tag tag-amber">High Out-of-Pocket</span>
+            <span class="tag tag-amber">Budget Mismatch</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+          <div style="font-size: 0.36in; font-weight: 800; color: #f59e0b; margin-bottom: 0.08in;">60 to 90 Days</div>
+          <h3 class="card-title" style="color: #fcd34d;">Subsidy Crediting Lag</h3>
+          <p class="card-desc">
+            PM Surya Ghar central DBT subsidies (up to ₹78,000) credit months after installation and net-meter commissioning. Homeowners are forced to fund the entire gross amount upfront, creating extreme customer hesitation.
+          </p>
+          <div style="margin-top: 0.16in;">
+            <span class="tag tag-amber">DBT Friction</span>
+            <span class="tag tag-amber">Cash Flow Strain</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #3b82f6;">
+          <div style="font-size: 0.36in; font-weight: 800; color: #60a5fa; margin-bottom: 0.08in;">4 to 6 Weeks</div>
+          <h3 class="card-title" style="color: #93c5fd;">Paperwork & Approval Delays</h3>
+          <p class="card-desc">
+            Traditional public bank solar schemes require branch walk-ins, physical stamp papers, property title verifications, and multiple visits. By the time a loan is sanctioned, consumer intent has cooled off.
+          </p>
+          <div style="margin-top: 0.16in;">
+            <span class="tag tag-blue">68% Drop-Off</span>
+            <span class="tag tag-blue">Unorganized EPCs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Macro Barrier: ₹75,021 Cr Government Outlay Stalled by Point-of-Sale Origination Friction</span>
+      <span class="page-number">02 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 3 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">The Platform Breakthrough</div>
+        <h2 class="slide-title">The Solution: Single-Price Embedded FinTech</h2>
+        <p class="slide-subtitle">Turning every solar quotation into an instant, multi-bank pre-approved checkout</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #34d399;">1. Zero Dealer Fee Parity</h3>
+          <p class="card-desc">
+            Our open multi-lender software eliminates predatory contractor markups. The cash invoice price and financed quotation are identical in ₹. Consumers save ₹25,000 to ₹45,000 upfront compared to legacy unorganized distributor models.
+          </p>
+          <div style="margin-top: 0.18in; font-size: 0.13in; color: #cbd5e1; line-height: 1.6;">
+            <div>✔ Single Price Enforcement Engine</div>
+            <div>✔ 100% Contractor Margin Preservation</div>
+            <div>✔ No Hidden Rate Surcharges</div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #60a5fa;">2. Instant Subsidy Netting</h3>
+          <p class="card-desc">
+            Our engine links directly with National Portal for Rooftop Solar & state DISCOM databases to verify Consumer Account (CA) numbers and net the ₹78,000 PM Surya Ghar DBT subsidy immediately from the loan principal.
+          </p>
+          <div style="margin-top: 0.18in; font-size: 0.13in; color: #cbd5e1; line-height: 1.6;">
+            <div>✔ Automated DBT Eligibility Verification</div>
+            <div>✔ Net Invoice Loan Sizing</div>
+            <div>✔ State Additional Incentive Accounting</div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #fcd34d;">3. Multi-Bank CIBIL Waterfall</h3>
+          <p class="card-desc">
+            A single 60-second soft-pull connects the applicant to State Bank of India, Tata Capital, IREDA, and partner NBFCs. Homeowners compare transparent monthly EMIs with zero credit bureau score degradation.
+          </p>
+          <div style="margin-top: 0.18in; font-size: 0.13in; color: #cbd5e1; line-height: 1.6;">
+            <div>✔ Reducing Balance ROI (7.00% – 8.50%)</div>
+            <div>✔ eNACH / UPI AutoPay Mandate Setup</div>
+            <div>✔ Aadhaar OTP E-Sign (IT Act 2000)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Architectural Parity: Full Integer Minor-Unit Math with Zero Floating-Point Drift Across Stack</span>
+      <span class="page-number">03 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">System Architecture</div>
+        <h2 class="slide-title">The 4-Portal Synchronized Ecosystem</h2>
+        <p class="slide-subtitle">A unified platform harmonizing every clean energy transaction across India</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-4">
+        <div class="card">
+          <div style="font-size: 0.18in; font-weight: 800; color: #60a5fa; margin-bottom: 0.06in;">PORTAL 01</div>
+          <h3 class="card-title">Installer EPC Portal</h3>
+          <p class="card-desc">
+            Designed for solar advisors & HVAC comfort engineers. Rapid Good / Better / Best tier quotation generation in ₹, verified MNRE ALMM equipment library, WhatsApp proposal dispatch, and milestone disbursement submission.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-blue">ALMM Search</span>
+            <span class="tag tag-blue">Pipeline CRM</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.18in; font-weight: 800; color: #34d399; margin-bottom: 0.06in;">PORTAL 02</div>
+          <h3 class="card-title">Homeowner Portal</h3>
+          <p class="card-desc">
+            Mobile-first consumer experience. Passwordless SMS OTP access, transparent PM Surya Ghar subsidy deductions, interactive down payment slider, side-by-side EMI comparison, and Aadhaar OTP digital signature.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-emerald">CIBIL Soft-Pull</span>
+            <span class="tag tag-emerald">KFS Disclosure</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.18in; font-weight: 800; color: #c084fc; margin-bottom: 0.06in;">PORTAL 03</div>
+          <h3 class="card-title">Operations Console</h3>
+          <p class="card-desc">
+            Enterprise compliance & risk management. Instant installer GSTIN & MNRE empanelment verification, AI price anomaly fraud detection (>2.5x regional median), module serial verification, and 7-year regulatory audit trails.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-purple">GSTIN KYB</span>
+            <span class="tag tag-purple">Anti-Fraud Engine</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.18in; font-weight: 800; color: #f59e0b; margin-bottom: 0.06in;">PORTAL 04</div>
+          <h3 class="card-title">Lender Capital Portal</h3>
+          <p class="card-desc">
+            Credit underwriter cockpit for Banks & NBFCs. Dynamic rate-sheet and CIBIL credit box management, mandatory 4-Eyes dual control on credit governance, and statutory cooling-off milestone release via eNACH / RTGS.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-amber">4-Eyes Control</span>
+            <span class="tag tag-amber">eNACH Payout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Zero Silos: One Quotation Token Coordinates Consumer, EPC Installer, Bank Underwriter & Risk Officer</span>
+      <span class="page-number">04 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 5 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">FinTech Disruption</div>
+        <h2 class="slide-title">Disruption: Zero Dealer Fees vs. Legacy Models</h2>
+        <p class="slide-subtitle">How GreenQuote saves Indian homeowners ₹1.17 Lakhs on a standard 3 kW Solar System</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <table class="deck-table card" style="padding: 0;">
+        <thead>
+          <tr>
+            <th>Financial Metric</th>
+            <th>Legacy Unorganized / Distributor Financing</th>
+            <th>GreenQuote India Embedded Lending</th>
+            <th>Homeowner & EPC Advantage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700;">Base Equipment & Installation Price</td>
+            <td>₹2,20,000</td>
+            <td style="color: #34d399; font-weight: 700;">₹2,20,000</td>
+            <td>Identical equipment (Tata Power 3 kW Bifacial)</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Lender Dealer Fee / Channel Markup</td>
+            <td style="color: #ef4444; font-weight: 700;">12% Hidden Markup (+₹26,400)</td>
+            <td style="color: #34d399; font-weight: 700;">₹0 (0.0% Dealer Fee)</td>
+            <td style="color: #34d399; font-weight: 700;">Zero markup protects 100% installer margin</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Point-of-Sale Subsidy Deduction</td>
+            <td style="color: #94a3b8;">₹0 (Customer waits 60–90 days for DBT)</td>
+            <td style="color: #34d399; font-weight: 700;">-₹78,000 (Deducted upfront at POS)</td>
+            <td>Principal immediately reduced from Day 1</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Net Loan Amount Financed</td>
+            <td style="color: #f87171; font-weight: 700;">₹2,26,400 (Gross invoice financed)</td>
+            <td style="color: #34d399; font-weight: 700;">₹1,22,000 (Net of subsidy & ₹20k down)</td>
+            <td style="color: #34d399; font-weight: 700;">₹1,04,400 Lower Initial Debt Principal</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Interest Rate (APR) & Term</td>
+            <td>12.50% p.a. Unsecured Personal Loan (60 mo)</td>
+            <td style="color: #34d399; font-weight: 700;">7.00% p.a. SBI Surya Ghar Scheme (60 mo)</td>
+            <td>Concessional clean energy rate via API</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Monthly EMI Outflow</td>
+            <td style="color: #ef4444; font-weight: 700;">₹5,090 / month</td>
+            <td style="color: #34d399; font-weight: 800; font-size: 0.16in;">₹2,416 / month</td>
+            <td style="color: #34d399; font-weight: 700;">Saves ₹2,674 Every Month (More than power bill!)</td>
+          </tr>
+          <tr style="background: rgba(16, 185, 129, 0.08);">
+            <td style="font-weight: 900; color: #ffffff;">Total 5-Year Outflow</td>
+            <td style="color: #ef4444; font-weight: 800;">₹3,05,400</td>
+            <td style="color: #34d399; font-weight: 900; font-size: 0.17in;">₹1,64,960</td>
+            <td style="color: #34d399; font-weight: 800; font-size: 0.15in;">Homeowner Saves ₹1,40,440 (46% Lower Cost)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="slide-footer">
+      <span>Value Proposition: Clean Energy Generates Immediate Monthly Cash Flow Positive Savings for Families</span>
+      <span class="page-number">05 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Security & Compliance Moat</div>
+        <h2 class="slide-title">Enterprise FinTech Security & Regulatory Moat</h2>
+        <p class="slide-subtitle">Bank-grade governance adhering to Reserve Bank of India (RBI) Digital Lending Norms</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #34d399;">Four-Eyes Dual Control (Maker-Checker)</h3>
+          <p class="card-desc">
+            Sensitive operational mutations—such as altering bank rate sheets, adjusting maximum loan exposure, or overriding fraud flags—require dual authorization. The backend rejects self-approval with HTTP 403. Every authorization logs previous vs. updated states in tamper-evident records.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-emerald">Maker-Checker Enforced</span>
+            <span class="tag tag-emerald">Audit Trail Immortality</span>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #60a5fa;">Mandatory RBI 3-Day Cooling-Off Gate</h3>
+          <p class="card-desc">
+            In strict compliance with RBI Digital Lending Master Directions, the platform institutes an automated 3-day look-up / cooling-off window. Escrow disbursements to the installer are cryptographically blocked until this statutory cancellation period elapses without borrower rescission.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-blue">RBI Reg Z Parity</span>
+            <span class="tag tag-blue">Escrow Settlement Gate</span>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #c084fc;">Data Localization & DPDP Act 2023</h3>
+          <p class="card-desc">
+            All consumer PII (PAN, Aadhaar numbers, and bank account details) is encrypted at rest using AES-256-GCM authenticated encryption. Fully localized data storage within MeitY-empanelled Indian cloud regions with zero unencrypted exposure.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-purple">DPDP Act Compliant</span>
+            <span class="tag tag-purple">Argon2id Hash</span>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #f59e0b;">Aadhaar E-Sign (IT Act 2000)</h3>
+          <p class="card-desc">
+            Digital loan agreements, TILA/KFS Key Fact Statements, and eNACH mandates are executed via legal UIDAI Aadhaar OTP e-signature under Section 10A of the Information Technology Act 2000, creating legally binding court-admissible credit documentation.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-amber">UIDAI Aadhaar OTP</span>
+            <span class="tag tag-amber">SHA-256 Seal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Security Compliance: Bank-Grade Infrastructure Verified for SOC 2 Type II, ISO 27001, and RBI LSP Guidelines</span>
+      <span class="page-number">06 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 7 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Market Opportunity</div>
+        <h2 class="slide-title">Market Opportunity: ₹8.5 Lakh Crore (Residential Clean Energy)</h2>
+        <p class="slide-subtitle">Unprecedented tailwinds driven by PM Surya Ghar Muft Bijli Yojana & soaring power tariffs</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3" style="align-items: center;">
+        <div class="card" style="border-left: 5px solid #3b82f6;">
+          <div class="stat-number" style="color: #60a5fa;">₹8,50,000 Cr</div>
+          <div class="stat-label">TAM (Total Addressable Market)</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            Electrification and rooftop solar upgrade across 100 Million suitable independent residential roofs and MSME facilities across India.
+          </p>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #34d399;">
+          <div class="stat-number" style="color: #34d399;">₹2,40,000 Cr</div>
+          <div class="stat-label">SAM (Serviceable Market)</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            Financed rooftop solar & 5-star inverter heat pumps in top 15 high-irradiance solar states (Gujarat, Maharashtra, UP, Rajasthan, Karnataka).
+          </p>
+        </div>
+
+        <div class="card card-highlight" style="border-left: 5px solid #fbbf24;">
+          <div class="stat-number" style="color: #fbbf24;">₹28,000 Cr</div>
+          <div class="stat-label">SOM (3-Year Target Volume)</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            GreenQuote target 3-year origination volume across top 50 urban clusters with tier-1 OEM installer partnerships.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top: 0.25in;">
+        <div class="card">
+          <h4 style="font-size: 0.15in; font-weight: 700; color: #ffffff; margin-bottom: 0.05in;">₹75,021 Cr Central Outlay</h4>
+          <p class="card-desc">Government subsidy guaranteeing ₹78,000 DBT to 10 Million Indian homes by 2027.</p>
+        </div>
+        <div class="card">
+          <h4 style="font-size: 0.15in; font-weight: 700; color: #ffffff; margin-bottom: 0.05in;">₹8 to ₹12 / kWh Tariffs</h4>
+          <p class="card-desc">Surging domestic electricity slabs creating immediate ROI payback of under 3.2 years.</p>
+        </div>
+        <div class="card">
+          <h4 style="font-size: 0.15in; font-weight: 700; color: #ffffff; margin-bottom: 0.05in;">500 GW Renewables by 2030</h4>
+          <p class="card-desc">National climate mandate pushing state DISCOMs to enforce aggressive rooftop net-metering.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Market Drivers: Prime Minister's Flagship Initiative Backed by Nationalized Banks and State DISCOMs</span>
+      <span class="page-number">07 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 8 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Business Model</div>
+        <h2 class="slide-title">Business Model & Monetization</h2>
+        <p class="slide-subtitle">High-margin software & origination fee model with zero credit balance-sheet risk</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card card-highlight">
+          <div class="stat-number">1.50% – 2.25%</div>
+          <div class="stat-label">Lender Origination Take Rate</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            Paid directly by institutional bank and NBFC partners (SBI, Tata Capital, IREDA) on every funded loan disbursed through our embedded underwriting waterfall.
+          </p>
+          <div style="margin-top: 0.15in; padding-top: 0.15in; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.125in; color: #94a3b8;">
+            Average Loan: <strong style="color: #ffffff;">₹1,85,000</strong> · Yield: <strong style="color: #34d399;">₹3,700 / loan</strong>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="stat-number">₹1,999 / mo</div>
+          <div class="stat-label">Installer SaaS Subscription</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            Monthly subscription fee for solar EPCs and HVAC installers for unlimited Good / Better / Best quote builder, team dispatch, WhatsApp automation, and CRM analytics.
+          </p>
+          <div style="margin-top: 0.15in; padding-top: 0.15in; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.125in; color: #94a3b8;">
+            Annual ARR: <strong style="color: #ffffff;">₹23,988 / installer</strong> · 96% Retention
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="stat-number">₹999</div>
+          <div class="stat-label">Ancillary Subsidy Filing Fee</div>
+          <p class="card-desc" style="margin-top: 0.1in;">
+            Automated PM Surya Ghar DBT portal filing, DISCOM bi-directional net-meter tracking, and eNACH mandate processing fee, delivering hassle-free turnaround for consumers.
+          </p>
+          <div style="margin-top: 0.15in; padding-top: 0.15in; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.125in; color: #94a3b8;">
+            High-margin transaction fee with 88% software margin
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Financial Discipline: Pure-Play Marketplace Model with Zero Underwriting Credit Risk on Balance Sheet</span>
+      <span class="page-number">08 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 9 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Distribution Flywheel</div>
+        <h2 class="slide-title">Go-To-Market & Growth Flywheel</h2>
+        <p class="slide-subtitle">B2B2C distribution leveraging India's top Tier-1 solar OEMs & distributor networks</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <div style="font-size: 0.28in; font-weight: 900; color: #34d399; margin-bottom: 0.08in;">01</div>
+          <h3 class="card-title">Tier-1 Solar Module OEMs</h3>
+          <p class="card-desc">
+            Direct partnerships with Tata Power Solar, Adani Solar, Waaree Energies, and Vikram Solar. Pre-loaded ALMM equipment libraries and co-branded dealer portal packaging.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-emerald">Tata Power Solar</span>
+            <span class="tag tag-emerald">Waaree Energies</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.28in; font-weight: 900; color: #60a5fa; margin-bottom: 0.08in;">02</div>
+          <h3 class="card-title">Regional Inverter Distributors</h3>
+          <p class="card-desc">
+            Integration with wholesale electrical distributor networks (Havells, Polycab, Microtek, Luminous). Onboarding 25,000+ local empanelled EPC contractors with zero acquisition friction.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-blue">Havells</span>
+            <span class="tag tag-blue">25k EPC Network</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.28in; font-weight: 900; color: #c084fc; margin-bottom: 0.08in;">03</div>
+          <h3 class="card-title">State DISCOM Nodal Sync</h3>
+          <p class="card-desc">
+            Deep integration with State Nodal Agencies (UPNEDA, MEDA, BESCOM, MSEDCL) for instant CA number validation, net-metering status, and direct-to-bank subsidy disbursement tracking.
+          </p>
+          <div style="margin-top: 0.15in;">
+            <span class="tag tag-purple">DISCOM APIs</span>
+            <span class="tag tag-purple">1-Click Net Meter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Distribution Advantage: Acquiring Contractors in Bulk via Distributors Reduces CAC to ₹4,500</span>
+      <span class="page-number">09 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 10 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Financial Roadmap</div>
+        <h2 class="slide-title">3-Year Projections & Unit Economics</h2>
+        <p class="slide-subtitle">Rapid scale powered by India's National Solarization Mission (in ₹ Crores)</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-3" style="margin-bottom: 0.25in;">
+        <div class="card">
+          <div style="font-size: 0.16in; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Year 1 (FY 2026-27)</div>
+          <div class="stat-number" style="font-size: 0.38in; color: #ffffff; margin-top: 0.06in;">₹500 Cr Volume</div>
+          <div style="font-size: 0.2in; font-weight: 800; color: #34d399;">₹11.2 Cr Revenue</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            450 Active Installers · 18,500 Solar Homes Funded · Core presence in Gujarat, Maharashtra & UP.
+          </p>
+        </div>
+
+        <div class="card card-highlight">
+          <div style="font-size: 0.16in; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Year 2 (FY 2027-28)</div>
+          <div class="stat-number" style="font-size: 0.38in; color: #ffffff; margin-top: 0.06in;">₹2,400 Cr Volume</div>
+          <div style="font-size: 0.2in; font-weight: 800; color: #34d399;">₹56.4 Cr Revenue</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            1,800 Active Installers · 88,000 Solar Homes Funded · Expansion into top 12 solar states.
+          </p>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.16in; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Year 3 (FY 2028-29)</div>
+          <div class="stat-number" style="font-size: 0.38in; color: #ffffff; margin-top: 0.06in;">₹7,500 Cr Volume</div>
+          <div style="font-size: 0.2in; font-weight: 800; color: #34d399;">₹182.5 Cr Revenue</div>
+          <p class="card-desc" style="margin-top: 0.08in;">
+            5,500 Active Installers · 280,000 Solar Homes Funded · National category leadership.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card" style="padding: 0.18in;">
+          <div class="stat-number" style="font-size: 0.28in; color: #60a5fa;">₹4,500</div>
+          <div class="stat-label">Installer CAC</div>
+        </div>
+        <div class="card" style="padding: 0.18in;">
+          <div class="stat-number" style="font-size: 0.28in; color: #34d399;">₹68,000</div>
+          <div class="stat-label">Installer 3-Yr LTV</div>
+        </div>
+        <div class="card" style="padding: 0.18in;">
+          <div class="stat-number" style="font-size: 0.28in; color: #fbbf24;">15.1x</div>
+          <div class="stat-label">LTV / CAC Ratio</div>
+        </div>
+        <div class="card" style="padding: 0.18in;">
+          <div class="stat-number" style="font-size: 0.28in; color: #c084fc;">84%</div>
+          <div class="stat-label">Gross Margin</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Unit Economics: Profitable Contribution Margin from Day 1 on Every Funded Solar Installation</span>
+      <span class="page-number">10 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 11 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Competitive Matrix</div>
+        <h2 class="slide-title">Competitive Landscape & Defensibility</h2>
+        <p class="slide-subtitle">Clear technical, regulatory, and alignment moat against legacy financing competitors</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <table class="deck-table card" style="padding: 0;">
+        <thead>
+          <tr>
+            <th>Competitive Capability</th>
+            <th>GreenQuote India</th>
+            <th>Ecofy / Aerem</th>
+            <th>Tata Power Finance</th>
+            <th>Bank Walk-In Branches</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700;">Zero Dealer Fee Guarantee</td>
+            <td style="color: #34d399; font-weight: 800;">✔ 100% Guaranteed</td>
+            <td style="color: #f87171;">✘ 4–8% NBFC Spread</td>
+            <td style="color: #f87171;">✘ Built into Kit Price</td>
+            <td style="color: #f87171;">✘ Processing Fees</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Instant PM Surya Ghar Netting</td>
+            <td style="color: #34d399; font-weight: 800;">✔ Automated at POS</td>
+            <td style="color: #f87171;">✘ Manual post-facto</td>
+            <td style="color: #fcd34d;">Partial (captive only)</td>
+            <td style="color: #f87171;">✘ No POS Netting</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Neutral Multi-Bank Waterfall</td>
+            <td style="color: #34d399; font-weight: 800;">✔ SBI, Tata, IREDA & NBFCs</td>
+            <td style="color: #f87171;">✘ Own NBFC Balance Sheet</td>
+            <td style="color: #f87171;">✘ Captive Tata Capital only</td>
+            <td style="color: #f87171;">✘ Single Bank Only</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">60-Second CIBIL Soft-Pull</td>
+            <td style="color: #34d399; font-weight: 800;">✔ 0 Bureau Impact</td>
+            <td style="color: #fcd34d;">Moderate (15-30 min)</td>
+            <td style="color: #f87171;">✘ Hard bureau inquiry</td>
+            <td style="color: #f87171;">✘ Multi-day physical check</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Four-Eyes Maker-Checker Governance</td>
+            <td style="color: #34d399; font-weight: 800;">✔ Enforced in Backend</td>
+            <td style="color: #f87171;">✘ Not Supported</td>
+            <td style="color: #f87171;">✘ Legacy Hierarchy</td>
+            <td style="color: #fcd34d;">Manual Branch Approval</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Installer Equipment Neutrality</td>
+            <td style="color: #34d399; font-weight: 800;">✔ Any MNRE ALMM Brand</td>
+            <td style="color: #fcd34d;">Restricted Partners</td>
+            <td style="color: #f87171;">✘ Locked to Tata Modules</td>
+            <td style="color: #fcd34d;">Manual Invoice Review</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="slide-footer">
+      <span>Competitive Advantage: Open Architecture Aligns Interests of EPC Installers, Homeowners, and Banks</span>
+      <span class="page-number">11 / 12</span>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 12 ==================== -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-badge">Capital Offering</div>
+        <h2 class="slide-title">Series A Ask: ₹50 Crore (Growth Capital)</h2>
+        <p class="slide-subtitle">Accelerating product development, bank integrations & market leadership across India</p>
+      </div>
+      <div class="header-logo">
+        <div class="logo-mark">GQ</div>
+        <div class="logo-text">GreenQuote</div>
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #34d399;">Use of Series A Funds</h3>
+          <div style="space-y: 0.12in; font-size: 0.14in; color: #cbd5e1; line-height: 1.8; margin-top: 0.1in;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.08in;">
+              <span><strong>40% (₹20.0 Cr)</strong> · Core Engineering & Bank APIs</span>
+              <span style="color: #34d399; font-weight: 700;">Deep Bank Integrations</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.08in 0;">
+              <span><strong>35% (₹17.5 Cr)</strong> · Installer GTM & Regional Network</span>
+              <span style="color: #60a5fa; font-weight: 700;">Top 10 Solar States</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.08in 0;">
+              <span><strong>15% (₹7.5 Cr)</strong> · RBI Lending Service Provider (LSP) Compliance</span>
+              <span style="color: #c084fc; font-weight: 700;">Regulatory Moat</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: 0.08in;">
+              <span><strong>10% (₹5.0 Cr)</strong> · Working Capital & Risk Operations</span>
+              <span style="color: #fbbf24; font-weight: 700;">24-Month Runway</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title" style="color: #60a5fa;">18-Month Execution Milestones</h3>
+          <div style="space-y: 0.12in; font-size: 0.14in; color: #cbd5e1; line-height: 1.8; margin-top: 0.1in;">
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.08in;">
+              <span style="color: #34d399; font-weight: 700;">₹3,500 Crore Annual Run-Rate:</span> Scale origination volume to over 40,000 monthly financed installations.
+            </div>
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.08in 0;">
+              <span style="color: #60a5fa; font-weight: 700;">3,000+ Active Empanelled Installers:</span> Deep penetration across Maharashtra, Gujarat, Rajasthan, UP, Karnataka.
+            </div>
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.08in 0;">
+              <span style="color: #c084fc; font-weight: 700;">15+ Institutional Lenders:</span> Integration with leading public sector banks, private banks, and clean energy NBFCs.
+            </div>
+            <div style="padding-top: 0.08in;">
+              <span style="color: #fbbf24; font-weight: 700;">Series B Readiness:</span> Reaching ₹75+ Cr net ARR with cash-flow positive unit economics.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Contact: contact@greenquote.in · Headquarters: BKC, Mumbai & Connaught Place, New Delhi · greenquote.in</span>
+      <span class="page-number">12 / 12</span>
+    </div>
+  </div>
+
+</body>
+</html>

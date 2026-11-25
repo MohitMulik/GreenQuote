@@ -31,7 +31,7 @@ export const UserRoleSchema = z.enum([
   "operations",
 ]);
 
-export const CurrencySchema = z.enum(["USD", "INR"]);
+export const CurrencySchema = z.enum(["INR", "USD"]);
 
 export const QuoteTierSchema = z.enum(["good", "better", "best"]);
 
@@ -68,7 +68,7 @@ export const QuoteOptionSchema = z.object({
 });
 
 export const CreateQuoteSchema = z.object({
-  currency: CurrencySchema.default("USD"),
+  currency: CurrencySchema.default("INR"),
   homeowner: z.object({
     fullName: safeText(2, 100),
     phone: safeText(10, 15),

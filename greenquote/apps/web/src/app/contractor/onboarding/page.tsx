@@ -17,31 +17,31 @@ export default function ContractorOnboardingPage() {
 
   // Step 1: Business Profile
   const [business, setBusiness] = useState({
-    legalName: "Apex Clean Energy & HVAC LLC",
-    tradeName: "Apex Comfort Systems",
-    ein: "12-3456789",
-    street: "500 Innovation Way",
-    city: "Boston",
-    state: "MA",
-    zipCode: "02108",
+    legalName: "SunVolt Green Energy Pvt. Ltd.",
+    tradeName: "SunVolt Solar",
+    gstin: "07AAACG1829M1ZF",
+    street: "B-42, Sector 62",
+    city: "Noida",
+    state: "UP",
+    zipCode: "201309",
     categories: ["heat_pump", "solar"],
   });
 
   // Step 2: License & Insurance
   const [compliance, setCompliance] = useState({
-    licenseNumber: "MA-CS-109283",
-    licenseExpiry: "2027-12-31",
-    insuranceCarrier: "Liberty Mutual Commercial",
-    policyNumber: "POL-8839210",
-    coverageMinor: 200000000, // $2,000,000
+    licenseNumber: "MNRE-UP-2024-9182",
+    licenseExpiry: "2028-12-31",
+    insuranceCarrier: "New India Assurance Co.",
+    policyNumber: "POL-NIA-8839210",
+    coverageMinor: 1000000000, // ₹1,00,00,000 (1 Crore)
     insuranceExpiry: "2027-06-30",
   });
 
   // Step 3: Payout Account
   const [bank, setBank] = useState({
-    bankName: "Silicon Valley Bank / First Citizens",
-    accountHolder: "Apex Clean Energy & HVAC LLC",
-    routingNumber: "121000358",
+    bankName: "State Bank of India (SBI)",
+    accountHolder: "SunVolt Green Energy Pvt. Ltd.",
+    routingNumber: "SBIN0004052",
     accountNumberLastFour: "9921",
     verified: true,
   });
@@ -106,12 +106,12 @@ export default function ContractorOnboardingPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Employer Identification Number (EIN)</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Goods & Services Tax ID (GSTIN)</label>
                   <input
                     type="text"
-                    value={business.ein}
-                    onChange={(e) => setBusiness({ ...business, ein: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg text-sm font-medium focus:ring-2 focus:ring-emerald-500"
+                    value={business.gstin}
+                    onChange={(e) => setBusiness({ ...business, gstin: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2 border rounded-lg text-sm font-medium uppercase font-mono focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
                 <div>

@@ -137,12 +137,12 @@ export async function seedDatabase(disconnectAfter = false) {
   const passwordHash = await bcrypt.hash("Password123!", 10);
 
   const contractor = await ContractorModel.create({
-    legalName: "Apex Clean Energy & HVAC LLC",
-    tradeName: "Apex Comfort Systems",
+    legalName: "SunVolt Green Energy Pvt. Ltd.",
+    tradeName: "SunVolt Solar Systems",
     einHash,
-    businessAddress: { street: "500 Innovation Way", city: "Boston", state: "MA", zipCode: "02108", isPoBox: false },
-    ownerDetails: { fullName: "Sanjay Patel", email: "sanjay@apexhvac.com", phone: "+16175550100" },
-    tradeCategories: ["hvac", "heat_pump", "solar"],
+    businessAddress: { street: "B-42, Sector 62", city: "Noida", state: "UP", zipCode: "201309", isPoBox: false },
+    ownerDetails: { fullName: "Sanjay Patel", email: "sanjay@sunvoltsolar.in", phone: "+91 98110 54321" },
+    tradeCategories: ["solar", "heat_pump", "battery"],
     kybStatus: "passed",
     status: "active",
     plan: "pro",
@@ -190,55 +190,55 @@ export async function seedDatabase(disconnectAfter = false) {
   const sampleQuote = await QuoteModel.create({
     contractorId: contractor._id.toString(),
     advisorId: advisor._id.toString(),
-    currency: "USD",
+    currency: "INR",
     status: "signed",
     version: 1,
     linkToken: "demo-token",
     linkExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     homeowner: {
-      fullName: "Sarah Jenkins",
-      phone: "+16175550188",
-      email: "sarah@example.com",
+      fullName: "Rajesh Kumar Sharma",
+      phone: "+91 98765 43210",
+      email: "rajesh.sharma@example.in",
     },
     property: {
-      streetAddress: "42 Commonwealth Ave",
-      city: "Boston",
-      state: "MA",
-      zipCode: "02108",
-      existingHeatingFuel: "fuel_oil",
-      electricUtility: "Eversource",
+      streetAddress: "B-42, Sector 62",
+      city: "Noida",
+      state: "UP",
+      zipCode: "201309",
+      existingHeatingFuel: "electric",
+      electricUtility: "PVVNL (Paschimanchal Vidyut Vitran Nigam)",
     },
     options: [
       {
         tier: "good",
-        title: "Good: 15.2 SEER2 Standard Heat Pump",
-        priceMinor: 1040000,
+        title: "Good: 2 kW Grid-Tied Rooftop Solar + 5-Star Inverter AC",
+        priceMinor: 15000000, // ₹1,50,000
         lineItems: [
-          { type: "equipment", label: "Daikin Standard 3-Ton Heat Pump", amountMinor: 750000 },
-          { type: "labour", label: "System Installation & Duct Hookup", amountMinor: 250000 },
-          { type: "permits", label: "City Mechanical & Electrical Permits", amountMinor: 40000 },
+          { type: "equipment", label: "Waaree 2 kW Monocrystalline ALMM Tier-1 Panels", amountMinor: 9000000 },
+          { type: "labour", label: "Turnkey Installation & Mounting Structure", amountMinor: 4500000 },
+          { type: "permits", label: "DISCOM Net-Metering & CEIG Approvals", amountMinor: 1500000 },
         ],
         incentives: [
-          { programmeId: "prog_mass_save", name: "Mass Save Standard Rebate", amountMinor: 400000, paid: "instant", conditions: "Active utility customer" },
+          { programmeId: "prog_surya_ghar_2kw", name: "PM Surya Ghar Muft Bijli Yojana Central Subsidy", amountMinor: 6000000, paid: "instant", conditions: "Residential consumer with grid connection" },
         ],
-        estimatedSavings: { minAnnualMinor: 40000, maxAnnualMinor: 65000, assumptions: "Based on replacing fuel oil in Boston, MA" },
-        exampleEmi: { ratePct: 7.99, termMonths: 60, downPaymentMinor: 104000, emiMinor: 18900 },
+        estimatedSavings: { minAnnualMinor: 2400000, maxAnnualMinor: 3600000, assumptions: "Based on PVVNL DISCOM tariffs and 8 units/day solar generation" },
+        exampleEmi: { ratePct: 7.00, termMonths: 60, downPaymentMinor: 1500000, emiMinor: 178200 },
       },
       {
         tier: "better",
-        title: "Better: Cold-Climate Hyper-Heat Pump (NEEP Certified)",
-        priceMinor: 1540000,
+        title: "Better: 3 kW High-Efficiency Bifacial Solar System",
+        priceMinor: 22000000, // ₹2,20,000
         lineItems: [
-          { type: "equipment", label: "Mitsubishi H2i Cold-Climate 3-Ton (MSZ-FS12NA)", amountMinor: 1050000 },
-          { type: "labour", label: "Certified Hyper-Heat Installation", amountMinor: 320000 },
-          { type: "electrical", label: "200A Electrical Sub-Panel Upgrade", amountMinor: 120000 },
-          { type: "permits", label: "City Permits & HERS Inspection", amountMinor: 50000 },
+          { type: "equipment", label: "Tata Power Solar 3 kW Dual-Glass Bifacial System", amountMinor: 14000000 },
+          { type: "labour", label: "3.3 kVA Smart Solar Hybrid Inverter & Wiring", amountMinor: 4500000 },
+          { type: "electrical", label: "GI Structure, Earthing Pit & Lightning Arrestor (IS 3043)", amountMinor: 2500000 },
+          { type: "permits", label: "CEIG Inspection & DISCOM Sync Approvals", amountMinor: 1000000 },
         ],
         incentives: [
-          { programmeId: "prog_mass_save_whole", name: "Mass Save Whole-Home Heat Pump Rebate", amountMinor: 1000000, paid: "instant", conditions: "Whole-home weatherization verified" },
+          { programmeId: "prog_surya_ghar_3kw", name: "PM Surya Ghar Muft Bijli Yojana Maximum Subsidy", amountMinor: 7800000, paid: "instant", conditions: "National Portal DBT scheme registered" },
         ],
-        estimatedSavings: { minAnnualMinor: 90000, maxAnnualMinor: 140000, assumptions: "Based on replacing fuel oil with NEEP cold-climate heat pump" },
-        exampleEmi: { ratePct: 5.75, termMonths: 60, downPaymentMinor: 154000, emiMinor: 26600 },
+        estimatedSavings: { minAnnualMinor: 4200000, maxAnnualMinor: 6000000, assumptions: "Based on 3kW generating ~4,380 kWh/year at ₹8/unit" },
+        exampleEmi: { ratePct: 7.00, termMonths: 60, downPaymentMinor: 2000000, emiMinor: 241500 },
       },
     ],
   });
@@ -246,13 +246,13 @@ export async function seedDatabase(disconnectAfter = false) {
   const prequal = await PrequalificationModel.create({
     quoteId: sampleQuote._id.toString(),
     selectedTier: "better",
-    amountRequestedMinor: 1386000,
-    downPaymentMinor: 154000,
+    amountRequestedMinor: 12200000, // ₹1,22,000 financed
+    downPaymentMinor: 2000000, // ₹20,000 down payment
     applicant: {
-      dateOfBirthEncrypted: encryptPii("1982-05-14"),
-      annualIncomeEncrypted: encryptPii("11000000"),
-      housingPaymentEncrypted: encryptPii("220000"),
-      ssnLastFourEncrypted: encryptPii("8921"),
+      dateOfBirthEncrypted: encryptPii("1984-07-16"),
+      annualIncomeEncrypted: encryptPii("120000000"), // ₹12,00,000 annual income
+      housingPaymentEncrypted: encryptPii("2500000"), // ₹25,000 rent/mortgage
+      panLastFourEncrypted: encryptPii("1234"),
     },
     consent: {
       softPullAgreed: true,
@@ -268,13 +268,13 @@ export async function seedDatabase(disconnectAfter = false) {
 
   const sampleOffer = await OfferModel.create({
     prequalificationId: prequal._id.toString(),
-    lenderId: "lnd_vermont_cu",
-    lenderName: "Vermont Clean Energy CU",
-    aprPct: 5.75,
+    lenderId: "lnd_sbi",
+    lenderName: "State Bank of India (Surya Ghar Solar Loan)",
+    aprPct: 7.00,
     termMonths: 60,
-    monthlyPaymentMinor: 26632,
-    amountFinancedMinor: 1386000,
-    totalCostOfCreditMinor: 1597920,
+    monthlyPaymentMinor: 241500, // ₹2,415 / mo
+    amountFinancedMinor: 12200000, // ₹1,22,000
+    totalCostOfCreditMinor: 14490000, // ₹1,44,900
     contractorBuyDownMinor: 0,
     status: "selected",
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -285,7 +285,7 @@ export async function seedDatabase(disconnectAfter = false) {
     contractorId: contractor._id.toString(),
     homeownerId: sampleQuote.homeowner.phone,
     type: "final_completion",
-    amountMinor: 1386000,
+    amountMinor: 12200000,
     status: "pending",
     evidenceUrls: [],
     equipmentVerified: false,

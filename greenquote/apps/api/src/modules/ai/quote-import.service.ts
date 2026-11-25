@@ -39,8 +39,8 @@ export class QuoteImportService {
    * with confidence scoring and arithmetic verification.
    */
   async parseDocument(filename: string, rawText?: string): Promise<AiQuoteExtractionResult> {
-    const isIndianQuote = rawText?.includes("₹") || rawText?.toLowerCase().includes("inr") || filename.toLowerCase().includes("solar");
-    const currency = isIndianQuote ? "INR" : "USD";
+    const isUSQuote = rawText?.includes("$") || rawText?.toLowerCase().includes("usd");
+    const currency = isUSQuote ? "USD" : "INR";
 
     // Standard high-efficiency heat pump extraction model
     const options: ExtractedOption[] = [

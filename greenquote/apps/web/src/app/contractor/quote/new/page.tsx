@@ -39,11 +39,11 @@ interface TierState {
 }
 
 export default function QuoteBuilderPage() {
-  const [currency, setCurrency] = useState<"USD" | "INR">("USD");
-  const [customerName, setCustomerName] = useState("Sarah Jenkins");
-  const [customerPhone, setCustomerPhone] = useState("+1 (617) 555-0188");
-  const [customerEmail, setCustomerEmail] = useState("sarah@example.com");
-  const [propertyAddress, setPropertyAddress] = useState("42 Commonwealth Ave, Boston, MA 02108");
+  const [currency, setCurrency] = useState<"INR">("INR");
+  const [customerName, setCustomerName] = useState("Rajesh Kumar Sharma");
+  const [customerPhone, setCustomerPhone] = useState("+91 98765 43210");
+  const [customerEmail, setCustomerEmail] = useState("rajesh.sharma@example.in");
+  const [propertyAddress, setPropertyAddress] = useState("B-42, Sector 62, Noida, Uttar Pradesh 201309");
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
 
@@ -53,79 +53,79 @@ export default function QuoteBuilderPage() {
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [showEquipmentSelector, setShowEquipmentSelector] = useState<"good" | "better" | "best" | null>(null);
 
-  // Certified Equipment Catalog (AHRI & NEEP Directory)
+  // Certified Equipment Catalog (MNRE ALMM & BEE Star Directory)
   const certifiedEquipmentCatalog = [
     {
-      brand: "Mitsubishi Electric",
-      model: "MSZ-FS12NA / PUZ-HA36",
-      category: "Cold-Climate Heat Pump (Hyper-Heat)",
-      ahriRef: "20893412",
-      seer2: 26.1,
+      brand: "Tata Power Solar",
+      model: "TPS-3KW-BIFACIAL / Dual-Glass",
+      category: "3 kW High-Efficiency Bifacial Solar System",
+      ahriRef: "ALMM-MNRE-9812",
+      seer2: 21.8,
       hspf2: 11.5,
-      suggestedPrice: 10500,
+      suggestedPrice: 140000,
     },
     {
-      brand: "Daikin",
-      model: "FIT-DZ17VSA / 3-Ton",
-      category: "Inverter Heat Pump System",
-      ahriRef: "20678129",
-      seer2: 17.5,
+      brand: "Waaree Energies",
+      model: "W-550W-TOPCON / Tier-1 Mono",
+      category: "2 kW Grid-Connected Solar Rooftop",
+      ahriRef: "ALMM-MNRE-7841",
+      seer2: 22.4,
       hspf2: 9.5,
-      suggestedPrice: 7500,
+      suggestedPrice: 90000,
     },
     {
-      brand: "Bosch",
-      model: "BOVA-36HDN1 / Premium IDS 2.0",
-      category: "Variable Capacity Heat Pump",
-      ahriRef: "20549103",
-      seer2: 20.0,
+      brand: "Adani Solar",
+      model: "SHINE-5KW-BIFACIAL / N-Type",
+      category: "5 kW Commercial / Residential Rooftop",
+      ahriRef: "ALMM-MNRE-8823",
+      seer2: 23.0,
       hspf2: 10.0,
-      suggestedPrice: 9200,
+      suggestedPrice: 210000,
     },
     {
-      brand: "Carrier",
-      model: "Infinity 24 Greenspeed 25VNA4",
-      category: "Ultra High-Efficiency Inverter",
-      ahriRef: "20784912",
+      brand: "Havells",
+      model: "ECO-5.12KWH / LiFePO4 Smart Battery",
+      category: "Lithium-Ion Energy Storage PCU",
+      ahriRef: "BIS-CRS-9182",
       seer2: 24.0,
       hspf2: 11.0,
-      suggestedPrice: 13500,
+      suggestedPrice: 110000,
     },
   ];
 
-  // 3-Option Tiers (Good / Better / Best) with verified HVAC specifications (DOM-01, DOM-02)
+  // 3-Option Tiers (Good / Better / Best) with verified Solar & Clean Energy specifications
   const [tiers, setTiers] = useState<Record<"good" | "better" | "best", TierState>>({
     good: {
-      title: "Good: 15.2 SEER2 Standard Heat Pump",
+      title: "Good: 2 kW Grid-Tied Rooftop Solar + 5-Star Inverter AC",
       items: [
-        { id: "1", type: "equipment", label: "Daikin Standard Heat Pump 3-Ton", amount: 7500 },
-        { id: "2", type: "labour", label: "Standard Installation & Duct Connection", amount: 2500 },
-        { id: "3", type: "permits", label: "City Permits & Disposal", amount: 400 },
+        { id: "1", type: "equipment", label: "Waaree 2 kW Monocrystalline ALMM Tier-1 Panels", amount: 90000 },
+        { id: "2", type: "labour", label: "Standard Turnkey Installation & Grid Sync", amount: 45000 },
+        { id: "3", type: "permits", label: "DISCOM Approvals & Net-Meter Synchronization", amount: 15000 },
       ],
-      rebate: 4000, // Mass Save
-      savingsEst: "$400 - $650 / year",
+      rebate: 60000, // PM Surya Ghar Central Subsidy
+      savingsEst: "₹24,000 - ₹36,000 / year",
     },
     better: {
-      title: "Better: Cold-Climate High-Efficiency Heat Pump",
+      title: "Better: 3 kW High-Efficiency Bifacial Solar System",
       items: [
-        { id: "4", type: "equipment", label: "Mitsubishi H2i Cold-Climate 3-Ton (PUZ-HA36 / SVZ-KP36)", amount: 10500 },
-        { id: "5", type: "labour", label: "Certified Hyper-Heat Installation", amount: 3200 },
-        { id: "6", type: "electrical", label: "200A Electrical Sub-Panel Upgrade", amount: 1200 },
-        { id: "7", type: "permits", label: "City Permits & Inspection", amount: 500 },
+        { id: "4", type: "equipment", label: "Tata Power Solar 3 kW Dual-Glass Bifacial System", amount: 140000 },
+        { id: "5", type: "equipment", label: "3.3 kVA Smart Solar Hybrid Inverter", amount: 45000 },
+        { id: "6", type: "labour", label: "GI Structure, Earthing Pit & Wiring (IS 3043)", amount: 25000 },
+        { id: "7", type: "permits", label: "DISCOM Net-Metering & CEIG Inspection", amount: 10000 },
       ],
-      rebate: 10000, // Whole-home Mass Save
-      savingsEst: "$900 - $1,400 / year",
+      rebate: 78000, // Maximum PM Surya Ghar Subsidy
+      savingsEst: "₹42,000 - ₹60,000 / year",
     },
     best: {
-      title: "Best: Premium Cold-Climate Inverter Heat Pump",
+      title: "Best: 5 kW Premium Solar + 5 kWh Lithium Battery Storage",
       items: [
-        { id: "8", type: "equipment", label: "Carrier Infinity 24 Greenspeed Air-Source Heat Pump", amount: 13500 },
-        { id: "9", type: "labour", label: "Master Craftsman Installation & Zoning", amount: 4500 },
-        { id: "10", type: "electrical", label: "Smart Energy Monitoring Panel", amount: 1800 },
-        { id: "11", type: "permits", label: "Permits, Testing & HERS Rating", amount: 700 },
+        { id: "8", type: "equipment", label: "Adani Solar 5 kW TopCon Bifacial Array", amount: 210000 },
+        { id: "9", type: "equipment", label: "Havells 5.12 kWh LiFePO4 Lithium Battery Storage", amount: 110000 },
+        { id: "10", type: "electrical", label: "6 kVA Hybrid Solar PCU & Surge Protection", amount: 45000 },
+        { id: "11", type: "permits", label: "CEA Approval & Turnkey Commissioning", amount: 15000 },
       ],
-      rebate: 10000,
-      savingsEst: "$1,200 - $1,800 / year",
+      rebate: 78000,
+      savingsEst: "₹70,000 - ₹95,000 / year",
     },
   });
 
@@ -343,8 +343,8 @@ export default function QuoteBuilderPage() {
             </div>
             <div className="flex items-center space-x-2 shrink-0">
               <span className="text-slate-500 font-medium">Currency:</span>
-              <span className="bg-white border border-blue-300 px-2 py-0.5 rounded font-bold text-blue-700">
-                USD ($)
+              <span className="bg-white border border-emerald-300 px-2 py-0.5 rounded font-bold text-emerald-800">
+                INR (₹) Indian Rupee
               </span>
             </div>
           </div>
@@ -623,7 +623,7 @@ export default function QuoteBuilderPage() {
                       </span>
                     </div>
                     <p className="text-slate-500 mt-1">Autosaved: {lastAutosaved} · Rahul Sharma</p>
-                    <p className="text-emerald-700 font-mono mt-0.5">3 Tiers · Net Financed: $3,400 (Better)</p>
+                    <p className="text-emerald-700 font-mono mt-0.5">3 Tiers · Net Financed: ₹1,22,000 (Better)</p>
                   </div>
                   <span className="text-emerald-700 font-semibold text-xs">Viewing</span>
                 </div>

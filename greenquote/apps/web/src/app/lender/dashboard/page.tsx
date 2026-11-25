@@ -54,30 +54,30 @@ export default function LenderDashboardPage() {
   const settlementBatches = [
     {
       batchId: "BTH-2026-1121",
-      settlementDate: "2026-11-21 17:00 EST",
-      totalDisbursedMinor: 14250000, // $142,500.00
+      settlementDate: "2026-11-21 17:00 IST",
+      totalDisbursedMinor: 1425000000, // ₹1,42,50,000.00
       loanCount: 8,
-      achTraceRange: "011000015-8812001 .. 8812008",
+      achTraceRange: "RBI-ENACH-8812001 .. 8812008",
       status: "balanced_matched",
-      clearingHouse: "FedACH",
+      clearingHouse: "NPCI / eNACH",
     },
     {
       batchId: "BTH-2026-1120",
-      settlementDate: "2026-11-20 17:00 EST",
-      totalDisbursedMinor: 9820000, // $98,200.00
+      settlementDate: "2026-11-20 17:00 IST",
+      totalDisbursedMinor: 982000000, // ₹98,20,000.00
       loanCount: 6,
-      achTraceRange: "011000015-8811901 .. 8811906",
+      achTraceRange: "RBI-ENACH-8811901 .. 8811906",
       status: "balanced_matched",
-      clearingHouse: "FedACH",
+      clearingHouse: "NPCI / eNACH",
     },
     {
       batchId: "BTH-2026-1119",
-      settlementDate: "2026-11-19 17:00 EST",
-      totalDisbursedMinor: 11500000, // $115,000.00
+      settlementDate: "2026-11-19 17:00 IST",
+      totalDisbursedMinor: 1150000000, // ₹1,15,00,000.00
       loanCount: 7,
-      achTraceRange: "011000015-8811801 .. 8811807",
+      achTraceRange: "RBI-ENACH-8811801 .. 8811807",
       status: "balanced_matched",
-      clearingHouse: "FedACH",
+      clearingHouse: "NPCI / eNACH",
     },
   ];
 
@@ -86,30 +86,30 @@ export default function LenderDashboardPage() {
     {
       id: "tier_60",
       termMonths: 60,
-      aprPct: 6.99,
-      minFico: 640,
-      maxDtiPct: 48,
-      maxLoanAmount: 65000,
+      aprPct: 7.00,
+      minFico: 700, // Min CIBIL
+      maxDtiPct: 50,
+      maxLoanAmount: 650000, // ₹6,50,000
       buyDownAllowed: true,
       status: "active",
     },
     {
       id: "tier_84",
       termMonths: 84,
-      aprPct: 7.49,
-      minFico: 660,
+      aprPct: 7.50,
+      minFico: 720,
       maxDtiPct: 45,
-      maxLoanAmount: 75000,
+      maxLoanAmount: 1000000, // ₹10,00,000
       buyDownAllowed: true,
       status: "active",
     },
     {
       id: "tier_120",
       termMonths: 120,
-      aprPct: 8.99,
-      minFico: 680,
+      aprPct: 8.25,
+      minFico: 740,
       maxDtiPct: 42,
-      maxLoanAmount: 85000,
+      maxLoanAmount: 1500000, // ₹15,00,000
       buyDownAllowed: true,
       status: "active",
     },
@@ -118,25 +118,25 @@ export default function LenderDashboardPage() {
   // Sample Milestone Payouts
   const [milestones, setMilestones] = useState<MilestonePayout[]>([
     {
-      loanId: "LN-8921-MA",
-      homeownerName: "Sarah Jenkins",
-      contractorName: "Apex Clean Energy LLC",
-      systemType: "Cold-Climate Heat Pump (Mitsubishi H2i)",
-      milestoneName: "M1: Equipment Delivery & Permit",
-      disbursementAmountCents: 670000, // $6,700.00
-      coolingOffStatus: "ACTIVE", // 3-day rescission cooling-off in effect (CMP-07/08)
+      loanId: "LN-8921-UP",
+      homeownerName: "Rajesh Kumar Sharma",
+      contractorName: "SunVolt Green Energy Pvt. Ltd.",
+      systemType: "3 kW Bifacial Solar System + Smart Hybrid Inverter",
+      milestoneName: "M1: Equipment Delivery & Mounting",
+      disbursementAmountCents: 67000000, // ₹6,70,000.00
+      coolingOffStatus: "ACTIVE", // 3-day rescission cooling-off in effect
       daysRemaining: 2,
       homeownerConfirmed: true,
       permitUploaded: true,
       status: "blocked_by_rescission",
     },
     {
-      loanId: "LN-7740-MA",
-      homeownerName: "David Miller",
+      loanId: "LN-7740-HR",
+      homeownerName: "Amit Singhania",
       contractorName: "Beacon Solar Systems",
-      systemType: "Rooftop Solar 8.4 kW + Enphase IQ8",
-      milestoneName: "M2: Final Inspection & PTO",
-      disbursementAmountCents: 1420000, // $14,200.00
+      systemType: "5 kW Rooftop Solar + 5 kWh Battery Storage",
+      milestoneName: "M2: Final Inspection & Net-Meter Sync",
+      disbursementAmountCents: 142000000, // ₹14,20,000.00
       coolingOffStatus: "EXPIRED",
       daysRemaining: 0,
       homeownerConfirmed: true,
@@ -144,12 +144,12 @@ export default function LenderDashboardPage() {
       status: "pending_lender_review",
     },
     {
-      loanId: "LN-6029-MA",
-      homeownerName: "Elena Rostova",
-      contractorName: "New England Heat Works",
-      systemType: "Geothermal Heat Pump 4-Ton",
-      milestoneName: "M2: Substantial Completion Sign-off",
-      disbursementAmountCents: 1150000, // $11,500.00
+      loanId: "LN-6029-KA",
+      homeownerName: "Priya Verma",
+      contractorName: "Deccan Clean Energy",
+      systemType: "2 kW Grid-Tied Solar System",
+      milestoneName: "M2: Commissioning & Net-Meter Sync",
+      disbursementAmountCents: 115000000, // ₹11,50,000.00
       coolingOffStatus: "EXPIRED",
       daysRemaining: 0,
       homeownerConfirmed: true,
@@ -256,7 +256,7 @@ export default function LenderDashboardPage() {
               <span>Capital Deployed</span>
               <DollarSign className="w-4 h-4 text-emerald-600" />
             </div>
-            <div className="text-2xl font-black text-slate-900">$18,420,000</div>
+            <div className="text-2xl font-black text-slate-900">₹18.42 Cr</div>
             <span className="text-[11px] text-emerald-700 font-semibold mt-1 block">
               +14.8% clean energy originations
             </span>
@@ -268,7 +268,7 @@ export default function LenderDashboardPage() {
               <TrendingUp className="w-4 h-4 text-blue-600" />
             </div>
             <div className="text-2xl font-black text-slate-900">7.24%</div>
-            <span className="text-[11px] text-slate-500 mt-1 block">TILA Actuarial Reg Z Method</span>
+            <span className="text-[11px] text-slate-500 mt-1 block">RBI Reducing Balance APR</span>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
@@ -276,7 +276,7 @@ export default function LenderDashboardPage() {
               <span>Pending Milestone Draws</span>
               <Clock className="w-4 h-4 text-amber-500" />
             </div>
-            <div className="text-2xl font-black text-slate-900">$32,400</div>
+            <div className="text-2xl font-black text-slate-900">₹32.40 L</div>
             <span className="text-[11px] text-amber-700 font-semibold mt-1 block">
               3 loans in payout queue
             </span>
@@ -378,7 +378,7 @@ export default function LenderDashboardPage() {
                         </td>
                         <td className="px-5 py-4">
                           <span className="text-sm font-bold text-slate-900">
-                            {formatCurrency(item.disbursementAmountCents, "USD")}
+                            {formatCurrency(item.disbursementAmountCents, "INR")}
                           </span>
                         </td>
                         <td className="px-5 py-4">
@@ -494,10 +494,10 @@ export default function LenderDashboardPage() {
                     <tr key={tier.id} className="hover:bg-slate-50">
                       <td className="px-6 py-4 font-bold text-slate-900">{tier.termMonths} Months</td>
                       <td className="px-6 py-4 font-extrabold text-emerald-600 text-sm">{tier.aprPct}% APR</td>
-                      <td className="px-6 py-4 font-semibold text-slate-800">{tier.minFico}+ FICO</td>
+                      <td className="px-6 py-4 font-semibold text-slate-800">{tier.minFico}+ CIBIL</td>
                       <td className="px-6 py-4 text-slate-700">{tier.maxDtiPct}%</td>
                       <td className="px-6 py-4 font-semibold text-slate-800">
-                        {formatCurrency(tier.maxLoanAmount * 100, "USD")}
+                        {formatCurrency(tier.maxLoanAmount * 100, "INR")}
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -532,20 +532,20 @@ export default function LenderDashboardPage() {
               <div className="flex items-start space-x-3">
                 <Landmark className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
                 <div>
-                  <strong className="font-bold">Daily FedACH Settlement & Reconciliation (FR-804):</strong> Automated
+                  <strong className="font-bold">Daily eNACH Settlement & Reconciliation (FR-804):</strong> Automated
                   three-way match between contractor milestone completion proofs, lender escrow disbursements, and
-                  Federal Reserve ACH trace identifiers. 100% matched with zero unallocated variance.
+                  NPCI eNACH / RTGS trace identifiers. 100% matched with zero unallocated variance.
                 </div>
               </div>
               <button
                 onClick={() => {
-                  const sampleCsv = "BatchID,SettlementDate,LoanCount,TotalDisbursed,ClearingHouse,Status\n" +
-                    settlementBatches.map(b => `${b.batchId},${b.settlementDate},${b.loanCount},$${(b.totalDisbursedMinor/100).toFixed(2)},${b.clearingHouse},${b.status}`).join("\n");
+                  const sampleCsv = "BatchID,SettlementDate,LoanCount,TotalDisbursedINR,ClearingHouse,Status\n" +
+                    settlementBatches.map(b => `${b.batchId},${b.settlementDate},${b.loanCount},₹${(b.totalDisbursedMinor/100).toLocaleString('en-IN')},${b.clearingHouse},${b.status}`).join("\n");
                   const blob = new Blob([sampleCsv], { type: "text/csv" });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
-                  a.download = `ACH_Settlement_Reconciliation_${new Date().toISOString().slice(0, 10)}.csv`;
+                  a.download = `eNACH_Settlement_Reconciliation_${new Date().toISOString().slice(0, 10)}.csv`;
                   a.click();
                 }}
                 className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs transition flex items-center space-x-1.5 whitespace-nowrap shadow-sm"
@@ -558,25 +558,25 @@ export default function LenderDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                 <span className="text-xs text-slate-500 font-semibold block">Total Reconciled Volume</span>
-                <span className="text-xl font-black text-slate-900 mt-1 block">$355,700.00</span>
+                <span className="text-xl font-black text-slate-900 mt-1 block">₹3,55,70,000.00</span>
                 <span className="text-[11px] text-emerald-600 font-medium">21 Loans · Past 72h</span>
               </div>
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                 <span className="text-xs text-slate-500 font-semibold block">Settlement Ledger Variance</span>
-                <span className="text-xl font-black text-emerald-600 mt-1 block">$0.00 (Balanced)</span>
-                <span className="text-[11px] text-slate-500 font-medium">100% FedACH Traces Verified</span>
+                <span className="text-xl font-black text-emerald-600 mt-1 block">₹0.00 (Balanced)</span>
+                <span className="text-[11px] text-slate-500 font-medium">100% eNACH Traces Verified</span>
               </div>
               <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
                 <span className="text-xs text-slate-500 font-semibold block">Next Batch Window</span>
-                <span className="text-xl font-black text-slate-900 mt-1 block">17:00 EST Today</span>
-                <span className="text-[11px] text-blue-600 font-medium">Same-Day ACH Window 3</span>
+                <span className="text-xl font-black text-slate-900 mt-1 block">17:00 IST Today</span>
+                <span className="text-[11px] text-blue-600 font-medium">Same-Day RTGS/eNACH Batch</span>
               </div>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-200 font-bold text-slate-900 flex items-center justify-between">
-                <span>Settlement Batches & ACH Clearing History</span>
-                <span className="text-xs font-mono font-medium text-slate-500">Routing: 011000015 (Federal Reserve Bank)</span>
+                <span>Settlement Batches & Clearing History</span>
+                <span className="text-xs font-mono font-medium text-slate-500">Clearing: Reserve Bank of India / NPCI</span>
               </div>
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase tracking-wider">
@@ -584,7 +584,7 @@ export default function LenderDashboardPage() {
                     <th className="px-6 py-3.5">Batch Identifier</th>
                     <th className="px-6 py-3.5">Settlement Timestamp</th>
                     <th className="px-6 py-3.5">Funded Loans</th>
-                    <th className="px-6 py-3.5">ACH Trace Range</th>
+                    <th className="px-6 py-3.5">eNACH / UTR Range</th>
                     <th className="px-6 py-3.5">Total Disbursed</th>
                     <th className="px-6 py-3.5">Clearing Network</th>
                     <th className="px-6 py-3.5 text-right">Reconciliation</th>
@@ -598,7 +598,7 @@ export default function LenderDashboardPage() {
                       <td className="px-6 py-4 font-semibold text-slate-800">{batch.loanCount} disbursements</td>
                       <td className="px-6 py-4 font-mono text-slate-600 text-[11px]">{batch.achTraceRange}</td>
                       <td className="px-6 py-4 font-bold text-slate-900">
-                        {formatCurrency(batch.totalDisbursedMinor, "USD")}
+                        {formatCurrency(batch.totalDisbursedMinor, "INR")}
                       </td>
                       <td className="px-6 py-4">
                         <span className="bg-slate-100 text-slate-800 font-mono text-[11px] px-2 py-0.5 rounded border border-slate-200">

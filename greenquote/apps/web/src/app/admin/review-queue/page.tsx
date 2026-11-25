@@ -71,40 +71,40 @@ export default function OperationsReviewQueuePage() {
   // Lenders State (FR-1002)
   const [lenders, setLenders] = useState<LenderConfig[]>([
     {
-      lenderId: "lnd_vermont_cu",
-      name: "Vermont Clean Energy CU",
-      minCreditScore: 660,
-      maxLoanAmountMinor: 4500000,
+      lenderId: "lnd_sbi",
+      name: "State Bank of India (Surya Ghar Solar Loan)",
+      minCreditScore: 680,
+      maxLoanAmountMinor: 100000000, // ₹10,00,000 (10 Lakhs)
       allowedTerms: [36, 60, 84, 120],
-      baseAprPct: 5.75,
+      baseAprPct: 7.00,
       isActive: true,
       pendingChange: {
         proposedBy: "ops_lead_1",
         proposedAt: "2026-11-21 14:15 UTC",
-        newBaseAprPct: 5.25,
-        newMaxLoanAmountMinor: 5000000,
+        newBaseAprPct: 6.75,
+        newMaxLoanAmountMinor: 120000000,
         previousValues: {
-          baseAprPct: 5.75,
-          maxLoanAmountMinor: 4500000,
+          baseAprPct: 7.00,
+          maxLoanAmountMinor: 100000000,
         },
       },
     },
     {
-      lenderId: "lnd_greenpenny",
-      name: "Greenpenny Clean Energy Bank",
-      minCreditScore: 680,
-      maxLoanAmountMinor: 6000000,
-      allowedTerms: [60, 120, 180],
-      baseAprPct: 6.99,
+      lenderId: "lnd_tata_capital",
+      name: "Tata Capital Clean Energy / Rooftop Loan",
+      minCreditScore: 660,
+      maxLoanAmountMinor: 150000000, // ₹15,00,000 (15 Lakhs)
+      allowedTerms: [60, 84, 120],
+      baseAprPct: 8.25,
       isActive: true,
     },
     {
-      lenderId: "lnd_climate_first",
-      name: "Climate First Specialty POS",
-      minCreditScore: 620,
-      maxLoanAmountMinor: 5000000,
-      allowedTerms: [60, 84, 120],
-      baseAprPct: 7.99,
+      lenderId: "lnd_ireda",
+      name: "IREDA Green Energy Finance",
+      minCreditScore: 640,
+      maxLoanAmountMinor: 200000000, // ₹20,00,000 (20 Lakhs)
+      allowedTerms: [60, 120, 180],
+      baseAprPct: 7.50,
       isActive: true,
     },
   ]);
@@ -117,52 +117,52 @@ export default function OperationsReviewQueuePage() {
   // Incentive Programs State (FR-1003)
   const [incentivePrograms, setIncentivePrograms] = useState<IncentiveProgram[]>([
     {
-      id: "inc_ira_homes",
-      name: "IRA HOMES Performance-Based Rebates (HOMES)",
-      jurisdiction: "Federal (DOE)",
-      technology: "Heat Pump & Envelope",
-      maxAmount: 8000,
-      incomeLimit: "<80% AMI: 100% up to $8k, 80-150% AMI: 50% up to $4k",
+      id: "inc_surya_ghar_1",
+      name: "PM Surya Ghar: Muft Bijli Yojana (1-2 kW Tier)",
+      jurisdiction: "Central (MNRE)",
+      technology: "Grid-Tied Rooftop Solar",
+      maxAmount: 60000,
+      incomeLimit: "All Residential Households (₹30,000 / kW)",
       stackable: true,
       status: "active",
     },
     {
-      id: "inc_ira_25c",
-      name: "IRA Section 25C Energy Efficient Home Improvement Credit",
-      jurisdiction: "Federal (IRS)",
-      technology: "Heat Pump HVAC & Water Heater",
-      maxAmount: 2000,
-      incomeLimit: "None (Standard Tax Credit)",
+      id: "inc_surya_ghar_2",
+      name: "PM Surya Ghar: Muft Bijli Yojana (3 kW Max Tier)",
+      jurisdiction: "Central (MNRE)",
+      technology: "Bifacial / High-Efficiency Rooftop Solar",
+      maxAmount: 78000,
+      incomeLimit: "National Direct Benefit Transfer (DBT)",
       stackable: true,
       status: "active",
     },
     {
-      id: "inc_mass_save",
-      name: "Mass Save HEAT Loan & Equipment Rebate",
-      jurisdiction: "Massachusetts",
-      technology: "Whole-Home Cold Climate Heat Pump",
-      maxAmount: 10000,
-      incomeLimit: "Residential Ratepayer",
+      id: "inc_up_solar",
+      name: "UPNEDA State Solar Rooftop Additional Subsidy",
+      jurisdiction: "Uttar Pradesh",
+      technology: "Rooftop Solar & Net Meter",
+      maxAmount: 30000,
+      incomeLimit: "UPPCL Domestic Consumer",
       stackable: true,
       status: "active",
     },
     {
-      id: "inc_eff_maine",
-      name: "Efficiency Maine Home Energy Savings Program",
-      jurisdiction: "Maine",
-      technology: "Ductless & Ducted Heat Pumps",
-      maxAmount: 8000,
-      incomeLimit: "Low/Moderate Income Enhanced Tier",
+      id: "inc_maha_solar",
+      name: "MEDA Maharashtra Rooftop Green Energy Subsidy",
+      jurisdiction: "Maharashtra",
+      technology: "Residential Solar & Inverter",
+      maxAmount: 25000,
+      incomeLimit: "MSEDCL Domestic Ratepayer",
       stackable: true,
       status: "active",
     },
     {
-      id: "inc_tech_ca",
-      name: "TECH Clean California Heat Pump Rebate",
-      jurisdiction: "California",
-      technology: "Electric Heat Pump HVAC",
-      maxAmount: 3100,
-      incomeLimit: "Single Family Residential",
+      id: "inc_gujarat_solar",
+      name: "Surya Gujarat Residential Solar Scheme",
+      jurisdiction: "Gujarat",
+      technology: "Grid-Connected Rooftop Solar",
+      maxAmount: 20000,
+      incomeLimit: "Residential Net-Meter Consumer",
       stackable: true,
       status: "active",
     },
@@ -170,9 +170,9 @@ export default function OperationsReviewQueuePage() {
 
   const [newProgramModal, setNewProgramModal] = useState(false);
   const [newProgramName, setNewProgramName] = useState("");
-  const [newProgramState, setNewProgramState] = useState("CO");
-  const [newProgramAmount, setNewProgramAmount] = useState(2500);
-  const [newProgramTech, setNewProgramTech] = useState("Cold Climate Heat Pump");
+  const [newProgramState, setNewProgramState] = useState("UP");
+  const [newProgramAmount, setNewProgramAmount] = useState(25000);
+  const [newProgramTech, setNewProgramTech] = useState("Grid-Tied Solar Rooftop");
 
   // Single-Loan Dossier Export State (FR-1004)
   const [dossierSearchId, setDossierSearchId] = useState("loan_demo_1");
@@ -182,11 +182,11 @@ export default function OperationsReviewQueuePage() {
   const [contractors, setContractors] = useState([
     {
       id: "cnt_201",
-      name: "Summit Green Energy Heating LLC",
-      owner: "Mark Evans",
-      ein: "84-9182371",
-      license: "CO License #ME-8841 (Uploaded)",
-      insurance: "Hartford GL $2,000,000 (Expires 2027-05)",
+      name: "SunVolt Green Energy Pvt. Ltd.",
+      owner: "Rajesh Kumar Sharma",
+      ein: "07AAACG1829M1ZF",
+      license: "MNRE Empanelled Vendor ID #DL-MNRE-2024-8842",
+      insurance: "New India Assurance Public Liability ₹1,00,00,000 (1 Cr)",
       status: "pending_review",
     },
   ]);
@@ -195,22 +195,22 @@ export default function OperationsReviewQueuePage() {
   const [fraudItems, setFraudItems] = useState([
     {
       id: "frd_901",
-      contractor: "Apex Clean Energy & HVAC LLC",
+      contractor: "SunVolt Green Energy Pvt. Ltd.",
       quoteId: "qte_8841",
-      customer: "John Doe",
+      customer: "Rajesh Kumar Sharma",
       flagType: "PRICE_DEVIATION_ALERT",
-      description: "Quote price ($32,500 for 3-ton standard AC) exceeds 2.5x regional median ($11,200).",
+      description: "Quote price (₹6,50,000 for 3 kW standard solar) exceeds 2.5x regional median benchmark (₹2,20,000).",
       severity: "High",
       timestamp: "2026-11-21 13:45 UTC",
       status: "under_review",
     },
     {
       id: "frd_902",
-      contractor: "Apex Clean Energy & HVAC LLC",
+      contractor: "SuryaShakti Solutions Pvt. Ltd.",
       quoteId: "qte_8842",
-      customer: "Sarah Jenkins",
+      customer: "Priya Verma",
       flagType: "EQUIPMENT_MODEL_MISMATCH",
-      description: "Installed nameplate photo reads MSZ-GL12NA, but quote specified MSZ-FS12NA (Hyper-Heat).",
+      description: "Installed nameplate photo reads W-450W, but quote specified Waaree W-550W TopCon (ALMM Tier-1).",
       severity: "Medium",
       timestamp: "2026-11-21 14:10 UTC",
       status: "under_review",
@@ -222,9 +222,9 @@ export default function OperationsReviewQueuePage() {
     {
       id: "evt_1",
       timestamp: "2026-11-21 14:20:11 UTC",
-      actor: "Sarah Jenkins (Homeowner)",
+      actor: "Rajesh Kumar Sharma (Homeowner)",
       action: "PREQUAL_SOFT_PULL_SUBMITTED",
-      details: "FCRA consent version 2026-v1 recorded. 3 lenders queried via parallel fan-out (0 credit impact).",
+      details: "CIBIL soft-inquiry consent recorded under RBI Digital Lending Directions. 3 lenders queried via parallel fan-out (0 credit impact).",
     },
     {
       id: "evt_2",
@@ -343,7 +343,13 @@ export default function OperationsReviewQueuePage() {
     const dossierData = {
       entityId: dossierSearchId,
       exportedAt: new Date().toISOString(),
-      regulationsCovered: ["TILA Reg Z §1026.18", "FCRA §604", "ECOA Reg B", "E-SIGN Act", "FTC Cooling-Off Rule"],
+      regulationsCovered: [
+        "RBI Key Fact Statement (KFS) Directions",
+        "CICRA 2005 (CIBIL Soft-Pull Guidelines)",
+        "RBI Fair Practices Code",
+        "Information Technology Act 2000 (Aadhaar e-Sign)",
+        "RBI 3-Day Cooling-Off Directive"
+      ],
       tamperEvidentSeal: {
         algorithm: "SHA-256",
         integrityHash: "a8f4b1e9c27d402b881ef0357c91adfe08b5e619c90472fba172909418bc25ef",
@@ -538,7 +544,7 @@ export default function OperationsReviewQueuePage() {
                   <div>
                     <h3 className="font-bold text-slate-900">{c.name}</h3>
                     <p className="text-xs text-slate-600 mt-0.5">
-                      Owner: {c.owner} · EIN: {c.ein}
+                      Owner: {c.owner} · GSTIN: {c.ein}
                     </p>
                     <div className="flex items-center space-x-3 text-xs text-slate-500 mt-2">
                       <span>{c.license}</span>
@@ -617,11 +623,11 @@ export default function OperationsReviewQueuePage() {
                       <div className="flex justify-between">
                         <span className="text-slate-500">Max Loan Limit:</span>
                         <span className="font-bold text-slate-900">
-                          ${(lender.maxLoanAmountMinor / 100).toLocaleString()}
+                          ₹{(lender.maxLoanAmountMinor / 100).toLocaleString('en-IN')}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Min FICO Score:</span>
+                        <span className="text-slate-500">Min CIBIL Score:</span>
                         <span className="font-bold text-slate-900">{lender.minCreditScore}</span>
                       </div>
                       <div className="flex justify-between">
@@ -642,7 +648,7 @@ export default function OperationsReviewQueuePage() {
                         </p>
                         <div className="font-mono text-[11px] space-y-0.5 text-amber-950">
                           <p>New Base APR: <strong>{lender.pendingChange.newBaseAprPct}%</strong> (was {lender.baseAprPct}%)</p>
-                          <p>New Max Limit: <strong>${(lender.pendingChange.newMaxLoanAmountMinor / 100).toLocaleString()}</strong> (was ${(lender.maxLoanAmountMinor / 100).toLocaleString()})</p>
+                          <p>New Max Limit: <strong>₹{(lender.pendingChange.newMaxLoanAmountMinor / 100).toLocaleString('en-IN')}</strong> (was ₹{(lender.maxLoanAmountMinor / 100).toLocaleString('en-IN')})</p>
                         </div>
 
                         {/* Dual Action: Authorize vs Reject (Four-Eyes Enforcement) */}
@@ -721,7 +727,7 @@ export default function OperationsReviewQueuePage() {
                       />
                     </div>
                     <div>
-                      <label className="font-semibold text-slate-700 block mb-1">New Maximum Loan Limit ($)</label>
+                      <label className="font-semibold text-slate-700 block mb-1">New Maximum Loan Limit (₹)</label>
                       <input
                         type="number"
                         step="1000"
@@ -798,7 +804,7 @@ export default function OperationsReviewQueuePage() {
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
                       <p className="text-base font-bold text-emerald-700 font-mono">
-                        Up to ${prog.maxAmount.toLocaleString()}
+                        Up to ₹{prog.maxAmount.toLocaleString('en-IN')}
                       </p>
                       <span className="text-[11px] text-slate-400 capitalize">Status: {prog.status}</span>
                     </div>
@@ -859,7 +865,7 @@ export default function OperationsReviewQueuePage() {
                       />
                     </div>
                     <div>
-                      <label className="font-semibold text-slate-700 block mb-1">Maximum Rebate Amount ($)</label>
+                      <label className="font-semibold text-slate-700 block mb-1">Maximum Subsidy Amount (₹)</label>
                       <input
                         type="number"
                         value={newProgramAmount}

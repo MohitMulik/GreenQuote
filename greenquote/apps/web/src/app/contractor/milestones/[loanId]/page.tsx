@@ -26,24 +26,24 @@ export default function ContractorMilestonePage({
   // Sample Loan & Milestone State (FR-801, FR-802)
   const [loan, setLoan] = useState({
     id: params.loanId || "ln_89410",
-    homeowner: "Sarah Jenkins",
-    phone: "+1 (617) 555-0188",
-    address: "42 Commonwealth Ave, Boston, MA 02108",
-    lender: "Vermont Clean Energy CU",
-    totalAmountMinor: 1540000, // $15,400.00
-    currency: "USD" as const,
-    quotedEquipment: "Mitsubishi H2i Cold-Climate 3-Ton (MSZ-FS12NA)",
+    homeowner: "Rajesh Kumar Sharma",
+    phone: "+91 98765 43210",
+    address: "B-42, Sector 62, Noida, Uttar Pradesh 201309",
+    lender: "State Bank of India (Surya Ghar Solar Loan)",
+    totalAmountMinor: 22000000, // ₹2,20,000.00
+    currency: "INR" as const,
+    quotedEquipment: "Tata Power Solar 3 kW Dual-Glass Bifacial System (TPS-3KW-BIFACIAL)",
   });
 
   const [milestone, setMilestone] = useState({
     id: "mls_001",
     type: "final_completion",
-    title: "Final Installation, System Activation & AHRI Verification",
-    amountMinor: 1540000,
+    title: "Final Installation, DISCOM Net-Metering & MNRE ALMM Verification",
+    amountMinor: 22000000,
     status: "pending" as "pending" | "submitted" | "confirmed_by_homeowner" | "payout_released",
-    installedModelNumber: "MSZ-FS12NA",
+    installedModelNumber: "TPS-3KW-BIFACIAL",
     serialNumber: "SN-2026-981249",
-    permitNumber: "BOS-MECH-2026-881",
+    permitNumber: "UP-DISCOM-NET-2026-9182",
     evidenceUploaded: false,
     equipmentVerified: false,
     mismatchWarning: false,
@@ -52,7 +52,7 @@ export default function ContractorMilestonePage({
   const handleEvidenceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const isModelMatch =
-      milestone.installedModelNumber.trim().toUpperCase() === "MSZ-FS12NA";
+      milestone.installedModelNumber.trim().toUpperCase() === "TPS-3KW-BIFACIAL";
 
     if (isModelMatch) {
       setMilestone((prev) => ({
@@ -161,7 +161,7 @@ export default function ContractorMilestonePage({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
             <div className="p-4 rounded-xl border bg-emerald-50 border-emerald-200">
               <span className="text-xs font-bold text-emerald-800 uppercase block">1. Agreement Executed</span>
-              <p className="text-xs text-slate-600 mt-1">TILA disclosures acknowledged & signed.</p>
+              <p className="text-xs text-slate-600 mt-1">RBI Key Fact Statement (KFS) acknowledged & signed.</p>
               <span className="text-xs text-emerald-700 font-semibold mt-2 inline-flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Completed
               </span>
@@ -177,7 +177,7 @@ export default function ContractorMilestonePage({
               <span className="text-xs font-bold uppercase block text-slate-900">
                 2. Evidence Upload
               </span>
-              <p className="text-xs text-slate-600 mt-1">Photos, serials & city permits submitted.</p>
+              <p className="text-xs text-slate-600 mt-1">Photos, serials & DISCOM inspection report submitted.</p>
               {milestone.evidenceUploaded ? (
                 <span className="text-xs text-emerald-700 font-semibold mt-2 inline-flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Submitted
@@ -242,7 +242,7 @@ export default function ContractorMilestonePage({
               <div>
                 <h4 className="font-bold text-sm">Equipment Model Mismatch Detected (AI-04 / FR-1001)</h4>
                 <p className="text-xs mt-1">
-                  The installed model entered does not match the AHRI-certified equipment specified in the customer loan agreement ({loan.quotedEquipment}). This installation has been placed on hold and flagged for Operations review.
+                  The installed model entered does not match the MNRE ALMM-certified equipment specified in the customer loan agreement ({loan.quotedEquipment}). This installation has been placed on hold and flagged for Operations review.
                 </p>
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function ContractorMilestonePage({
               <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
               <h3 className="text-lg font-bold text-slate-900">Full Payout Released by Lender!</h3>
               <p className="text-xs text-slate-600 max-w-md mx-auto">
-                ACH transfer of <strong>{formatCurrency(loan.totalAmountMinor, loan.currency)}</strong> was initiated to Apex Clean Energy & HVAC LLC bank account ending in ****9921.
+                RTGS transfer of <strong>{formatCurrency(loan.totalAmountMinor, loan.currency)}</strong> was initiated to SunVolt Green Energy Pvt. Ltd. Current Account ending in ****9921 (IFSC: SBIN0004052).
               </p>
             </div>
           ) : (

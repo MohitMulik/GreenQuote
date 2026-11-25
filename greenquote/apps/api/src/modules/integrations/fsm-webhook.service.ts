@@ -68,8 +68,8 @@ export function processFsmQuoteSync(payload: FsmQuotePayload): FsmSyncResult {
       "FSM webhook rejected: cash and financed prices do not match (FR-308 violation)"
     );
     throw new Error(
-      `FR-308 Parity Violation: Financed price ($${(payload.financedPriceCents / 100).toFixed(2)}) ` +
-      `does not match cash price ($${(payload.cashPriceCents / 100).toFixed(2)})`
+      `FR-308 Parity Violation: Financed price (₹${(payload.financedPriceCents / 100).toFixed(2)}) ` +
+      `does not match cash price (₹${(payload.cashPriceCents / 100).toFixed(2)})`
     );
   }
 

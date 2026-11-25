@@ -216,12 +216,12 @@ export function calculateFinancingBreakdown(input: FinancingCalculationInput): F
 
   // 8. Generate Compliance Disclosures
   const posDeductionExplanation = posRebatesMinor > 0
-    ? `Point-of-sale utility rebate of $${(posRebatesMinor / 100).toFixed(2)} deducted upfront from invoice.`
-    : "No point-of-sale utility rebates applied.";
+    ? `Point-of-sale clean energy subsidy (e.g. PM Surya Ghar DBT / State Discom) of ₹${(posRebatesMinor / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} deducted upfront from invoice.`
+    : "No point-of-sale subsidies applied.";
 
   const taxCreditNotice = taxCreditsMinor > 0
-    ? `Federal/state tax credits of $${(taxCreditsMinor / 100).toFixed(2)} must be claimed on your annual tax return (e.g. IRS Form 5695) and do not reduce the immediate loan principal.`
-    : "No tax credits estimated.";
+    ? `Tax deductions / central clean energy incentives of ₹${(taxCreditsMinor / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (e.g. Income Tax Section 80EEB) must be claimed on annual tax filings and do not reduce the immediate loan principal.`
+    : "No post-installation tax incentives estimated.";
 
   return {
     grossPriceMinor,

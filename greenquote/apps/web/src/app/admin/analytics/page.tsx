@@ -132,7 +132,7 @@ export default function PlatformAnalyticsPage() {
               </div>
             </div>
             <div className="text-2xl font-black text-slate-900">
-              ${(analytics.originations.totalVolume / 1000000).toFixed(2)}M
+              ₹{(analytics.originations.totalVolume / 1000000).toFixed(2)} Cr
             </div>
             <div className="flex items-center text-[11px] text-emerald-600 font-semibold space-x-1">
               <TrendingUp className="w-3.5 h-3.5" />
@@ -152,7 +152,7 @@ export default function PlatformAnalyticsPage() {
               </div>
             </div>
             <div className="text-2xl font-black text-emerald-700">
-              ${(analytics.originations.dealerFeeSavings / 1000).toFixed(0)}k
+              ₹{(analytics.originations.dealerFeeSavings / 100000).toFixed(1)} L
             </div>
             <p className="text-[11px] text-slate-500">
               18% avg dealer fee eliminated for clean energy consumers
@@ -183,7 +183,7 @@ export default function PlatformAnalyticsPage() {
             </div>
             <div className="text-2xl font-black text-slate-900">{analytics.originations.activePipeline} Deals</div>
             <div className="text-[11px] text-slate-500">
-              $1.43M in underwriting, e-sign & installation
+              ₹1.43 Cr in underwriting, e-sign & installation
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function PlatformAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-slate-900">Equipment Technology Mix</h2>
-                <p className="text-xs text-slate-500">Financed clean energy assets certified via AHRI & NEEP</p>
+                <p className="text-xs text-slate-500">Financed clean energy assets certified via MNRE ALMM & BEE Star</p>
               </div>
               <span className="text-xs font-semibold text-slate-400">142 Funded Installations</span>
             </div>
@@ -212,7 +212,7 @@ export default function PlatformAnalyticsPage() {
                         <span className="text-slate-400">({tech.count} projects)</span>
                       </div>
                       <div className="font-mono text-slate-900 font-bold">
-                        ${(tech.volume / 1000000).toFixed(2)}M ({tech.pct}%)
+                        ₹{(tech.volume / 1000000).toFixed(2)} Cr ({tech.pct}%)
                       </div>
                     </div>
                     <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -226,11 +226,11 @@ export default function PlatformAnalyticsPage() {
             <div className="pt-3 border-t border-slate-100 grid grid-cols-3 gap-2 text-center text-xs">
               <div className="p-2.5 rounded-lg bg-slate-50">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">Avg Ticket</span>
-                <span className="font-bold text-slate-900 font-mono">$34,154</span>
+                <span className="font-bold text-slate-900 font-mono">₹2,34,000</span>
               </div>
               <div className="p-2.5 rounded-lg bg-slate-50">
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">IRA Rebate Capture</span>
-                <span className="font-bold text-emerald-700 font-mono">89.4%</span>
+                <span className="text-slate-400 block text-[10px] uppercase font-semibold">Surya Ghar Subsidy Netting</span>
+                <span className="font-bold text-emerald-700 font-mono">94.8%</span>
               </div>
               <div className="p-2.5 rounded-lg bg-slate-50">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">Serial Match Rate</span>
@@ -263,19 +263,19 @@ export default function PlatformAnalyticsPage() {
                 </span>
               </div>
               <div className="py-2.5 flex justify-between items-center">
-                <span className="text-slate-600">ECOA Notice Delivery</span>
+                <span className="text-slate-600">RBI Fair Lending Code Delivery</span>
                 <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                   {analytics.complianceMetrics.ecoaNoticeDeliveryAvgDays}
                 </span>
               </div>
               <div className="py-2.5 flex justify-between items-center">
-                <span className="text-slate-600">TILA Disclosure Signed</span>
+                <span className="text-slate-600">RBI Key Fact Statement (KFS) Signed</span>
                 <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                   {analytics.complianceMetrics.tilaAcknowledgmentRate}
                 </span>
               </div>
               <div className="py-2.5 flex justify-between items-center">
-                <span className="text-slate-600">3-Day Rescission Hold</span>
+                <span className="text-slate-600">3-Day RBI Cooling-Off Hold</span>
                 <span className="font-mono font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded">
                   {analytics.complianceMetrics.rescissionHoldCompliance}
                 </span>
@@ -340,7 +340,7 @@ export default function PlatformAnalyticsPage() {
                   <div>
                     <span className="text-xs text-slate-400 font-semibold block">Total Funded</span>
                     <span className="text-base font-bold text-slate-900 font-mono">
-                      ${(lender.fundedVolume / 1000000).toFixed(2)}M
+                      ₹{(lender.fundedVolume / 1000000).toFixed(2)} Cr
                     </span>
                   </div>
                   <div>

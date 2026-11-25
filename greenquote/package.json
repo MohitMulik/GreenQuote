@@ -2,7 +2,7 @@
   "name": "greenquote",
   "version": "0.1.0",
   "private": true,
-  "description": "GreenQuote — Home Energy-Efficiency Green Loan Marketplace",
+  "description": "GreenQuote India — Embedded Point-of-Sale Lending & PM Surya Ghar Subsidy Infrastructure for Clean Energy",
   "workspaces": [
     "packages/*",
     "apps/*"

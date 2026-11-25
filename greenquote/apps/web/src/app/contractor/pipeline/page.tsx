@@ -6,7 +6,7 @@ import {
   Plus,
   Search,
   Filter,
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   FileCheck,
   Clock,
@@ -43,10 +43,10 @@ export default function ContractorPipelinePage() {
   const deals: PipelineDeal[] = [
     {
       id: "qte_101",
-      customerName: "Sarah Jenkins",
-      propertyAddress: "42 Commonwealth Ave, Boston, MA",
-      selectedOption: "Better: Cold-Climate Hyper-Heat",
-      totalPriceMinor: 1540000, // $15,400
+      customerName: "Rajesh Kumar Sharma",
+      propertyAddress: "B-42, Sector 62, Noida, UP",
+      selectedOption: "Better: 3 kW Bifacial Solar System",
+      totalPriceMinor: 22000000, // ₹2,20,000
       financingStatus: "Pre-Qualified",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-21",
@@ -54,10 +54,10 @@ export default function ContractorPipelinePage() {
     },
     {
       id: "qte_102",
-      customerName: "Michael Chang",
-      propertyAddress: "88 Beacon St, Boston, MA",
-      selectedOption: "Best: Geothermal Hybrid",
-      totalPriceMinor: 2050000,
+      customerName: "Amit Singhania",
+      propertyAddress: "402 Palm Court, Gurgaon, HR",
+      selectedOption: "Best: 5 kW Solar + 5 kWh Battery",
+      totalPriceMinor: 38000000, // ₹3,80,000
       financingStatus: "Signed",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-20",
@@ -65,10 +65,10 @@ export default function ContractorPipelinePage() {
     },
     {
       id: "qte_103",
-      customerName: "David Miller",
-      propertyAddress: "14 Tremont St, Boston, MA",
-      selectedOption: "Good: 15.2 SEER2 Standard",
-      totalPriceMinor: 1040000,
+      customerName: "Priya Verma",
+      propertyAddress: "C-12, Indiranagar, Bengaluru, KA",
+      selectedOption: "Good: 2 kW Grid-Tied Solar + AC",
+      totalPriceMinor: 15000000, // ₹1,50,000
       financingStatus: "Funded",
       advisorName: "Sanjay Patel",
       createdAt: "2026-11-18",
@@ -76,10 +76,10 @@ export default function ContractorPipelinePage() {
     },
     {
       id: "qte_104",
-      customerName: "Emily Watson",
-      propertyAddress: "220 Newbury St, Boston, MA",
-      selectedOption: "Better: Cold-Climate Hyper-Heat",
-      totalPriceMinor: 1480000,
+      customerName: "Vikram Malhotra",
+      propertyAddress: "Flat 12B, Bandra West, Mumbai, MH",
+      selectedOption: "Better: 3 kW Bifacial Solar System",
+      totalPriceMinor: 22000000, // ₹2,20,000
       financingStatus: "Sent",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-21",
@@ -168,7 +168,7 @@ export default function ContractorPipelinePage() {
               <span className="font-bold text-base sm:text-lg text-slate-900">GreenQuote Contractor Hub</span>
             </Link>
             <span className="text-[11px] bg-slate-100 border border-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded-full hidden sm:inline-block">
-              Apex Clean Energy & HVAC LLC
+              SunVolt Green Energy Pvt. Ltd.
             </span>
           </div>
 
@@ -190,7 +190,7 @@ export default function ContractorPipelinePage() {
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between text-slate-500 mb-2">
               <span className="text-xs font-bold uppercase tracking-wider">Total Pipeline Volume</span>
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <IndianRupee className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="text-2xl font-extrabold text-slate-900">{formatCurrency(totalPipelineMinor)}</div>
             <span className="text-[11px] text-emerald-600 font-semibold mt-1 block">
@@ -291,7 +291,7 @@ export default function ContractorPipelinePage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Total Price:</span>
-                    <span className="font-bold text-slate-900">{formatCurrency(deal.totalPriceMinor, "USD")}</span>
+                    <span className="font-bold text-slate-900">{formatCurrency(deal.totalPriceMinor, "INR")}</span>
                   </div>
                   <div className="flex justify-between text-[11px]">
                     <span className="text-slate-400">Advisor:</span>
@@ -348,7 +348,7 @@ export default function ContractorPipelinePage() {
                       {deal.selectedOption}
                     </td>
                     <td className="py-4 px-4 font-bold text-slate-900">
-                      {formatCurrency(deal.totalPriceMinor, "USD")}
+                      {formatCurrency(deal.totalPriceMinor, "INR")}
                     </td>
                     <td className="py-4 px-4">
                       <span

@@ -264,31 +264,32 @@ export function calculateApr(
 }
 
 /**
- * Format minor units into human readable currency string with proper localization and exact cent support.
+ * Format minor units into human readable currency string with proper localization and exact cent/paise support.
+ * Defaults to INR (₹) for the Indian market.
  */
 export function formatCurrency(
   amountMinor: number,
-  currency: "USD" | "INR" = "USD",
+  currency: "INR" | "USD" = "INR",
   options?: FormatCurrencyOptions
 ): string {
   const major = Number.isFinite(amountMinor) ? amountMinor / 100 : 0;
   const minDigits = options?.minimumFractionDigits ?? 0;
   const maxDigits = options?.maximumFractionDigits ?? minDigits;
 
-  if (currency === "INR") {
-    // Indian numbering format (e.g. ₹2,00,000)
-    return new Intl.NumberFormat("en-IN", {
+  if (currency === "USD") {
+    // Standard USD format (e.g. $10,000)
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "INR",
+      currency: "USD",
       minimumFractionDigits: minDigits,
       maximumFractionDigits: maxDigits,
     }).format(major);
   }
 
-  // Standard USD format (e.g. $10,000 or $265.27)
-  return new Intl.NumberFormat("en-US", {
+  // Indian numbering format (e.g. ₹2,00,000 or ₹15,400)
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
     minimumFractionDigits: minDigits,
     maximumFractionDigits: maxDigits,
   }).format(major);

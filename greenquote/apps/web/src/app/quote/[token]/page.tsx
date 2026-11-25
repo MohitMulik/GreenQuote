@@ -25,79 +25,79 @@ import {
 
 const translations = {
   en: {
-    installerBadge: "Verified Clean Energy Installer",
-    property: "Property",
+    installerBadge: "MNRE Empanelled Clean Energy Installer",
+    property: "Installation Site",
     step1: "1. Review Quote & Savings",
-    step2: "2. Soft-Pull Pre-qualification",
-    step3: "3. Multi-Lender Offers",
-    step4: "4. Disclosures & Signing",
-    selectOptionTitle: "Select Your Installation Option",
-    selectOptionDesc: "All quotes include certified AHRI equipment, full professional installation, municipal permits, and warranty. Cash price and financed price are identical.",
+    step2: "2. CIBIL Pre-qualification",
+    step3: "3. Multi-Bank EMI Offers",
+    step4: "4. KFS Disclosures & E-Sign",
+    selectOptionTitle: "Select Your Clean Energy Package",
+    selectOptionDesc: "All quotations include certified MNRE ALMM & BEE 5-Star equipment, turnkey installation, DISCOM net-metering approvals, and warranty. Cash price and financed price are strictly identical.",
     good: "Good",
     better: "Better",
     best: "Best",
     bestValue: "Best Value",
-    rebate: "Rebate",
-    massSaveRebate: "Mass Save Rebate",
-    appliedAtPos: "Applied at point of sale",
-    netPrice: "Net Price After Rebates",
-    savingsRange: "Est. Energy Savings",
-    fullCashPrice: "Full Cash Price",
-    calculateFinancing: "Estimate Your Monthly Investment",
+    rebate: "Subsidy",
+    massSaveRebate: "PM Surya Ghar Central Subsidy",
+    appliedAtPos: "Instant Subsidy Netting at POS",
+    netPrice: "Net Payable After Subsidies",
+    savingsRange: "Est. Power Bill Savings",
+    fullCashPrice: "Gross System Price",
+    calculateFinancing: "Estimate Your Monthly Investment (EMI)",
     downPayment: "Down Payment",
-    financeTerm: "Financing Term",
-    estimatedEmi: "Est. Monthly Payment",
+    financeTerm: "Loan Tenure",
+    estimatedEmi: "Est. Monthly EMI",
     zeroDealerFees: "Zero Dealer Fees Guaranteed",
-    continuePrequal: "Check Rates Without Affecting Credit",
-    prequalTitle: "Soft Credit Check Pre-qualification",
-    prequalDesc: "Compare personalized monthly offers from top clean energy credit unions. Zero impact on your credit score.",
+    continuePrequal: "Check Rates Without Affecting CIBIL Score",
+    prequalTitle: "60-Second CIBIL Soft Pre-qualification",
+    prequalDesc: "Compare personalized monthly EMI offers from top clean energy lenders (SBI, Tata Capital, IREDA). Soft pull under RBI guidelines has zero impact on your CIBIL score.",
     addCoApplicant: "Add Co-Applicant / Co-Signer",
     coApplicantDesc: "Include a household co-signer to improve qualification odds and debt-to-income ratio.",
-    coApplicantName: "Co-Applicant Full Legal Name",
+    coApplicantName: "Co-Applicant Full Legal Name (as per PAN/Aadhaar)",
     coApplicantDob: "Co-Applicant Date of Birth",
-    coApplicantIncome: "Co-Applicant Annual Income ($)",
+    coApplicantIncome: "Co-Applicant Annual Income (₹)",
     relationship: "Relationship to Primary Applicant",
     spouse: "Spouse",
-    partner: "Domestic Partner",
+    partner: "Family Co-Owner",
     other: "Other Household Member",
     submitPrequal: "Submit Pre-qualification",
     backToQuote: "← Back to Quote",
   },
   es: {
-    installerBadge: "Instalador de Energía Limpia Verificado",
-    property: "Propiedad",
+    installerBadge: "Instalador Certificado de Energía Limpia",
+    property: "Propiedad de Instalación",
     step1: "1. Revisar Cotización y Ahorros",
-    step2: "2. Precalificación Sin Impacto",
+    step2: "2. Precalificación CIBIL",
     step3: "3. Ofertas de Prestamistas",
-    step4: "4. Divulgaciones y Firma",
-    selectOptionTitle: "Seleccione su Opción de Instalación",
-    selectOptionDesc: "Todas las cotizaciones incluyen equipos certificados por AHRI, instalación profesional, permisos municipales y garantía. El precio al contado y financiado son idénticos.",
+    step4: "4. KFS y Firma Digital",
+    selectOptionTitle: "Seleccione su Paquete de Energía Limpia",
+    selectOptionDesc: "Todas las cotizaciones incluyen equipos aprobados por MNRE ALMM, instalación llave en mano, medidor bidireccional y garantía completa. El precio al contado y financiado son idénticos.",
     good: "Básico",
     better: "Mejor Valor",
     best: "Premium",
     bestValue: "Más Popular",
-    rebate: "Reembolso",
-    massSaveRebate: "Reembolso Estatal Mass Save",
-    appliedAtPos: "Aplicado al punto de venta",
-    netPrice: "Precio Neto Después de Reembolsos",
-    savingsRange: "Ahorros de Energía Estimados",
-    fullCashPrice: "Precio Total al Contado",
-    calculateFinancing: "Calcule su Inversión Mensual",
+    rebate: "Subsidio",
+    massSaveRebate: "Subsidio PM Surya Ghar",
+    appliedAtPos: "Deducido directamente en factura",
+    netPrice: "Precio Neto Después de Subsidios",
+    savingsRange: "Ahorro Estimado en Factura",
+    fullCashPrice: "Precio Total del Sistema",
+    calculateFinancing: "Calcule su Inversión Mensual (EMI)",
     downPayment: "Pago Inicial",
     financeTerm: "Plazo de Financiamiento",
-    estimatedEmi: "Pago Mensual Estimado",
+    estimatedEmi: "EMI Mensual Estimado",
     zeroDealerFees: "Cero Tarifas Ocultas Garantizadas",
-    continuePrequal: "Ver Tasas Sin Afectar su Crédito",
-    prequalTitle: "Precalificación de Crédito Blando",
-    prequalDesc: "Compare ofertas mensuales personalizadas de las mejores cooperativas de crédito. Sin impacto en su puntaje de crédito.",
+    continuePrequal: "Ver Tasas Sin Afectar su CIBIL",
+    prequalTitle: "Precalificación CIBIL Sin Impacto",
+    prequalDesc: "Compare ofertas mensuales de SBI, Tata Capital e IREDA sin afectar su puntaje crediticio.",
     addCoApplicant: "Agregar Co-solicitante / Co-firmante",
     coApplicantDesc: "Incluya los ingresos de un co-firmante para aumentar la probabilidad de aprobación.",
     coApplicantName: "Nombre Legal del Co-solicitante",
     coApplicantDob: "Fecha de Nacimiento del Co-solicitante",
-    coApplicantIncome: "Ingreso Anual del Co-solicitante ($)",
+    coApplicantIncome: "Ingreso Anual del Co-solicitante (₹)",
     relationship: "Relación con el Solicitante Principal",
     spouse: "Cónyuge",
-    partner: "Pareja Doméstica",
+    partner: "Co-propietario Familiar",
     other: "Otro Miembro del Hogar",
     submitPrequal: "Enviar Precalificación",
     backToQuote: "← Volver a la Cotización",
@@ -127,19 +127,19 @@ export default function HomeownerQuotePage() {
 
   const [otpInput, setOtpInput] = useState("489201");
   const [selectedTier, setSelectedTier] = useState<"good" | "better" | "best">("better");
-  const [downPayment, setDownPayment] = useState(1000);
+  const [downPayment, setDownPayment] = useState(20000);
   const [selectedTerm, setSelectedTerm] = useState(60);
 
-  // Pre-qual Form State - Affirmative consent required (L-01)
+  // Pre-qual Form State - Affirmative consent required under RBI guidelines
   const [applicant, setApplicant] = useState({
-    fullName: "Sarah Jenkins",
-    phone: "+1 (617) 555-0188",
-    email: "sarah@example.com",
-    dateOfBirth: "1982-05-14",
-    annualIncome: 110000,
-    housingPayment: 2200,
-    ssnLastFour: "8921",
-    softPullConsent: false, // Must be unchecked by default (FCRA §604)
+    fullName: "Rajesh Kumar Sharma",
+    phone: "+91 98765 43210",
+    email: "rajesh.sharma@example.in",
+    dateOfBirth: "1984-07-16",
+    annualIncome: 1200000,
+    housingPayment: 25000,
+    panNumber: "ABCDE1234F",
+    softPullConsent: false,
   });
 
   // Co-Applicant State
@@ -151,7 +151,7 @@ export default function HomeownerQuotePage() {
     relationship: "Spouse",
   });
 
-  // Selected Offer State - Signature must start empty (L-02)
+  // Selected Offer State - Signature must start empty
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
   const [signatureName, setSignatureName] = useState("");
   const [tilaAcknowledged, setTilaAcknowledged] = useState(false);
@@ -159,73 +159,73 @@ export default function HomeownerQuotePage() {
   const [jobCompletionConfirmed, setJobCompletionConfirmed] = useState(false);
   const [rescissionExercised, setRescissionExercised] = useState(false);
 
-  // Quote Data with accurate HVAC domain specifications and verified incentive classifications
+  // Quote Data with accurate Indian Rooftop Solar & Clean Energy specifications
   const quoteData = {
     contractor: {
-      name: "Apex Clean Energy & HVAC LLC",
-      phone: "(617) 555-0100",
-      license: "MA License #CS-109283 (Active & Verified)",
+      name: "SunVolt Green Energy Pvt. Ltd.",
+      phone: "+91 98110 54321",
+      license: "MNRE Empanelment #MNRE-UP-2024-9182 · GSTIN: 07AAACG1829M1ZF",
     },
-    property: "42 Commonwealth Ave, Boston, MA 02108",
+    property: "B-42, Sector 62, Noida, Uttar Pradesh 201309",
     options: {
       good: {
-        title: "Good: 15.2 SEER2 Standard Heat Pump",
-        equipment: "Daikin Fit 3-Ton Inverter Heat Pump System",
-        priceMinor: 1040000, // $10,400
+        title: "Good: 2 kW Grid-Tied Rooftop Solar + 5-Star Inverter AC",
+        equipment: "Waaree 2 kW Monocrystalline ALMM Tier-1 Panels + Micro-Inverter",
+        priceMinor: 15000000, // ₹1,50,000
         incentives: [
           {
-            id: "inc_good_utility",
-            name: "Utility Instant Equipment Rebate",
-            amountMinor: 400000, // $4,000 POS instant rebate
+            id: "inc_good_surya_ghar",
+            name: "PM Surya Ghar Muft Bijli Yojana Central Subsidy",
+            amountMinor: 6000000, // ₹60,000 POS instant subsidy
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
         ] as IncentiveItem[],
-        savings: "$400 - $650 / yr",
+        savings: "₹24,000 - ₹36,000 / yr",
       },
       better: {
-        title: "Better: Cold-Climate Hyper-Heat Pump",
-        equipment: "Mitsubishi Electric H2i Cold-Climate 3-Ton System (PUZ-HA36 / SVZ-KP36)",
-        priceMinor: 1540000, // $15,400
+        title: "Better: 3 kW High-Efficiency Bifacial Solar System",
+        equipment: "Tata Power Solar 3 kW Dual-Glass Bifacial System + 3.3 kVA Smart Inverter",
+        priceMinor: 22000000, // ₹2,20,000
         incentives: [
           {
-            id: "inc_better_mass_save",
-            name: "Mass Save Whole-Home Heat Pump Rebate",
-            amountMinor: 1000000, // $10,000 POS instant utility rebate
+            id: "inc_better_surya_ghar",
+            name: "PM Surya Ghar Muft Bijli Yojana Maximum Subsidy",
+            amountMinor: 7800000, // ₹78,000 POS instant DBT subsidy
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
           {
-            id: "inc_better_ira_25c",
-            name: "IRA Section 25C Energy Efficiency Tax Credit",
-            amountMinor: 200000, // $2,000 future federal tax credit
+            id: "inc_better_state_incentive",
+            name: "State DISCOM Clean Energy Incentive",
+            amountMinor: 1500000, // ₹15,000 post-install tax rebate
             category: "federal_tax_credit" as const,
             timing: "after_installation" as const,
           },
         ] as IncentiveItem[],
-        savings: "$900 - $1,400 / yr",
+        savings: "₹42,000 - ₹60,000 / yr",
       },
       best: {
-        title: "Best: Premium High-Efficiency Variable Heat Pump",
-        equipment: "Carrier Infinity 24 Greenspeed Air-Source Heat Pump",
-        priceMinor: 2050000, // $20,500
+        title: "Best: 5 kW Premium Solar + 5 kWh Lithium Battery Storage",
+        equipment: "Adani Solar 5 kW N-Type TopCon Panels + Havells 5.12 kWh LiFePO4 Battery",
+        priceMinor: 38000000, // ₹3,80,000
         incentives: [
           {
-            id: "inc_best_mass_save",
-            name: "Mass Save Whole-Home Heat Pump Rebate",
-            amountMinor: 1000000, // $10,000 POS instant rebate
+            id: "inc_best_surya_ghar",
+            name: "PM Surya Ghar Muft Bijli Yojana Maximum Subsidy",
+            amountMinor: 7800000, // ₹78,000 POS instant subsidy
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
           {
-            id: "inc_best_ira_25c",
-            name: "IRA Section 25C Energy Efficiency Tax Credit",
-            amountMinor: 200000, // $2,000 future federal tax credit
+            id: "inc_best_state_incentive",
+            name: "State Clean Energy Incentive / Tax Deduction",
+            amountMinor: 2000000, // ₹20,000 post-install incentive
             category: "federal_tax_credit" as const,
             timing: "after_installation" as const,
           },
         ] as IncentiveItem[],
-        savings: "$1,200 - $1,800 / yr",
+        savings: "₹70,000 - ₹95,000 / yr",
       },
     },
   };
@@ -238,20 +238,20 @@ export default function HomeownerQuotePage() {
     grossPriceMinor: currentOption.priceMinor,
     downPaymentMinor: downPayment * 100,
     incentives: currentOption.incentives,
-    annualRatePct: 6.99,
+    annualRatePct: 7.00,
     termMonths: 60,
   });
 
-  // Clamped down payment to ensure at least $5 remains financed for loan calculations
-  const maxDownPayment = Math.max(0, Math.floor(financingBreakdown.netInvoiceMinor / 100) - 5);
+  // Clamped down payment to ensure at least ₹500 remains financed for loan calculations
+  const maxDownPayment = Math.max(0, Math.floor(financingBreakdown.netInvoiceMinor / 100) - 500);
   const clampedDownPayment = Math.min(downPayment, maxDownPayment);
 
-  // Multi-Lender Offers computed safely with cent-level precision using centralized engine
+  // Multi-Lender Offers computed safely with minor-unit precision using centralized engine
   const calc1 = calculateFinancingBreakdown({
     grossPriceMinor: currentOption.priceMinor,
     downPaymentMinor: clampedDownPayment * 100,
     incentives: currentOption.incentives,
-    annualRatePct: 6.99,
+    annualRatePct: 7.00,
     termMonths: 60,
   });
 
@@ -259,24 +259,24 @@ export default function HomeownerQuotePage() {
     grossPriceMinor: currentOption.priceMinor,
     downPaymentMinor: clampedDownPayment * 100,
     incentives: currentOption.incentives,
-    annualRatePct: 5.49, // Subsidized rate reflects lower APR than standard (M-05)
+    annualRatePct: 8.25,
     termMonths: 84,
-    contractorBuyDownPct: 3.2,
+    contractorBuyDownPct: 2.5,
   });
 
   const calc3 = calculateFinancingBreakdown({
     grossPriceMinor: currentOption.priceMinor,
     downPaymentMinor: clampedDownPayment * 100,
     incentives: currentOption.incentives,
-    annualRatePct: 8.99,
+    annualRatePct: 7.50,
     termMonths: 120,
   });
 
   const offers: Offer[] = [
     {
       id: "ofr_1",
-      lenderName: "Clean Energy Federal Credit Union",
-      aprPct: 6.99,
+      lenderName: "State Bank of India (Surya Ghar Solar Loan)",
+      aprPct: 7.00,
       termMonths: 60,
       monthlyPaymentMinor: calc1.monthlyPaymentMinor,
       amountFinancedMinor: calc1.amountFinancedMinor,
@@ -286,8 +286,8 @@ export default function HomeownerQuotePage() {
     },
     {
       id: "ofr_2",
-      lenderName: "Community Green Bank",
-      aprPct: 5.49,
+      lenderName: "Tata Capital Clean Energy / Rooftop Loan",
+      aprPct: 8.25,
       termMonths: 84,
       monthlyPaymentMinor: calc2.monthlyPaymentMinor,
       amountFinancedMinor: calc2.amountFinancedMinor,
@@ -297,8 +297,8 @@ export default function HomeownerQuotePage() {
     },
     {
       id: "ofr_3",
-      lenderName: "EcoFinance Clean Energy Lending",
-      aprPct: 8.99,
+      lenderName: "Canara Bank / IREDA Green Finance",
+      aprPct: 7.50,
       termMonths: 120,
       monthlyPaymentMinor: calc3.monthlyPaymentMinor,
       amountFinancedMinor: calc3.amountFinancedMinor,
@@ -405,10 +405,10 @@ export default function HomeownerQuotePage() {
                       </span>
                       <p className="text-sm font-bold text-slate-900 line-clamp-1">{opt.title}</p>
                       <div className="text-xl font-extrabold text-slate-900 mt-2">
-                        {formatCurrency(opt.priceMinor, "USD")}
+                        {formatCurrency(opt.priceMinor, "INR")}
                       </div>
                       <div className="text-xs text-emerald-700 font-semibold mt-1">
-                        -{formatCurrency(opt.incentives.filter(i => i.timing === "instant").reduce((s, i) => s + i.amountMinor, 0), "USD")} Instant Rebate
+                        -{formatCurrency(opt.incentives.filter(i => i.timing === "instant").reduce((s, i) => s + i.amountMinor, 0), "INR")} Instant Subsidy
                       </div>
                     </button>
                   );
@@ -423,32 +423,32 @@ export default function HomeownerQuotePage() {
                     <p className="text-xs text-slate-500">{currentOption.equipment}</p>
                   </div>
                   <div className="sm:text-right">
-                    <span className="text-xs text-slate-400 uppercase font-semibold block">Full Cash Price</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Gross System Price</span>
                     <span className="text-xl sm:text-2xl font-black text-slate-900">
-                      {formatCurrency(financingBreakdown.grossPriceMinor, "USD")}
+                      {formatCurrency(financingBreakdown.grossPriceMinor, "INR")}
                     </span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs">
                   <div className="bg-white p-3 rounded-lg border border-slate-200">
-                    <span className="text-slate-500 block">Instant Utility Rebate (POS)</span>
+                    <span className="text-slate-500 block">PM Surya Ghar Subsidy (POS)</span>
                     <span className="text-sm font-bold text-emerald-600">
-                      -{formatCurrency(financingBreakdown.posRebatesMinor, "USD")}
+                      -{formatCurrency(financingBreakdown.posRebatesMinor, "INR")}
                     </span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">Deducted upfront from invoice</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Deducted upfront from quotation</span>
                   </div>
                   <div className="bg-white p-3 rounded-lg border border-slate-200">
-                    <span className="text-slate-500 block">Net Invoice Balance</span>
+                    <span className="text-slate-500 block">Net Payable Balance</span>
                     <span className="text-sm font-bold text-slate-900">
-                      {formatCurrency(financingBreakdown.netInvoiceMinor, "USD")}
+                      {formatCurrency(financingBreakdown.netInvoiceMinor, "INR")}
                     </span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">Payable via down payment / loan</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Payable via down payment / bank loan</span>
                   </div>
                   <div className="bg-white p-3 rounded-lg border border-slate-200">
-                    <span className="text-slate-500 block">Est. Annual Bill Savings</span>
+                    <span className="text-slate-500 block">Est. Annual Power Bill Savings</span>
                     <span className="text-sm font-bold text-emerald-700">{currentOption.savings}</span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">Based on local utility tariffs</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Based on state DISCOM tariffs</span>
                   </div>
                 </div>
 
@@ -458,10 +458,10 @@ export default function HomeownerQuotePage() {
                     <Sparkles className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-emerald-900 block">
-                        Additional Federal Tax Credit: {formatCurrency(financingBreakdown.taxCreditsMinor, "USD")} (IRA Section 25C)
+                        Additional State / Tax Incentive: {formatCurrency(financingBreakdown.taxCreditsMinor, "INR")} (Section 80EEB / State DISCOM)
                       </span>
                       <p className="text-[11px] text-emerald-800 mt-0.5">
-                        Claimed on your annual federal tax return (IRS Form 5695). Under federal lending standards, this future credit does <strong>not</strong> reduce your point-of-sale invoice or loan principal today.
+                        Claimed post-commissioning on your tax filing or from your state nodal agency. Under RBI digital lending standards, this future incentive does <strong>not</strong> reduce your upfront point-of-sale invoice or initial loan principal.
                       </p>
                     </div>
                   </div>
@@ -473,7 +473,7 @@ export default function HomeownerQuotePage() {
                 <div className="flex items-center justify-between mb-2">
                   <label htmlFor="downPaymentSlider" className="text-sm font-semibold text-slate-700">Optional Down Payment:</label>
                   <span className="text-base font-bold text-slate-900">
-                    {formatCurrency(clampedDownPayment * 100, "USD")}
+                    {formatCurrency(clampedDownPayment * 100, "INR")}
                   </span>
                 </div>
                 <input
@@ -481,18 +481,18 @@ export default function HomeownerQuotePage() {
                   type="range"
                   min="0"
                   max={maxDownPayment}
-                  step="250"
+                  step="5000"
                   value={clampedDownPayment}
                   onChange={(e) => setDownPayment(parseInt(e.target.value, 10) || 0)}
                   className="w-full accent-emerald-600 cursor-pointer"
                   aria-valuemin={0}
                   aria-valuemax={maxDownPayment}
                   aria-valuenow={clampedDownPayment}
-                  aria-valuetext={formatCurrency(clampedDownPayment * 100, "USD")}
+                  aria-valuetext={formatCurrency(clampedDownPayment * 100, "INR")}
                 />
                 <div className="flex flex-col sm:flex-row sm:justify-between text-[11px] text-slate-500 mt-1 gap-1">
-                  <span>$0 Down</span>
-                  <span>Amount to Finance: <strong>{formatCurrency(calc1.amountFinancedMinor, "USD")}</strong> (Net of {formatCurrency(financingBreakdown.posRebatesMinor, "USD")} Instant Rebate)</span>
+                  <span>₹0 Down</span>
+                  <span>Amount to Finance: <strong>{formatCurrency(calc1.amountFinancedMinor, "INR")}</strong> (Net of {formatCurrency(financingBreakdown.posRebatesMinor, "INR")} Instant Subsidy)</span>
                 </div>
               </div>
 
@@ -582,19 +582,19 @@ export default function HomeownerQuotePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="annualIncome" className="text-xs font-semibold text-slate-700 block mb-1">Annual Household Income ($)</label>
+                  <label htmlFor="annualIncome" className="text-xs font-semibold text-slate-700 block mb-1">Annual Household Income (₹)</label>
                   <input
                     id="annualIncome"
                     type="number"
                     required
-                    min="10000"
+                    min="100000"
                     value={applicant.annualIncome}
                     onChange={(e) => setApplicant({ ...applicant, annualIncome: parseInt(e.target.value, 10) || 0 })}
                     className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="housingPayment" className="text-xs font-semibold text-slate-700 block mb-1">Monthly Housing Payment ($)</label>
+                  <label htmlFor="housingPayment" className="text-xs font-semibold text-slate-700 block mb-1">Monthly Housing / Rent (₹)</label>
                   <input
                     id="housingPayment"
                     type="number"
@@ -605,24 +605,22 @@ export default function HomeownerQuotePage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="ssnLastFour" className="text-xs font-semibold text-slate-700 block mb-1">Social Security # (Last 4 Digits Only)</label>
+                  <label htmlFor="panNumber" className="text-xs font-semibold text-slate-700 block mb-1">PAN Card Number</label>
                   <input
-                    id="ssnLastFour"
-                    type="password"
-                    maxLength={4}
-                    pattern="\d{4}"
-                    inputMode="numeric"
+                    id="panNumber"
+                    type="text"
+                    maxLength={10}
                     required
-                    value={applicant.ssnLastFour}
-                    onChange={(e) => setApplicant({ ...applicant, ssnLastFour: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                    placeholder="••••"
-                    className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm tracking-widest focus:ring-1 focus:ring-emerald-500"
+                    value={applicant.panNumber}
+                    onChange={(e) => setApplicant({ ...applicant, panNumber: e.target.value.toUpperCase().slice(0, 10) })}
+                    placeholder="ABCDE1234F"
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm uppercase tracking-wider font-mono focus:ring-1 focus:ring-emerald-500"
                   />
                 </div>
               </div>
               <div className="text-[11px] text-slate-500 flex flex-col sm:flex-row sm:items-center justify-between gap-1 pt-1">
-                <span>Bank-grade 256-bit encryption. Sensitive identifiers protected via AES-256-GCM.</span>
-                <span className="text-emerald-700 font-medium">GLBA Financial Privacy Disclosures</span>
+                <span>Bank-grade 256-bit encryption. PII identifiers protected via AES-256-GCM.</span>
+                <span className="text-emerald-700 font-medium">DPDP Act 2023 & RBI Privacy Protected</span>
               </div>
 
               {/* Co-Applicant Support */}
@@ -655,7 +653,7 @@ export default function HomeownerQuotePage() {
                           required={hasCoApplicant}
                           value={coApplicant.fullName}
                           onChange={(e) => setCoApplicant({ ...coApplicant, fullName: e.target.value })}
-                          placeholder="e.g. Michael Jenkins"
+                          placeholder="e.g. Priya Sharma"
                           className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500"
                         />
                       </div>
@@ -681,7 +679,7 @@ export default function HomeownerQuotePage() {
                           min="0"
                           value={coApplicant.annualIncome || ""}
                           onChange={(e) => setCoApplicant({ ...coApplicant, annualIncome: parseInt(e.target.value, 10) || 0 })}
-                          placeholder="85000"
+                          placeholder="600000"
                           className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500"
                         />
                       </div>
@@ -703,7 +701,7 @@ export default function HomeownerQuotePage() {
                 )}
               </div>
 
-              {/* FCRA Soft-Pull Consent Checkbox - Unchecked by Default (L-01) */}
+              {/* RBI CIBIL Soft-Pull Consent Checkbox - Unchecked by Default */}
               <div className="pt-4 border-t border-slate-200">
                 <label htmlFor="softPullConsent" className="flex items-start space-x-3 text-xs text-slate-600 cursor-pointer">
                   <input
@@ -715,10 +713,10 @@ export default function HomeownerQuotePage() {
                     className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500"
                   />
                   <span>
-                    <strong>FCRA Consent & Authorization:</strong> By checking this box, I authorize GreenQuote and its
-                    designated lending partners (Clean Energy FCU, Community Green Bank, EcoFinance) to obtain my credit
-                    profile via a soft credit inquiry to assess eligibility. I understand this will <strong>NOT</strong>{" "}
-                    affect my credit score.
+                    <strong>RBI Digital Lending & CIBIL Consent:</strong> By checking this box, I authorize GreenQuote and its
+                    designated banking partners (State Bank of India, Tata Capital, Canara Bank / IREDA) to retrieve my credit
+                    profile via a soft bureau inquiry under Reserve Bank of India (RBI) guidelines. I understand this will <strong>NOT</strong>{" "}
+                    impact my CIBIL credit score.
                   </span>
                 </label>
               </div>
@@ -756,7 +754,7 @@ export default function HomeownerQuotePage() {
                   </p>
                 </div>
                 <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-600">
-                  Amount Financed: <strong>{formatCurrency(calc1.amountFinancedMinor, "USD")}</strong>
+                  Amount Financed: <strong>{formatCurrency(calc1.amountFinancedMinor, "INR")}</strong>
                 </div>
               </div>
 
@@ -785,11 +783,11 @@ export default function HomeownerQuotePage() {
                           </div>
                           <div className="flex items-baseline space-x-4 mt-2">
                             <span className="text-2xl font-extrabold text-slate-900">
-                              {formatCurrency(offer.monthlyPaymentMinor, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              <span className="text-xs font-normal text-slate-500"> / mo</span>
+                              {formatCurrency(offer.monthlyPaymentMinor, "INR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              <span className="text-xs font-normal text-slate-500"> / mo EMI</span>
                             </span>
                             <span className="text-sm font-semibold text-slate-700">
-                              {offer.aprPct}% APR · {offer.termMonths} Months
+                              {offer.aprPct}% p.a. · {offer.termMonths} Months Tenure
                             </span>
                           </div>
 
@@ -797,7 +795,7 @@ export default function HomeownerQuotePage() {
                           {offer.contractorBuyDownMinor > 0 && (
                             <div className="mt-2 text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md inline-flex items-center space-x-1">
                               <BadgePercent className="w-3.5 h-3.5" />
-                              <span>Your contractor is contributing {formatCurrency(offer.contractorBuyDownMinor, "USD")} upfront to lower this interest rate</span>
+                              <span>Installer subsidizes {formatCurrency(offer.contractorBuyDownMinor, "INR")} upfront to lower your interest rate</span>
                             </div>
                           )}
                         </div>
@@ -806,7 +804,7 @@ export default function HomeownerQuotePage() {
                           <div>
                             <span className="text-xs text-slate-400 font-semibold block">Total Cost of Loan</span>
                             <span className="text-sm font-bold text-slate-800">
-                              {formatCurrency(offer.totalCostOfCreditMinor, "USD")}
+                              {formatCurrency(offer.totalCostOfCreditMinor, "INR")}
                             </span>
                           </div>
                           <button
@@ -828,67 +826,67 @@ export default function HomeownerQuotePage() {
           </div>
         )}
 
-        {/* STEP 4: TILA DISCLOSURE & E-SIGNATURE */}
+        {/* STEP 4: RBI KEY FACT STATEMENT (KFS) & E-SIGNATURE */}
         {currentStep === "esign" && selectedOffer && (
           <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Review Disclosures & Sign Agreement</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Review KFS Disclosures & Sign Agreement</h2>
               <p className="text-sm text-slate-600">
-                Lender: <strong>{selectedOffer.lenderName}</strong>
+                Regulated Entity / Lender: <strong>{selectedOffer.lenderName}</strong>
               </p>
             </div>
 
-            {/* TILA Box (Truth in Lending Act Regulation Z §1026.18) */}
+            {/* RBI KFS Box */}
             <div className="border-2 border-slate-900 rounded-xl p-5 bg-slate-50">
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                FEDERAL TRUTH IN LENDING DISCLOSURES (TILA REGULATION Z)
+                KEY FACT STATEMENT (KFS) — RBI DIGITAL LENDING GUIDELINES
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                 <div className="border border-slate-300 bg-white p-3 rounded-lg">
-                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">ANNUAL PERCENTAGE RATE</span>
-                  <span className="text-xl font-black text-slate-900">{selectedOffer.aprPct}%</span>
-                  <span className="text-[9px] text-slate-400 block">Cost of credit as yearly rate</span>
+                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">ANNUAL RATE OF INTEREST</span>
+                  <span className="text-xl font-black text-slate-900">{selectedOffer.aprPct}% p.a.</span>
+                  <span className="text-[9px] text-slate-400 block">Reducing balance APR</span>
                 </div>
                 <div className="border border-slate-300 bg-white p-3 rounded-lg">
-                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">FINANCE CHARGE</span>
+                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">FINANCE CHARGES (INTEREST)</span>
                   <span className="text-xl font-black text-slate-900">
-                    {formatCurrency(selectedOffer.totalInterestMinor, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatCurrency(selectedOffer.totalInterestMinor, "INR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-[9px] text-slate-400 block">Dollar amount credit will cost</span>
+                  <span className="text-[9px] text-slate-400 block">Total interest payable</span>
                 </div>
                 <div className="border border-slate-300 bg-white p-3 rounded-lg">
-                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">AMOUNT FINANCED</span>
+                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">SANCTIONED AMOUNT</span>
                   <span className="text-xl font-black text-slate-900">
-                    {formatCurrency(selectedOffer.amountFinancedMinor, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatCurrency(selectedOffer.amountFinancedMinor, "INR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-[9px] text-slate-400 block">Amount of credit provided</span>
+                  <span className="text-[9px] text-slate-400 block">Net principal disbursed</span>
                 </div>
                 <div className="border border-slate-300 bg-white p-3 rounded-lg">
-                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">TOTAL OF PAYMENTS</span>
+                  <span className="text-[10px] text-slate-500 font-semibold uppercase block">TOTAL PAYMENTS</span>
                   <span className="text-xl font-black text-slate-900">
-                    {formatCurrency(selectedOffer.totalCostOfCreditMinor, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatCurrency(selectedOffer.totalCostOfCreditMinor, "INR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span className="text-[9px] text-slate-400 block">Total paid after all payments</span>
+                  <span className="text-[9px] text-slate-400 block">Total lifetime repayment</span>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600 flex justify-between">
-                <span>Payment Schedule: <strong>{selectedOffer.termMonths} monthly payments of {formatCurrency(selectedOffer.monthlyPaymentMinor, "USD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></span>
-                <span>Prepayment Penalty: <strong>None</strong></span>
+              <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600 flex flex-col sm:flex-row justify-between gap-1">
+                <span>Repayment Mode: <strong>{selectedOffer.termMonths} monthly EMIs of {formatCurrency(selectedOffer.monthlyPaymentMinor, "INR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} via eNACH / UPI AutoPay</strong></span>
+                <span>Foreclosure Penalty: <strong>₹0 (Nil as per RBI Master Direction)</strong></span>
               </div>
 
-              {/* FTC Holder in Due Course Rule Notice (16 C.F.R. §433.2) */}
+              {/* RBI Fair Lending Notice */}
               <div className="mt-3 p-3 bg-white rounded-lg border border-slate-300 text-[10px] text-slate-700 leading-relaxed font-mono">
                 <span className="font-bold text-slate-900 block mb-1">
-                  NOTICE: PRESERVATION OF CONSUMER CLAIMS AND DEFENSES (FTC HOLDER RULE, 16 C.F.R. §433.2)
+                  MANDATORY RBI DISCLOSURE & GRIEVANCE REDRESSAL MECHANISM
                 </span>
-                ANY HOLDER OF THIS CONSUMER CREDIT CONTRACT IS SUBJECT TO ALL CLAIMS AND DEFENSES WHICH THE DEBTOR COULD
-                ASSERT AGAINST THE SELLER OF GOODS OR SERVICES OBTAINED PURSUANT HERETO OR WITH THE PROCEEDS HEREOF.
-                RECOVERY HEREUNDER BY THE DEBTOR SHALL NOT EXCEED AMOUNTS PAID BY THE DEBTOR HEREUNDER.
+                THIS CLEAN ENERGY LOAN IS DISBURSED IN STRICT COMPLIANCE WITH RBI DIGITAL LENDING GUIDELINES (2022/2024).
+                FUNDS ARE DISBURSED DIRECTLY TO THE EMPANELLED INSTALLER UPON VERIFIED MILESTONE COMPLETION. BORROWER HAS
+                AN UNCONDITIONAL RIGHT TO EXIT DURING THE MANDATORY 3-DAY COOLING-OFF PERIOD WITHOUT ANY PENALTY.
               </div>
             </div>
 
-            {/* Checkboxes for TILA Acknowledgment and E-SIGN */}
+            {/* Checkboxes for KFS Acknowledgment and E-SIGN */}
             <div className="space-y-3 pt-2">
               <label className="flex items-start space-x-3 text-xs text-slate-700 cursor-pointer">
                 <input
@@ -899,8 +897,8 @@ export default function HomeownerQuotePage() {
                   className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 <span>
-                  I have read, reviewed, and acknowledge receipt of the Federal Truth in Lending Act (TILA)
-                  disclosure above.
+                  I have read, reviewed, and acknowledge receipt of the Reserve Bank of India Key Fact Statement (KFS)
+                  and loan terms displayed above.
                 </span>
               </label>
 
@@ -913,8 +911,8 @@ export default function HomeownerQuotePage() {
                   className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 <span>
-                  I consent to electronic delivery of notices, agreements, and disclosures under the federal E-SIGN
-                  Act.
+                  I consent to electronic signing and agreement execution under Section 10A of the Information
+                  Technology Act, 2000 and setup of eNACH / UPI AutoPay mandate.
                 </span>
               </label>
             </div>
@@ -928,7 +926,7 @@ export default function HomeownerQuotePage() {
               <input
                 type="text"
                 disabled={!tilaAcknowledged || !esignConsent}
-                placeholder="e.g. Sarah Jenkins"
+                placeholder="e.g. Rajesh Kumar Sharma"
                 value={signatureName}
                 onChange={(e) => setSignatureName(e.target.value)}
                 className="w-full text-lg font-serif italic border-b-2 border-slate-400 bg-transparent py-2 px-1 focus:border-emerald-600 focus:outline-none"
@@ -977,19 +975,19 @@ export default function HomeownerQuotePage() {
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-left max-w-lg mx-auto space-y-3">
               <div className="flex items-center space-x-2 text-sm font-bold text-purple-900">
                 <ShieldCheck className="w-4 h-4 text-purple-700" />
-                <span>Statutory 3-Day Right of Rescission & Cancellation</span>
+                <span>Mandatory 3-Day Cooling-Off Period (RBI Digital Lending Norms)</span>
               </div>
               <p className="text-xs text-purple-800 leading-relaxed">
-                Under the Federal Trade Commission (FTC) Cooling-Off Rule and consumer credit regulations, you have the
-                unconditional legal right to cancel this transaction without penalty until midnight of the third business day.
+                Under Reserve Bank of India (RBI) Digital Lending Guidelines, you have the unconditional regulatory right
+                to exit this loan contract without any penalty or foreclosure charge during the 3-day look-up / cooling-off window.
               </p>
 
               {rescissionExercised ? (
                 <div className="p-3 bg-red-100 border border-red-300 rounded-lg text-xs font-semibold text-red-900">
                   <p className="font-bold">Notice of Cancellation Exercised</p>
                   <p className="text-[11px] mt-0.5 text-red-800">
-                    Your financing request has been cancelled under your statutory right of rescission. No finance charges
-                    will be assessed, and any credit agreement has been voided.
+                    Your clean energy loan application has been cancelled under your statutory RBI cooling-off rights.
+                    No EMI will be debited, and the eNACH mandate has been revoked.
                   </p>
                 </div>
               ) : (
@@ -998,7 +996,7 @@ export default function HomeownerQuotePage() {
                   onClick={() => setRescissionExercised(true)}
                   className="w-full bg-white hover:bg-purple-100 text-purple-900 border border-purple-300 text-xs font-bold py-2 px-3 rounded-lg transition"
                 >
-                  Exercise Right of Rescission (Cancel Loan Application)
+                  Exercise Cooling-Off Right (Cancel Clean Energy Loan)
                 </button>
               )}
             </div>
@@ -1008,24 +1006,24 @@ export default function HomeownerQuotePage() {
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-left max-w-lg mx-auto">
                 <h3 className="font-bold text-amber-900 flex items-center space-x-2 text-sm mb-2">
                   <ShieldCheck className="w-4 h-4 text-amber-700" />
-                  <span>Job Completion Payout Gate</span>
+                  <span>Installation & Net-Metering Completion Gate</span>
                 </h3>
                 <p className="text-xs text-amber-800 leading-relaxed mb-4">
-                  In strict compliance with consumer protection standards, <strong>the lender will NOT release payment</strong> to the contractor
-                  until you confirm that the heat pump installation has been completed satisfactorily.
+                  In strict compliance with RBI consumer protection standards, <strong>the lending institution will NOT disburse funds</strong> to the solar installer
+                  until you confirm that the rooftop solar / clean energy installation and DISCOM bi-directional net-meter synchronization have been completed satisfactorily.
                 </p>
 
                 {jobCompletionConfirmed ? (
                   <div className="bg-emerald-100 text-emerald-800 text-xs font-bold p-3 rounded-lg flex items-center space-x-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>You confirmed completion! Payout will be released to contractor after the cooling-off period elapses.</span>
+                    <span>You confirmed commissioning! Final milestone payout will be released to the installer via RTGS after the cooling-off window.</span>
                   </div>
                 ) : (
                   <button
                     onClick={() => setJobCompletionConfirmed(true)}
                     className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-sm transition"
                   >
-                    Confirm Job Completed & Authorize Payout Release
+                    Confirm Installation Complete & Authorize Bank Disbursement
                   </button>
                 )}
               </div>

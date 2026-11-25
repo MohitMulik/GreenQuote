@@ -64,7 +64,7 @@ const QuoteSchema = new Schema<IQuoteDocument>(
   {
     contractorId: { type: String, required: true, index: true },
     advisorId: { type: String, required: true, index: true },
-    currency: { type: String, enum: ["USD", "INR"], default: "USD" },
+    currency: { type: String, enum: ["INR", "USD"], default: "INR" },
     status: {
       type: String,
       enum: ["draft", "sent", "viewed", "prequalified", "no_offers", "signed", "installing", "installed", "funded", "cancelled"],

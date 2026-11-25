@@ -28,7 +28,7 @@ interface ExtractedItem {
 export default function AiQuoteImportPage() {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currency, setCurrency] = useState<"USD" | "INR">("USD");
+  const [currency, setCurrency] = useState<"INR">("INR");
   const [humanReviewPassed, setHumanReviewPassed] = useState(false);
 
   const [extractedData, setExtractedData] = useState<{
@@ -41,35 +41,35 @@ export default function AiQuoteImportPage() {
       items: ExtractedItem[];
     }>;
   }>({
-    customerName: "Sarah Jenkins",
-    address: "42 Commonwealth Ave, Boston, MA 02108",
+    customerName: "Rajesh Kumar Sharma",
+    address: "B-42, Sector 62, Noida, Uttar Pradesh 201309",
     options: [
       {
         tier: "good",
-        title: "15.2 SEER2 Standard Heat Pump System",
-        price: 10400,
+        title: "2 kW Grid-Tied Rooftop Solar + 5-Star Inverter AC",
+        price: 150000,
         items: [
           {
             id: "1",
             type: "equipment",
-            label: "Daikin Standard 3-Ton Heat Pump Outdoor Unit",
-            amount: 7500,
+            label: "Waaree 2 kW Monocrystalline ALMM Tier-1 Panels",
+            amount: 90000,
             confidence: 0.98,
             flagged: false,
           },
           {
             id: "2",
             type: "labour",
-            label: "System Installation & Ductwork Hookup",
-            amount: 2500,
+            label: "Turnkey Mounting Structure & Installation",
+            amount: 45000,
             confidence: 0.95,
             flagged: false,
           },
           {
             id: "3",
             type: "permits",
-            label: "City Mechanical & Electrical Permits",
-            amount: 400,
+            label: "DISCOM Net-Metering & CEIG Inspection Fees",
+            amount: 15000,
             confidence: 0.88,
             flagged: true, // Low confidence flag (<90%)
           },
@@ -77,38 +77,38 @@ export default function AiQuoteImportPage() {
       },
       {
         tier: "better",
-        title: "Cold-Climate Hyper-Heat Pump (NEEP Certified)",
-        price: 15400,
+        title: "3 kW High-Efficiency Bifacial Solar System",
+        price: 220000,
         items: [
           {
             id: "4",
             type: "equipment",
-            label: "Mitsubishi H2i Cold-Climate Hyper-Heat 3-Ton (MSZ-FS)",
-            amount: 10500,
+            label: "Tata Power Solar 3 kW Dual-Glass Bifacial System",
+            amount: 140000,
             confidence: 0.96,
             flagged: false,
           },
           {
             id: "5",
             type: "labour",
-            label: "Certified Cold-Climate Installation & Testing",
-            amount: 3200,
+            label: "3.3 kVA Smart Solar Hybrid Inverter & Wiring",
+            amount: 45000,
             confidence: 0.94,
             flagged: false,
           },
           {
             id: "6",
             type: "electrical",
-            label: "200A Electrical Sub-Panel & Disconnect Upgrade",
-            amount: 1200,
+            label: "GI Structure, Earthing Pit & Lightning Arrestor (IS 3043)",
+            amount: 25000,
             confidence: 0.86,
             flagged: true, // Low confidence flag (<90%)
           },
           {
             id: "7",
             type: "permits",
-            label: "Municipal Permits & HERS Testing Inspection",
-            amount: 500,
+            label: "CEIG Inspection & DISCOM Sync Approvals",
+            amount: 10000,
             confidence: 0.92,
             flagged: false,
           },
@@ -250,32 +250,32 @@ export default function AiQuoteImportPage() {
                     <FileText className="w-4 h-4 text-slate-500" /> Scanned Quote Preview
                   </h3>
                   <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
-                    scan_boston_hvac.pdf
+                    scan_noida_solar_quote.pdf
                   </span>
                 </div>
 
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 font-mono text-xs text-slate-700 space-y-3 leading-relaxed select-none">
                   <p className="font-bold text-slate-900 border-b pb-1">
-                    APEX COMFORT SYSTEMS — CUSTOMER PROPOSAL
+                    SUNVOLT GREEN ENERGY — SOLAR PROPOSAL
                   </p>
-                  <p>Customer: Sarah Jenkins | Date: Nov 20, 2026</p>
-                  <p>Site: 42 Commonwealth Ave, Boston, MA 02108</p>
+                  <p>Customer: Rajesh Kumar Sharma | Date: Nov 20, 2026</p>
+                  <p>Site: B-42, Sector 62, Noida, Uttar Pradesh 201309</p>
                   <div className="border-t pt-2 space-y-1">
-                    <p className="font-semibold text-slate-800">TIER 1 (Good): $10,400.00</p>
-                    <p>• Daikin 3-Ton Standard HP: $7,500</p>
-                    <p>• Installation & Duct Connection: $2,500</p>
+                    <p className="font-semibold text-slate-800">TIER 1 (Good): ₹1,50,000.00</p>
+                    <p>• Waaree 2 kW ALMM Panels: ₹90,000</p>
+                    <p>• Turnkey Grid-Tied Installation: ₹45,000</p>
                     <p className="text-amber-700 font-bold bg-amber-100 px-1 rounded inline-block">
-                      • Mechanical & Electrical Permits: $400 [OCR: 88%]
+                      • DISCOM Net-Metering & CEIG: ₹15,000 [OCR: 94%]
                     </p>
                   </div>
                   <div className="border-t pt-2 space-y-1">
-                    <p className="font-semibold text-slate-800">TIER 2 (Better): $15,400.00</p>
-                    <p>• Mitsubishi H2i Hyper-Heat 3-Ton: $10,500</p>
-                    <p>• Certified Hyper-Heat Installation: $3,200</p>
+                    <p className="font-semibold text-slate-800">TIER 2 (Better): ₹2,20,000.00</p>
+                    <p>• Tata Power Solar 3 kW Bifacial Array: ₹1,40,000</p>
+                    <p>• 3.3 kVA Smart Hybrid Inverter: ₹45,000</p>
                     <p className="text-amber-700 font-bold bg-amber-100 px-1 rounded inline-block">
-                      • 200A Electrical Sub-Panel: $1,200 [OCR: 86%]
+                      • GI Structure & Earthing (IS 3043): ₹25,000 [OCR: 92%]
                     </p>
-                    <p>• Municipal Permits & HERS Inspection: $500</p>
+                    <p>• CEIG Inspection & DISCOM Sync: ₹10,000</p>
                   </div>
                 </div>
               </div>
