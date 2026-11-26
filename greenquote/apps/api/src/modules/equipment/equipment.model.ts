@@ -16,7 +16,7 @@ export interface IEquipmentDocument extends Document {
   };
   isColdClimate: boolean;
   isEnergyStar: boolean;
-  verificationSource: "ahri" | "neep" | "manual";
+  verificationSource: "ahri" | "neep" | "manual" | "almm_portal" | "mnre_approved";
   verifiedAt: Date;
   createdAt: Date;
 }
@@ -41,7 +41,7 @@ const EquipmentSchema = new Schema<IEquipmentDocument>(
     },
     isColdClimate: { type: Boolean, default: false },
     isEnergyStar: { type: Boolean, default: false },
-    verificationSource: { type: String, enum: ["ahri", "neep", "manual"], default: "ahri" },
+    verificationSource: { type: String, enum: ["ahri", "neep", "manual", "almm_portal", "mnre_approved"], default: "ahri" },
     verifiedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

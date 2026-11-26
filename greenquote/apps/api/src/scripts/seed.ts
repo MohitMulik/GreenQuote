@@ -254,6 +254,7 @@ export async function seedDatabase(disconnectAfter = false) {
       annualIncomeEncrypted: encryptPii("120000000"), // ₹12,00,000 annual income
       housingPaymentEncrypted: encryptPii("2500000"), // ₹25,000 rent/mortgage
       panLastFourEncrypted: encryptPii("1234"),
+      ssnLastFourEncrypted: encryptPii("1234"),
     },
     consent: {
       softPullAgreed: true,

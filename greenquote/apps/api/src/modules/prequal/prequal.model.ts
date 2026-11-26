@@ -35,7 +35,8 @@ const PrequalificationSchema = new Schema<IPrequalificationDocument>(
       dateOfBirthEncrypted: { type: String, required: true },
       annualIncomeEncrypted: { type: String, required: true },
       housingPaymentEncrypted: { type: String, required: true },
-      ssnLastFourEncrypted: { type: String, required: true },
+      ssnLastFourEncrypted: { type: String, required: false },
+      panLastFourEncrypted: { type: String, required: false },
     },
     consent: {
       softPullAgreed: { type: Boolean, required: true },
