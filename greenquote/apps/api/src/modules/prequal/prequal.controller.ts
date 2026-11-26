@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prequalService } from "./prequal.service.js";
 import { PrequalificationSubmitSchema } from "@greenquote/shared";
+import { PrequalificationModel } from "./prequal.model.js";
 
 export async function submitPrequalification(req: Request, res: Response, next: NextFunction) {
   try {
@@ -8,6 +9,23 @@ export async function submitPrequalification(req: Request, res: Response, next: 
     const idempotencyKey = req.headers["idempotency-key"] as string;
     const ipAddress = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress;
     const userAgent = req.headers["user-agent"];
+
+    if (!req.user) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "Authentication required to submit prequalification.",
+      });
+      return;
+    }
+
+    // Resource ownership: Homeowner can only submit for their verified quote
+    if (req.user.role === "homeowner" && req.user.quoteId && req.user.quoteId !== validated.quoteId) {
+      res.status(403).json({
+        code: "FORBIDDEN",
+        message: "You are not authorized to submit prequalification for this quote.",
+      });
+      return;
+    }
 
     const result = await prequalService.submitPrequalification({
       quoteId: validated.quoteId,
@@ -33,6 +51,17 @@ export async function streamOffers(req: Request, res: Response, next: NextFuncti
     const { id } = req.params;
     if (!id) {
       res.status(400).json({ code: "BAD_REQUEST", message: "Prequalification ID required." });
+      return;
+    }
+
+    if (!req.user) {
+      res.status(401).json({ code: "UNAUTHORIZED", message: "Authentication required to stream offers." });
+      return;
+    }
+
+    const prequal = await PrequalificationModel.findById(id).lean();
+    if (prequal && req.user.role === "homeowner" && req.user.quoteId && req.user.quoteId !== prequal.quoteId) {
+      res.status(403).json({ code: "FORBIDDEN", message: "You do not have access to these loan offers." });
       return;
     }
 

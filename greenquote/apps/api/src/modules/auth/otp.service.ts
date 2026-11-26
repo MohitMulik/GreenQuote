@@ -32,11 +32,13 @@ export class OtpService {
 
     logger.info({ channel, quoteId: quote._id.toString() }, "homeowner OTP issued");
 
+    const isDevOrTest = !config.isProduction && config.nodeEnv !== "production";
+
     return {
       delivered: true,
       channel,
       expiresInSeconds: 600,
-      ...(config.isProduction ? {} : { testOtp: code }),
+      ...(isDevOrTest ? { testOtp: code } : {}),
     };
   }
 
@@ -50,14 +52,18 @@ export class OtpService {
       throw new AppError(401, "OTP_INVALID", "The verification code is invalid or expired.");
     }
 
-    challenge.attemptCount += 1;
-    if (challenge.attemptCount > 5) {
-      throw new AppError(429, "OTP_LOCKED", "Too many verification attempts. Request a new code.");
+    if (challenge.attemptCount >= 5) {
+      throw new AppError(429, "OTP_LOCKED", "Too many verification attempts. This code is locked. Request a new code.");
     }
+
+    challenge.attemptCount += 1;
 
     const matches = await bcrypt.compare(code, challenge.codeHash);
     if (!matches) {
       await challenge.save();
+      if (challenge.attemptCount >= 5) {
+        throw new AppError(429, "OTP_LOCKED", "Too many verification attempts. This code is locked. Request a new code.");
+      }
       throw new AppError(401, "OTP_INVALID", "The verification code is invalid or expired.");
     }
 

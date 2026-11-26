@@ -3,6 +3,7 @@ import { MilestoneModel, IMilestoneDocument } from "./milestone.model.js";
 import { QuoteModel } from "../quotes/quote.model.js";
 import { AuditEventModel } from "../admin/audit.model.js";
 import { isRescissionPeriodActive } from "./rescission.js";
+import { AppError } from "../../lib/errors.js";
 
 function mongoReady(): boolean {
   return mongoose.connection.readyState === 1;
@@ -66,6 +67,15 @@ export class MilestonesService {
       throw new Error("Milestone not found.");
     }
 
+    if (
+      milestone.homeownerId &&
+      milestone.homeownerId !== data.homeownerId &&
+      data.homeownerId !== "operations" &&
+      !data.homeownerId.startsWith("ops_")
+    ) {
+      throw new AppError(403, "FORBIDDEN", "You are not authorized to confirm this milestone.");
+    }
+
     if (milestone.status !== "submitted") {
       throw new Error("Milestone is not ready for homeowner confirmation.");
     }
@@ -123,6 +133,15 @@ export class MilestonesService {
     const milestone = await MilestoneModel.findById(data.milestoneId);
     if (!milestone) {
       throw new Error("Milestone not found.");
+    }
+
+    if (
+      milestone.homeownerId &&
+      milestone.homeownerId !== data.homeownerId &&
+      data.homeownerId !== "operations" &&
+      !data.homeownerId.startsWith("ops_")
+    ) {
+      throw new AppError(403, "FORBIDDEN", "You are not authorized to rescind this loan.");
     }
 
     if (!isRescissionPeriodActive(milestone.rescissionPeriodEndsAt)) {

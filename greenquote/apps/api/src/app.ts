@@ -53,7 +53,31 @@ export function createApp() {
     res.json({ status: "healthy", timestamp: new Date(), version: "1.0.0" });
   });
 
-  app.post("/v1/system/seed", async (_req, res) => {
+  app.post("/v1/system/seed", async (req, res) => {
+    if (config.isProduction || config.nodeEnv === "production") {
+      res.status(403).json({
+        code: "FORBIDDEN",
+        message: "Database seed operations are strictly forbidden in production.",
+      });
+      return;
+    }
+
+    const adminKey = req.headers["x-admin-seed-key"];
+    const authHeader = req.headers.authorization;
+    const isAuthorized =
+      (Boolean(config.adminSeedSecret) && adminKey === config.adminSeedSecret) ||
+      (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) ||
+      config.nodeEnv === "development" ||
+      config.nodeEnv === "test";
+
+    if (!isAuthorized) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "Administrative authorization required for seed endpoint.",
+      });
+      return;
+    }
+
     try {
       const { seedDatabase } = await import("./scripts/seed.js");
       await seedDatabase(false);
@@ -162,12 +186,17 @@ export function createApp() {
   apiRouter.post(
     "/prequalifications",
     requireIdempotencyKey,
+    authenticateToken,
     prequalController.submitPrequalification
   );
-  apiRouter.get("/prequalifications/:id/offers", prequalController.streamOffers);
-  apiRouter.get("/prequalifications/:prequalificationId/adverse-action", adverseActionController.getAdverseActionNotice);
+  apiRouter.get("/prequalifications/:id/offers", authenticateToken, prequalController.streamOffers);
+  apiRouter.get(
+    "/prequalifications/:prequalificationId/adverse-action",
+    authenticateToken,
+    adverseActionController.getAdverseActionNotice
+  );
 
-  apiRouter.get("/milestones/:loanId", milestonesController.getMilestones);
+  apiRouter.get("/milestones/:loanId", authenticateToken, milestonesController.getMilestones);
   apiRouter.post(
     "/milestones/submit-evidence",
     authenticateToken,
@@ -175,15 +204,28 @@ export function createApp() {
     requireContractorTenant,
     milestonesController.submitEvidence
   );
-  apiRouter.post("/milestones/confirm-homeowner", milestonesController.confirmHomeowner);
-  apiRouter.post("/milestones/rescind", milestonesController.exerciseRescission);
+  apiRouter.post(
+    "/milestones/confirm-homeowner",
+    authenticateToken,
+    milestonesController.confirmHomeowner
+  );
+  apiRouter.post(
+    "/milestones/rescind",
+    authenticateToken,
+    milestonesController.exerciseRescission
+  );
 
   // E-Signature & TILA Reg Z (FR-701 - FR-704)
-  apiRouter.post("/esign/submit", esignController.submitEsign);
-  apiRouter.get("/esign/:offerId", esignController.getEsignRecord);
+  apiRouter.post("/esign/submit", authenticateToken, esignController.submitEsign);
+  apiRouter.get("/esign/:offerId", authenticateToken, esignController.getEsignRecord);
 
   // AI Quote Reader (AI-01 / FR-304)
-  apiRouter.post("/ai/parse-quote", aiController.parseQuoteDocument);
+  apiRouter.post(
+    "/ai/parse-quote",
+    authenticateToken,
+    requireRole("contractor_owner", "contractor_advisor", "operations"),
+    aiController.parseQuoteDocument
+  );
 
   // Contractor Profile & Team Management (FR-104)
   apiRouter.get(
@@ -288,7 +330,11 @@ export function createApp() {
   apiRouter.get("/integrations/fsm/sources", fsmController.listSupportedFsmProviders);
 
   // County Property Title & Ownership Verification (FR-504)
-  apiRouter.post("/property/verify-ownership", propertyController.checkOwnership);
+  apiRouter.post(
+    "/property/verify-ownership",
+    authenticateToken,
+    propertyController.checkOwnership
+  );
 
   app.use("/v1", apiRouter);
   app.use(errorHandler);

@@ -15,6 +15,7 @@ export interface SubmitEsignInput {
   tilaAcknowledged: boolean;
   signerIp: string;
   userAgent: string;
+  authenticatedHomeownerQuoteId?: string;
 }
 
 export class EsignService {
@@ -51,6 +52,14 @@ export class EsignService {
     }
 
     const quoteIdStr = quote._id.toString();
+
+    // Resource ownership: Ensure homeowner is signing for their own quote
+    if (
+      input.authenticatedHomeownerQuoteId &&
+      input.authenticatedHomeownerQuoteId !== quoteIdStr
+    ) {
+      throw new AppError(403, "FORBIDDEN", "You are not authorized to sign an offer for another quote.");
+    }
 
     // 3. Calculate Cryptographic Integrity Hash
     const rawPayload = `${offerId}|${quoteIdStr}|${offer.amountFinancedMinor}|${offer.aprPct}|${signerIp}|${new Date().toISOString()}`;

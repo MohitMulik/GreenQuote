@@ -38,7 +38,11 @@ export async function submitEvidence(req: Request, res: Response, next: NextFunc
 export async function confirmHomeowner(req: Request, res: Response, next: NextFunction) {
   try {
     const validated = ConfirmHomeownerSchema.parse(req.body);
-    const homeownerId = req.user?.userId || "hmw_anonymous";
+    if (!req.user) {
+      res.status(401).json({ code: "UNAUTHORIZED", message: "Homeowner authentication required." });
+      return;
+    }
+    const homeownerId = req.user.userId;
     const ipAddress = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress;
 
     const milestone = await milestonesService.confirmHomeownerCompletion({
@@ -56,7 +60,11 @@ export async function confirmHomeowner(req: Request, res: Response, next: NextFu
 export async function exerciseRescission(req: Request, res: Response, next: NextFunction) {
   try {
     const validated = RescindSchema.parse(req.body);
-    const homeownerId = req.user?.userId || "hmw_homeowner";
+    if (!req.user) {
+      res.status(401).json({ code: "UNAUTHORIZED", message: "Homeowner authentication required." });
+      return;
+    }
+    const homeownerId = req.user.userId;
     const ipAddress = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress;
 
     const milestone = await milestonesService.exerciseRescission({
@@ -82,7 +90,45 @@ export async function getMilestones(req: Request, res: Response, next: NextFunct
       res.status(400).json({ code: "BAD_REQUEST", message: "Loan ID required." });
       return;
     }
+
+    if (!req.user) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "Authentication required to view milestone disbursements.",
+      });
+      return;
+    }
+
     const milestones = await milestonesService.getMilestonesByLoan(loanId);
+
+    // Cross-user access check
+    const firstMilestone = milestones[0];
+    if (
+      firstMilestone &&
+      (req.user.role === "contractor_advisor" || req.user.role === "contractor_owner")
+    ) {
+      if (req.user.contractorId && firstMilestone.contractorId !== req.user.contractorId) {
+        res.status(403).json({
+          code: "FORBIDDEN",
+          message: "Milestones belong to another contractor organization.",
+        });
+        return;
+      }
+    }
+    if (firstMilestone && req.user.role === "homeowner") {
+      if (
+        req.user.userId &&
+        firstMilestone.homeownerId !== req.user.userId &&
+        req.user.quoteId !== firstMilestone.loanId
+      ) {
+        res.status(403).json({
+          code: "FORBIDDEN",
+          message: "You are not authorized to view these milestones.",
+        });
+        return;
+      }
+    }
+
     res.json({ milestones });
   } catch (err) {
     next(err);

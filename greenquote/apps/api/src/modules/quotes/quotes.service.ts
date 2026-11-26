@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { config } from "../../config/index.js";
 import { randomId } from "../../lib/ids.js";
 import { QuoteModel, IQuoteDocument } from "./quote.model.js";
 import { calculateFinancingBreakdown, IncentiveItem } from "@greenquote/shared";
@@ -134,7 +135,7 @@ export class QuotesService {
     return QuoteModel.findOne(filter).lean();
   }
 
-  async getQuoteByToken(token: string) {
+  async getQuoteByToken(token: string, isVerified: boolean = false): Promise<Record<string, unknown>> {
     const quote = await QuoteModel.findOne({
       linkToken: token,
       linkExpiresAt: { $gte: new Date() },
@@ -146,7 +147,45 @@ export class QuotesService {
       throw err;
     }
 
-    return quote;
+    if (isVerified) {
+      return {
+        ...quote,
+        isVerified: true,
+      };
+    }
+
+    // Mask sensitive homeowner PII for unauthenticated public preview
+    const rawName = quote.homeowner.fullName || "";
+    const nameParts = rawName.trim().split(/\s+/);
+    const maskedName = nameParts
+      .map((part) => (part.length > 1 ? `${part[0]}****` : part))
+      .join(" ");
+
+    const rawPhone = quote.homeowner.phone || "";
+    const maskedPhone =
+      rawPhone.length > 4 ? `${rawPhone.slice(0, 3)} ***** ${rawPhone.slice(-3)}` : "****";
+
+    const rawEmail = quote.homeowner.email || "";
+    const emailParts = rawEmail.split("@");
+    const maskedEmail =
+      emailParts.length === 2 && emailParts[0]
+        ? `${emailParts[0].slice(0, 2)}****@${emailParts[1]}`
+        : "****";
+
+    return {
+      ...quote,
+      homeowner: {
+        fullName: maskedName,
+        phone: maskedPhone,
+        email: maskedEmail,
+      },
+      property: {
+        ...quote.property,
+        streetAddress: "•••••••• (Verified upon homeowner OTP)",
+      },
+      isVerified: false,
+      requiresVerification: true,
+    };
   }
 
   async sendQuote(quoteId: string, contractorId: string) {
@@ -175,11 +214,13 @@ export class QuotesService {
       metadata: { recipientPhone: quote.homeowner.phone },
     });
 
+    const isDevOrTest = !config.isProduction && config.nodeEnv !== "production";
+
     return {
       success: true,
       quoteId: quote._id.toString(),
       link: `/quote/${quote.linkToken}`,
-      testOtp: rawOtp, // Provided in development for seamless verification
+      ...(isDevOrTest ? { testOtp: rawOtp } : {}),
     };
   }
 

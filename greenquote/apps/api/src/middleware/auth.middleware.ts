@@ -28,7 +28,14 @@ function readAccessToken(req: Request): string | null {
     return authHeader.slice("Bearer ".length);
   }
   const cookieToken = req.cookies?.[ACCESS_COOKIE];
-  return typeof cookieToken === "string" && cookieToken.length > 0 ? cookieToken : null;
+  if (typeof cookieToken === "string" && cookieToken.length > 0) {
+    return cookieToken;
+  }
+  const xQuoteToken = req.headers["x-quote-token"];
+  if (typeof xQuoteToken === "string" && xQuoteToken.length > 0) {
+    return xQuoteToken;
+  }
+  return null;
 }
 
 export function authenticateToken(req: Request, res: Response, next: NextFunction): void {
@@ -49,6 +56,9 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
       return;
     }
     req.user = payload;
+    if (payload.role === "homeowner" && payload.quoteId) {
+      req.homeownerQuoteId = payload.quoteId;
+    }
     next();
   } catch {
     res.status(401).json({

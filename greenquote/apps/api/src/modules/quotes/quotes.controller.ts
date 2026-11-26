@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import { quotesService } from "./quotes.service.js";
 import { CreateQuoteSchema } from "@greenquote/shared";
+import { config } from "../../config/index.js";
+import { QuoteModel } from "./quote.model.js";
+import { ACCESS_COOKIE } from "../auth/auth.cookies.js";
 
 export async function createQuote(req: Request, res: Response, next: NextFunction) {
   try {
@@ -54,7 +58,41 @@ export async function getQuoteByToken(req: Request, res: Response, next: NextFun
       res.status(400).json({ code: "BAD_REQUEST", message: "Token required." });
       return;
     }
-    const quote = await quotesService.getQuoteByToken(token);
+
+    // Check if caller holds an authenticated session for this quote or is contractor/admin
+    let isVerified = false;
+    const authHeader = req.headers.authorization;
+    const cookieToken = req.cookies?.[ACCESS_COOKIE];
+    const xQuoteToken = req.headers["x-quote-token"] as string | undefined;
+    const candidateToken = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : typeof cookieToken === "string"
+      ? cookieToken
+      : xQuoteToken;
+
+    if (candidateToken) {
+      try {
+        const decoded = jwt.verify(candidateToken, config.jwtSecret) as {
+          quoteId?: string;
+          contractorId?: string;
+          role?: string;
+        };
+        const quoteMeta = await QuoteModel.findOne({ linkToken: token }).select("_id contractorId").lean();
+        if (quoteMeta) {
+          if (
+            decoded.quoteId === quoteMeta._id.toString() ||
+            decoded.contractorId === quoteMeta.contractorId ||
+            decoded.role === "operations"
+          ) {
+            isVerified = true;
+          }
+        }
+      } catch {
+        // Token invalid or expired: remain unverified
+      }
+    }
+
+    const quote = await quotesService.getQuoteByToken(token, isVerified);
     res.json(quote);
   } catch (err) {
     next(err);

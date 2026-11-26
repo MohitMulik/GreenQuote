@@ -11,6 +11,15 @@ function clientIp(req: Request): string {
 export async function submitEsign(req: Request, res: Response, next: NextFunction) {
   try {
     const validated = ESignSubmitSchema.parse(req.body);
+
+    if (!req.user) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "Authentication required to execute loan agreement.",
+      });
+      return;
+    }
+
     const userAgent = req.headers["user-agent"] || "unknown-agent";
     const signerIp = clientIp(req);
 
@@ -18,6 +27,7 @@ export async function submitEsign(req: Request, res: Response, next: NextFunctio
       ...validated,
       signerIp,
       userAgent,
+      authenticatedHomeownerQuoteId: req.user.quoteId,
     });
 
     res.status(201).json({
@@ -39,11 +49,42 @@ export async function getEsignRecord(req: Request, res: Response, next: NextFunc
       res.status(400).json({ code: "BAD_REQUEST", message: "offerId is required" });
       return;
     }
+
+    if (!req.user) {
+      res.status(401).json({
+        code: "UNAUTHORIZED",
+        message: "Authentication required to view signed document.",
+      });
+      return;
+    }
+
     const record = await esignService.getEsignRecord(offerId);
     if (!record) {
       res.status(404).json({ code: "NOT_FOUND", message: "E-signature record not found" });
       return;
     }
+
+    if (req.user.role === "homeowner" && req.user.quoteId && req.user.quoteId !== record.quoteId) {
+      res.status(403).json({
+        code: "FORBIDDEN",
+        message: "You are not authorized to view this document.",
+      });
+      return;
+    }
+
+    if (
+      (req.user.role === "contractor_owner" || req.user.role === "contractor_advisor") &&
+      req.user.contractorId
+    ) {
+      if (record.contractorId !== req.user.contractorId) {
+        res.status(403).json({
+          code: "FORBIDDEN",
+          message: "Document belongs to another contractor organization.",
+        });
+        return;
+      }
+    }
+
     res.json({ record });
   } catch (err) {
     next(err);

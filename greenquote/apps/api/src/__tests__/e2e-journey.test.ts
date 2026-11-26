@@ -51,6 +51,7 @@ describe("GreenQuote Full End-to-End Regulatory & Lifecycle Journey", () => {
     it("parses contractor quote PDF and validates arithmetic line item parity", async () => {
       const res = await request(app)
         .post("/v1/ai/parse-quote")
+        .set("Authorization", `Bearer ${opsToken}`)
         .send({
           filename: "sample_contractor_quote.pdf",
           rawText: "Mitsubishi Hyper-Heat Heat Pump $15,400. Rebate: $10,000",
@@ -68,6 +69,7 @@ describe("GreenQuote Full End-to-End Regulatory & Lifecycle Journey", () => {
     it("enforces FCRA soft-pull consent and returns parallel lender offers with neutral sorting", async () => {
       const res = await request(app)
         .post("/v1/prequalifications")
+        .set("Authorization", `Bearer ${opsToken}`)
         .set("Idempotency-Key", "idemp_e2e_prequal_journey_01")
         .send({
           quoteId: "qte_journey_1",
@@ -100,7 +102,9 @@ describe("GreenQuote Full End-to-End Regulatory & Lifecycle Journey", () => {
     });
 
     it("generates ECOA Reg B Adverse Action notice when an application is declined (CMP-02)", async () => {
-      const res = await request(app).get("/v1/prequalifications/preq_declined_sample/adverse-action");
+      const res = await request(app)
+        .get("/v1/prequalifications/preq_declined_sample/adverse-action")
+        .set("Authorization", `Bearer ${opsToken}`);
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("notice");
       expect(res.body.notice.principalReasons.length).toBeGreaterThan(0);
@@ -111,7 +115,9 @@ describe("GreenQuote Full End-to-End Regulatory & Lifecycle Journey", () => {
 
   describe("Phase 4: Milestone Payout Gates & Rescission Period (FR-801, CMP-07, CMP-08, FR-805)", () => {
     it("retrieves loan milestones with active statutory cooling-off status", async () => {
-      const res = await request(app).get("/v1/milestones/loan_e2e_journey_1");
+      const res = await request(app)
+        .get("/v1/milestones/loan_e2e_journey_1")
+        .set("Authorization", `Bearer ${opsToken}`);
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body.milestones)).toBe(true);
       expect(res.body.milestones.length).toBeGreaterThan(0);
