@@ -82,12 +82,22 @@ export const CreateQuoteSchema = z.object({
       .length(2)
       .transform((val) => val.toUpperCase())
       .refine(noMongoInjection, { message: "Invalid characters in input." }),
+    pinCode: z
+      .string()
+      .regex(/^\d{6}$/, "Valid 6-digit Indian PIN code required.")
+      .refine(noMongoInjection, { message: "Invalid characters in input." })
+      .optional(),
     zipCode: z
       .string()
-      .regex(/^\d{5}(-\d{4})?$|^\d{6}$/, "Valid US or IN postal code required.")
-      .refine(noMongoInjection, { message: "Invalid characters in input." }),
-    existingHeatingFuel: safeString.default("natural_gas"),
+      .regex(/^\d{5}(-\d{4})?$|^\d{6}$/, "Valid Indian PIN code or US ZIP code required.")
+      .refine(noMongoInjection, { message: "Invalid characters in input." })
+      .optional(),
+    existingHeatingFuel: safeString.default("grid_electric"),
     electricUtility: safeString.optional(),
+    discomConsumerNumber: safeString.optional(),
+  }).refine((p) => p.pinCode || p.zipCode, {
+    message: "Valid PIN code or postal code required.",
+    path: ["pinCode"],
   }),
   options: z.array(QuoteOptionSchema).min(1).max(3),
 }).refine(
@@ -115,11 +125,21 @@ export const PrequalificationSubmitSchema = z.object({
     dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format must be YYYY-MM-DD"),
     annualIncomeMinor: z.number().int().positive("Annual income must be positive"),
     housingPaymentMinor: z.number().int().nonnegative("Housing payment cannot be negative"),
-    ssnLastFour: z.string().regex(/^\d{4}$/, "Must be exactly the last 4 digits of SSN"),
+    panNumber: z
+      .string()
+      .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Valid 10-character Indian Permanent Account Number (PAN) required")
+      .optional(),
+    ssnLastFour: z
+      .string()
+      .regex(/^\d{4}$/, "Must be exactly the last 4 digits")
+      .optional(),
+  }).refine((data) => data.panNumber || data.ssnLastFour, {
+    message: "Valid PAN Number (or legacy identification) is required.",
+    path: ["panNumber"],
   }),
   consent: z.object({
     softPullAgreed: z.literal(true, {
-      errorMap: () => ({ message: "FCRA soft-pull consent is required." }),
+      errorMap: () => ({ message: "Credit bureau (CIBIL / Experian) soft-pull consent is required." }),
     }),
     tcpaAgreed: z.boolean().default(true),
     consentVersion: safeString.default("2026-v1"),
@@ -130,10 +150,10 @@ export const ESignSubmitSchema = z.object({
   offerId: safeString,
   signatureDataUrl: z.string().min(20, "Valid signature drawing required."),
   esignConsentAgreed: z.literal(true, {
-    errorMap: () => ({ message: "E-SIGN electronic disclosure consent required." }),
+    errorMap: () => ({ message: "Aadhaar / Information Technology Act 2000 electronic disclosure consent required." }),
   }),
   tilaAcknowledged: z.literal(true, {
-    errorMap: () => ({ message: "Truth in Lending Act (TILA) disclosure acknowledgment required." }),
+    errorMap: () => ({ message: "Key Fact Statement (KFS) & lending disclosure acknowledgment required." }),
   }),
 });
 
@@ -148,12 +168,24 @@ export const HomeownerCompletionConfirmSchema = z.object({
 export const RegisterContractorSchema = z.object({
   legalName: z.string().min(2).max(150),
   tradeName: z.string().max(150).optional(),
-  ein: z.string().min(9).max(20),
+  gstin: z
+    .string()
+    .regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, "Valid 15-character GSTIN required")
+    .optional(),
+  pan: z
+    .string()
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Valid 10-character PAN required")
+    .optional(),
+  ein: z.string().min(9).max(20).optional(),
   businessAddress: z.object({
     street: z.string().min(2).max(150),
     city: z.string().min(2).max(80),
     state: z.string().length(2).toUpperCase(),
-    zipCode: z.string().min(5).max(10),
+    pinCode: z.string().regex(/^\d{6}$/, "Valid 6-digit Indian PIN code required").optional(),
+    zipCode: z.string().min(5).max(10).optional(),
+  }).refine((data) => data.pinCode || data.zipCode, {
+    message: "Valid PIN code or postal code is required.",
+    path: ["pinCode"],
   }),
   owner: z.object({
     fullName: z.string().min(2).max(100),
@@ -167,6 +199,9 @@ export const RegisterContractorSchema = z.object({
       accepted: z.literal(true),
     })
     .optional(),
+}).refine((data) => data.gstin || data.pan || data.ein, {
+  message: "Valid GSTIN or PAN (or tax ID) is required.",
+  path: ["gstin"],
 });
 
 export const LoginSchema = z.object({

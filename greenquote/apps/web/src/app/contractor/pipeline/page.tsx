@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Plus,
@@ -14,8 +14,12 @@ import {
   ExternalLink,
   ShieldCheck,
   Download,
+  Loader2,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import { formatCurrency } from "@greenquote/shared";
+import { apiFetch } from "@/lib/api";
 
 interface PipelineDeal {
   id: string;
@@ -23,69 +27,142 @@ interface PipelineDeal {
   propertyAddress: string;
   selectedOption: string;
   totalPriceMinor: number;
-  financingStatus:
-    | "Draft"
-    | "Sent"
-    | "Viewed"
-    | "Pre-Qualified"
-    | "Signed"
-    | "Installing"
-    | "Funded";
+  financingStatus: string;
   advisorName: string;
   createdAt: string;
   linkToken: string;
 }
 
 export default function ContractorPipelinePage() {
+  const [deals, setDeals] = useState<PipelineDeal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const deals: PipelineDeal[] = [
+  const DEMO_FALLBACK_DEALS: PipelineDeal[] = [
     {
-      id: "qte_101",
+      id: "qte_demo_101",
       customerName: "Rajesh Kumar Sharma",
       propertyAddress: "B-42, Sector 62, Noida, UP",
       selectedOption: "Better: 3 kW Bifacial Solar System",
-      totalPriceMinor: 22000000, // ₹2,20,000
+      totalPriceMinor: 22000000,
       financingStatus: "Pre-Qualified",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-21",
       linkToken: "demo-token",
     },
     {
-      id: "qte_102",
+      id: "qte_demo_102",
       customerName: "Amit Singhania",
       propertyAddress: "402 Palm Court, Gurgaon, HR",
       selectedOption: "Best: 5 kW Solar + 5 kWh Battery",
-      totalPriceMinor: 38000000, // ₹3,80,000
+      totalPriceMinor: 38000000,
       financingStatus: "Signed",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-20",
       linkToken: "demo-token",
     },
     {
-      id: "qte_103",
+      id: "qte_demo_103",
       customerName: "Priya Verma",
       propertyAddress: "C-12, Indiranagar, Bengaluru, KA",
       selectedOption: "Good: 2 kW Grid-Tied Solar + AC",
-      totalPriceMinor: 15000000, // ₹1,50,000
+      totalPriceMinor: 15000000,
       financingStatus: "Funded",
       advisorName: "Sanjay Patel",
       createdAt: "2026-11-18",
       linkToken: "demo-token",
     },
     {
-      id: "qte_104",
+      id: "qte_demo_104",
       customerName: "Vikram Malhotra",
       propertyAddress: "Flat 12B, Bandra West, Mumbai, MH",
       selectedOption: "Better: 3 kW Bifacial Solar System",
-      totalPriceMinor: 22000000, // ₹2,20,000
+      totalPriceMinor: 22000000,
       financingStatus: "Sent",
       advisorName: "Rahul Sharma",
       createdAt: "2026-11-21",
       linkToken: "demo-token",
     },
   ];
+
+  const fetchPipeline = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiFetch("/v1/quotes/pipeline");
+      if (res.status === 401 || res.status === 403) {
+        // Not logged in or unauthorized: offer demo mode fallback cleanly
+        setError("Not authenticated as contractor. Showing demo pipeline view.");
+        setIsDemoMode(true);
+        setDeals(DEMO_FALLBACK_DEALS);
+        return;
+      }
+      if (!res.ok) {
+        throw new Error(`API error: ${res.statusText}`);
+      }
+      const data = await res.json();
+      if (data.pipeline && Array.isArray(data.pipeline)) {
+        interface RawQuoteDoc {
+          _id?: string;
+          homeowner?: { fullName?: string };
+          property?: { streetAddress?: string; city?: string; state?: string };
+          options?: Array<{ title?: string; priceMinor?: number }>;
+          status?: string;
+          createdAt?: string;
+          linkToken?: string;
+        }
+
+        const mapped: PipelineDeal[] = data.pipeline.map((q: RawQuoteDoc) => {
+          const opt = q.options?.[0] || { title: "Custom Solar Solution", priceMinor: 0 };
+          const rawStatus = q.status || "draft";
+          // Normalize status label to title case
+          const statusMap: Record<string, string> = {
+            draft: "Draft",
+            sent: "Sent",
+            viewed: "Viewed",
+            prequalified: "Pre-Qualified",
+            signed: "Signed",
+            installing: "Installing",
+            funded: "Funded",
+          };
+          const address = q.property
+            ? `${q.property.streetAddress || ""}, ${q.property.city || ""}, ${q.property.state || ""}`
+            : "Installation Site";
+
+          return {
+            id: q._id ? q._id.toString() : "qte_new",
+            customerName: q.homeowner?.fullName || "Unverified Customer",
+            propertyAddress: address,
+            selectedOption: opt.title || "Solar PV System",
+            totalPriceMinor: opt.priceMinor || 0,
+            financingStatus: statusMap[rawStatus] || "Draft",
+            advisorName: "Installer Advisor",
+            createdAt: q.createdAt ? new Date(q.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+            linkToken: q.linkToken || "demo-token",
+          };
+        });
+
+        setIsDemoMode(false);
+        setDeals(mapped);
+      } else {
+        setDeals([]);
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to load pipeline";
+      setError(`${message}. Loaded fallback demo records.`);
+      setIsDemoMode(true);
+      setDeals(DEMO_FALLBACK_DEALS);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPipeline();
+  }, [fetchPipeline]);
 
   // Dynamic KPI Calculations (B-08)
   const totalPipelineMinor = deals.reduce((sum, d) => sum + d.totalPriceMinor, 0);
@@ -185,6 +262,32 @@ export default function ContractorPipelinePage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
+        {/* Live / Demo Mode Banner */}
+        {isDemoMode && (
+          <div className="bg-amber-50 border border-amber-300 text-amber-900 rounded-xl p-3 sm:p-4 flex items-center justify-between text-xs">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>
+                <strong>Demo Mode Active:</strong> Showing pre-configured demonstration quotes. Log in with contractor credentials to view your live cloud pipeline.
+              </span>
+            </div>
+            <Link
+              href="/contractor/login"
+              className="font-bold underline text-amber-900 hover:text-amber-950 shrink-0 ml-2"
+            >
+              Sign In →
+            </Link>
+          </div>
+        )}
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center space-y-3 shadow-sm">
+            <Loader2 className="w-6 h-6 text-brand-600 animate-spin" />
+            <p className="text-sm font-semibold text-slate-600">Retrieving contractor pipeline deals...</p>
+          </div>
+        )}
+
         {/* KPI Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">

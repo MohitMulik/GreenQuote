@@ -14,8 +14,10 @@ import { prefixedId } from "../../lib/ids.js";
 interface RegisterInput {
   legalName: string;
   tradeName?: string;
-  ein: string;
-  businessAddress: { street: string; city: string; state: string; zipCode: string };
+  gstin?: string;
+  pan?: string;
+  ein?: string;
+  businessAddress: { street: string; city: string; state: string; pinCode?: string; zipCode?: string };
   owner: { fullName: string; email: string; phone: string; password: string };
   platformAgreement?: { version: string; accepted: true };
   ipAddress?: string;
@@ -30,14 +32,18 @@ export class AuthService {
 
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(data.owner.password, salt);
-    const einHash = hashIdentifier(data.ein);
+    const taxId = data.gstin || data.pan || data.ein || "DEFAULT-TAX-ID";
+    const einHash = hashIdentifier(taxId);
 
     const contractor = await ContractorModel.create({
       legalName: data.legalName,
       tradeName: data.tradeName,
       einHash,
       businessAddress: {
-        ...data.businessAddress,
+        street: data.businessAddress.street,
+        city: data.businessAddress.city,
+        state: data.businessAddress.state,
+        zipCode: data.businessAddress.pinCode || data.businessAddress.zipCode || "",
         isPoBox: false,
       },
       ownerDetails: {

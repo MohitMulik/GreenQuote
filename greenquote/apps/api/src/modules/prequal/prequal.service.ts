@@ -3,7 +3,7 @@ import { PrequalificationModel } from "./prequal.model.js";
 import { OfferModel, IOfferDocument } from "../offers/offer.model.js";
 import { QuoteModel } from "../quotes/quote.model.js";
 import { AuditEventModel } from "../admin/audit.model.js";
-import { calculateEmi } from "@greenquote/shared";
+import { calculateEmi, calculateApr } from "@greenquote/shared";
 import { QuoteTier } from "@greenquote/shared";
 import { encryptPii } from "../../security/pii-vault.js";
 import { randomId } from "../../lib/ids.js";
@@ -20,7 +20,8 @@ export interface PrequalInput {
     dateOfBirth: string;
     annualIncomeMinor: number;
     housingPaymentMinor: number;
-    ssnLastFour: string;
+    panNumber?: string;
+    ssnLastFour?: string;
   };
   consent: {
     softPullAgreed: boolean;
@@ -97,7 +98,9 @@ export class PrequalService {
     const dateOfBirthEncrypted = encryptPii(input.applicant.dateOfBirth);
     const annualIncomeEncrypted = encryptPii(String(input.applicant.annualIncomeMinor));
     const housingPaymentEncrypted = encryptPii(String(input.applicant.housingPaymentMinor));
-    const ssnLastFourEncrypted = encryptPii(input.applicant.ssnLastFour);
+    const ssnLastFourEncrypted = encryptPii(
+      input.applicant.panNumber ? input.applicant.panNumber.slice(-4) : (input.applicant.ssnLastFour || "0000")
+    );
 
     const prequal = await PrequalificationModel.create({
       quoteId: input.quoteId,
@@ -160,14 +163,14 @@ export class PrequalService {
 
     const lenderConfigs = currency === "INR"
       ? [
-          { name: "Public Sector Bank (PM Surya Ghar)", baseRate: 5.75, term: 60, buyDown: 0 },
-          { name: "Co-operative Bank Green Loan", baseRate: 7.50, term: 60, buyDown: Math.round(principalMinor * 0.023) },
-          { name: "Clean Energy NBFC", baseRate: 10.50, term: 84, buyDown: 0 },
+          { name: "State Bank of India (Surya Ghar Solar Loan)", baseRate: 7.00, term: 60, feePct: 1.0, buyDown: 0 },
+          { name: "Tata Capital Clean Energy Loan", baseRate: 7.50, term: 84, feePct: 1.0, buyDown: Math.min(Math.round(principalMinor * 0.02), Math.floor(principalMinor * 0.05)) },
+          { name: "IREDA / Clean Energy NBFC", baseRate: 8.50, term: 120, feePct: 1.5, buyDown: 0 },
         ]
       : [
-          { name: "Clean Energy Federal Credit Union", baseRate: 6.99, term: 60, buyDown: 0 },
-          { name: "Community Green Bank (Buy-Down Active)", baseRate: 7.49, term: 84, buyDown: Math.min(Math.round(principalMinor * 0.035), Math.floor(principalMinor * 0.05)) },
-          { name: "EcoFinance Specialty Point-of-Sale", baseRate: 9.99, term: 120, buyDown: 0 },
+          { name: "Clean Energy Federal Credit Union", baseRate: 6.99, term: 60, feePct: 0.5, buyDown: 0 },
+          { name: "Community Green Bank (Buy-Down Active)", baseRate: 7.49, term: 84, feePct: 1.0, buyDown: Math.min(Math.round(principalMinor * 0.035), Math.floor(principalMinor * 0.05)) },
+          { name: "EcoFinance Specialty Point-of-Sale", baseRate: 9.99, term: 120, feePct: 1.0, buyDown: 0 },
         ];
 
     const offers: IOfferDocument[] = [];
@@ -179,15 +182,21 @@ export class PrequalService {
         termMonths: cfg.term,
       });
 
+      // Calculate all-in APR including processing fee and 18% GST on financial fees
+      const baseFeeMinor = Math.round(principalMinor * (cfg.feePct / 100));
+      const gstOnFeeMinor = Math.round(baseFeeMinor * 0.18);
+      const totalFeesMinor = baseFeeMinor + gstOnFeeMinor;
+      const allInApr = calculateApr(principalMinor, emiCalc.monthlyPaymentMinor, cfg.term, totalFeesMinor);
+
       const offer = await OfferModel.create({
         prequalificationId,
         lenderId: `lnd_${randomId(8)}`,
         lenderName: cfg.name,
-        aprPct: cfg.baseRate,
+        aprPct: allInApr, // All-in APR including processing fee & GST
         termMonths: cfg.term,
         monthlyPaymentMinor: emiCalc.monthlyPaymentMinor,
         amountFinancedMinor: principalMinor,
-        totalCostOfCreditMinor: emiCalc.totalRepaymentMinor,
+        totalCostOfCreditMinor: emiCalc.totalRepaymentMinor + totalFeesMinor,
         contractorBuyDownMinor: cfg.buyDown,
         status: "active",
         expiresAt,

@@ -18,113 +18,114 @@ export async function seedDatabase(disconnectAfter = false) {
     await mongoose.connect(config.mongoUri);
   }
 
-  console.log("Seeding Equipment Directory (AHRI & Solar)...");
+  console.log("Seeding Equipment Directory (MNRE ALMM & Solar PV)...");
   await EquipmentModel.deleteMany({});
   await EquipmentModel.create([
     {
-      brand: "Mitsubishi Electric",
-      modelNumber: "MSZ-FS12NA",
-      ahriRefNumber: "20893412",
-      category: "heat_pump",
-      ratings: { seer2: 26.1, eer2: 15.0, hspf2: 11.5, coolingCapacityBtu: 12000, heatingCapacityBtu: 13600 },
-      isColdClimate: true,
+      brand: "Waaree Energies",
+      modelNumber: "WS-540-BIFACIAL",
+      ahriRefNumber: "BIS-R-41123456",
+      category: "solar_panel",
+      ratings: { solarWattage: 540, efficiencyPct: 21.3 },
+      isColdClimate: false,
       isEnergyStar: true,
-      verificationSource: "ahri",
-    },
-    {
-      brand: "Daikin",
-      modelNumber: "FIT-DZ17VSA",
-      ahriRefNumber: "20678129",
-      category: "heat_pump",
-      ratings: { seer2: 17.5, eer2: 11.2, hspf2: 9.5, coolingCapacityBtu: 36000, heatingCapacityBtu: 34000 },
-      isColdClimate: true,
-      isEnergyStar: true,
-      verificationSource: "ahri",
-    },
-    {
-      brand: "Bosch",
-      modelNumber: "BOVA-36HDN1",
-      ahriRefNumber: "20549103",
-      category: "heat_pump",
-      ratings: { seer2: 20.0, eer2: 12.5, hspf2: 10.0, coolingCapacityBtu: 36000, heatingCapacityBtu: 35000 },
-      isColdClimate: true,
-      isEnergyStar: true,
-      verificationSource: "ahri",
-    },
-    {
-      brand: "Carrier",
-      modelNumber: "25VNA436A003",
-      ahriRefNumber: "20784912",
-      category: "heat_pump",
-      ratings: { seer2: 24.0, eer2: 14.0, hspf2: 11.0, coolingCapacityBtu: 36000, heatingCapacityBtu: 36000 },
-      isColdClimate: true,
-      isEnergyStar: true,
-      verificationSource: "ahri",
+      verificationSource: "almm_portal",
     },
     {
       brand: "Tata Power Solar",
       modelNumber: "TP-DCR-550W",
+      ahriRefNumber: "BIS-R-41189012",
       category: "solar_panel",
-      ratings: { solarWattage: 550 },
+      ratings: { solarWattage: 550, efficiencyPct: 21.8 },
       isColdClimate: false,
       isEnergyStar: true,
-      verificationSource: "manual",
+      verificationSource: "almm_portal",
     },
     {
-      brand: "Enphase",
-      modelNumber: "IQ8PLUS-72-2-US",
-      category: "inverter",
-      ratings: {},
-      isColdClimate: true,
+      brand: "Adani Solar",
+      modelNumber: "AS-MONO-PERC-545W",
+      ahriRefNumber: "BIS-R-41199321",
+      category: "solar_panel",
+      ratings: { solarWattage: 545, efficiencyPct: 21.5 },
+      isColdClimate: false,
       isEnergyStar: true,
-      verificationSource: "manual",
+      verificationSource: "almm_portal",
+    },
+    {
+      brand: "Havells Enviro",
+      modelNumber: "ENV-HYB-5KW",
+      ahriRefNumber: "BIS-R-41209876",
+      category: "inverter",
+      ratings: { ratedOutputKw: 5.0, maxEfficiencyPct: 97.6 },
+      isColdClimate: false,
+      isEnergyStar: true,
+      verificationSource: "mnre_approved",
+    },
+    {
+      brand: "Enphase India",
+      modelNumber: "IQ8PLUS-72-2-IN",
+      ahriRefNumber: "BIS-R-41245566",
+      category: "inverter",
+      ratings: { ratedOutputKw: 0.35, maxEfficiencyPct: 97.0 },
+      isColdClimate: false,
+      isEnergyStar: true,
+      verificationSource: "mnre_approved",
+    },
+    {
+      brand: "Luminous",
+      modelNumber: "SOLARVERTER-PRO-3KW",
+      ahriRefNumber: "BIS-R-41233889",
+      category: "inverter",
+      ratings: { ratedOutputKw: 3.0, maxEfficiencyPct: 98.0 },
+      isColdClimate: false,
+      isEnergyStar: true,
+      verificationSource: "mnre_approved",
     },
   ]);
 
-  console.log("Seeding Active Incentive Programs (Post-Dec 2025 Compliant)...");
-  await IncentiveProgramModel.collection.drop().catch(() => {});
+  console.log("Seeding Active Clean Energy Incentive Programs...");
+  await IncentiveProgramModel.collection.drop().catch(() => { });
   await IncentiveProgramModel.create([
     {
-      name: "Mass Save Whole-Home Heat Pump Rebate",
-      authorityType: "utility",
-      state: "MA",
-      utilityProvider: "Eversource / National Grid",
-      rules: { equipmentCategories: ["heat_pump"], requireColdClimate: true, minSeer2: 16 },
-      amountStructure: { type: "fixed", valueMinor: 1000000 }, // $10,000
-      paymentTiming: "instant",
-      startDate: new Date("2026-01-01"),
-      isActive: true,
-    },
-    {
-      name: "NYS Clean Heat Cold-Climate Incentive",
-      authorityType: "state",
-      state: "NY",
-      utilityProvider: "ConEdison",
-      rules: { equipmentCategories: ["heat_pump"], requireColdClimate: true, minSeer2: 16 },
-      amountStructure: { type: "fixed", valueMinor: 800000 }, // $8,000
-      paymentTiming: "after_installation",
-      startDate: new Date("2026-01-01"),
-      isActive: true,
-    },
-    {
-      name: "Colorado Clean Energy Heat Pump Rebate",
-      authorityType: "state",
-      state: "CO",
-      utilityProvider: "Xcel Energy",
-      rules: { equipmentCategories: ["heat_pump"], minSeer2: 15 },
-      amountStructure: { type: "fixed", valueMinor: 400000 }, // $4,000
-      paymentTiming: "after_installation",
-      startDate: new Date("2026-01-01"),
-      isActive: true,
-    },
-    {
-      name: "PM Surya Ghar: Muft Bijli Yojana (Central Subsidy)",
+      name: "PM Surya Ghar: Muft Bijli Yojana (1 to 2 kW CFA)",
       authorityType: "federal",
-      state: "IN",
-      rules: { equipmentCategories: ["solar_panel"] },
-      amountStructure: { type: "fixed", valueMinor: 7800000 }, // ₹78,000 for 3kW
-      paymentTiming: "after_installation",
+      state: "NATIONAL",
+      rules: { equipmentCategories: ["solar_panel", "solar_pv", "inverter"] },
+      amountStructure: { type: "fixed", valueMinor: 6000000, maxCapMinor: 6000000 }, // ₹60,000
+      paymentTiming: "instant",
       startDate: new Date("2024-02-15"),
+      isActive: true,
+    },
+    {
+      name: "PM Surya Ghar: Muft Bijli Yojana (3 kW+ CFA)",
+      authorityType: "federal",
+      state: "NATIONAL",
+      rules: { equipmentCategories: ["solar_panel", "solar_pv", "inverter"] },
+      amountStructure: { type: "fixed", valueMinor: 7800000, maxCapMinor: 7800000 }, // ₹78,000
+      paymentTiming: "instant",
+      startDate: new Date("2024-02-15"),
+      isActive: true,
+    },
+    {
+      name: "State DISCOM Clean Energy Top-up Incentive (Maharashtra)",
+      authorityType: "state",
+      state: "MH",
+      utilityProvider: "MSEDCL",
+      rules: { equipmentCategories: ["solar_panel", "solar_pv"] },
+      amountStructure: { type: "fixed", valueMinor: 2000000 }, // ₹20,000
+      paymentTiming: "after_installation",
+      startDate: new Date("2024-04-01"),
+      isActive: true,
+    },
+    {
+      name: "UPNEDA Rooftop Solar Additional State Subsidy (Uttar Pradesh)",
+      authorityType: "state",
+      state: "UP",
+      utilityProvider: "PVVNL / DVVNL",
+      rules: { equipmentCategories: ["solar_panel", "solar_pv"] },
+      amountStructure: { type: "fixed", valueMinor: 1500000 }, // ₹15,000
+      paymentTiming: "after_installation",
+      startDate: new Date("2024-04-01"),
       isActive: true,
     },
   ]);

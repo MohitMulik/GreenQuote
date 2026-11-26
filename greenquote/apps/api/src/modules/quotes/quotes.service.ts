@@ -17,7 +17,8 @@ export interface CreateQuoteInput {
     streetAddress: string;
     city: string;
     state: string;
-    zipCode: string;
+    pinCode?: string;
+    zipCode?: string;
     existingHeatingFuel: string;
     electricUtility?: string;
   };
@@ -40,29 +41,36 @@ export class QuotesService {
     const enrichedOptions = [];
 
     for (const opt of input.options) {
-      // 1. Calculate eligible rebates
+      // 1. Detect if solar equipment is present in line items
+      const isSolar = input.currency === "INR" || opt.lineItems.some((li) =>
+        li.type === "equipment" && (li.label.toLowerCase().includes("solar") || li.label.toLowerCase().includes("inverter") || li.label.toLowerCase().includes("pv"))
+      );
+      const equipmentCat = isSolar ? "solar_pv" : "heat_pump";
+
+      // Calculate eligible incentives based on actual system category
       const incentives = await incentiveService.calculateEligibleIncentives({
         state: input.property.state,
-        equipmentCategory: "heat_pump",
+        equipmentCategory: equipmentCat,
       });
 
       // 2. Calculate savings estimate
       const savings = savingsService.calculateSavings({
-        category: "heat_pump",
+        category: isSolar ? "solar_panel" : "heat_pump",
         state: input.property.state,
         existingFuel: input.property.existingHeatingFuel,
+        solarCapacityKw: isSolar ? (opt.tier === "good" ? 2 : opt.tier === "better" ? 3 : 5) : undefined,
       });
 
-      // 3. Compute TILA-compliant Example EMI using centralized financing engine
-      // Standard example assumption: 10% down, 60 months, 7.99% APR (or 5.75% for INR)
-      const exampleRate = input.currency === "INR" ? 5.75 : 7.99;
+      // 3. Compute Example EMI using centralized financing engine
+      // Standard example assumption: 10% down, 60 months, 7.00% APR for INR (SBI clean energy rate) or 7.99% for USD
+      const exampleRate = input.currency === "INR" ? 7.00 : 7.99;
       const downPaymentMinor = Math.round(opt.priceMinor * 0.1);
 
       const mappedIncentives: IncentiveItem[] = incentives.map((item) => ({
         id: item.programmeId,
         name: item.name,
         amountMinor: item.amountMinor,
-        category: item.paymentTiming === "instant" ? "pos_utility_rebate" : "post_install_rebate",
+        category: item.paymentTiming === "instant" ? "pm_surya_ghar_cfa" : "post_install_rebate",
         timing: item.paymentTiming,
       }));
 

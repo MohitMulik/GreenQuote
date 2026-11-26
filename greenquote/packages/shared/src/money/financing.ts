@@ -1,8 +1,10 @@
-import { calculateEmiSafe } from "./calculator.js";
+import { calculateEmiSafe, calculateApr } from "./calculator.js";
 
 export type IncentiveCategory =
-  | "pos_utility_rebate"      // Instant Point-of-Sale Utility Rebate (e.g. Mass Save, TECH Clean CA) -> deducted immediately
-  | "federal_tax_credit"      // Claimed post-installation on tax return (IRA Section 25C / 25D) -> NEVER deducted at POS
+  | "pm_surya_ghar_cfa"       // PM Surya Ghar Muft Bijli Yojana Central Financial Assistance (DBT)
+  | "state_discom_subsidy"    // State nodal / SERC additional clean energy incentive
+  | "pos_utility_rebate"      // Instant Point-of-Sale Utility Rebate -> deducted immediately
+  | "federal_tax_credit"      // Claimed post-installation on tax return -> NEVER deducted at POS
   | "state_tax_credit"        // Claimed on state tax return -> NEVER deducted at POS
   | "post_install_rebate";    // Paid by check/direct deposit to homeowner months after install -> NOT deducted at POS
 
@@ -67,6 +69,60 @@ export interface FinancingCalculationResult {
     posDeductionExplanation: string;
     taxCreditNotice: string;
     isZeroFinanced: boolean;
+  };
+}
+
+/**
+ * PM Surya Ghar: Muft Bijli Yojana Central Financial Assistance (CFA) calculation.
+ * 
+ * Statutory formula under MNRE Guidelines:
+ * CFA = min(kW, 2) × ₹30,000 + min(max(kW - 2, 0), 1) × ₹18,000
+ * Maximum CFA = ₹78,000 for residential rooftop solar (cap at 3 kW).
+ * 
+ * Returns amount in minor units (paise).
+ * e.g., 1 kW -> 30,000 * 100 = 3,000,000 paise (₹30,000)
+ *       2 kW -> 60,000 * 100 = 6,000,000 paise (₹60,000)
+ *       3 kW -> 78,000 * 100 = 7,800,000 paise (₹78,000)
+ *       5 kW -> 78,000 * 100 = 7,800,000 paise (₹78,000, capped)
+ *       0 kW or negative or invalid -> 0
+ */
+export function calculatePmSuryaGharCfa(capacityKw: number): {
+  capacityKw: number;
+  cfaAmountMinor: number;
+  cfaAmountRupees: number;
+  isCapped: boolean;
+  tier1CfaMinor: number;
+  tier2CfaMinor: number;
+} {
+  if (!Number.isFinite(capacityKw) || capacityKw <= 0) {
+    return {
+      capacityKw: 0,
+      cfaAmountMinor: 0,
+      cfaAmountRupees: 0,
+      isCapped: false,
+      tier1CfaMinor: 0,
+      tier2CfaMinor: 0,
+    };
+  }
+
+  // Tier 1: Up to 2 kW @ ₹30,000 / kW
+  const tier1Kw = Math.min(capacityKw, 2);
+  const tier1Rupees = tier1Kw * 30000;
+
+  // Tier 2: Above 2 kW and up to 3 kW @ ₹18,000 / kW
+  const tier2Kw = Math.min(Math.max(capacityKw - 2, 0), 1);
+  const tier2Rupees = tier2Kw * 18000;
+
+  const totalRupees = Math.min(78000, Math.round(tier1Rupees + tier2Rupees));
+  const isCapped = capacityKw >= 3;
+
+  return {
+    capacityKw,
+    cfaAmountMinor: totalRupees * 100,
+    cfaAmountRupees: totalRupees,
+    isCapped,
+    tier1CfaMinor: Math.round(tier1Rupees * 100),
+    tier2CfaMinor: Math.round(tier2Rupees * 100),
   };
 }
 
@@ -148,9 +204,16 @@ export function calculateFinancingBreakdown(input: FinancingCalculationInput): F
   if (input.incentives && Array.isArray(input.incentives)) {
     for (const inc of input.incentives) {
       const amount = Math.max(0, Math.round(inc.amountMinor || 0));
-      if (inc.timing === "instant" && inc.category === "pos_utility_rebate") {
+      if (
+        inc.timing === "instant" &&
+        (inc.category === "pos_utility_rebate" || inc.category === "pm_surya_ghar_cfa")
+      ) {
         posRebatesMinor += amount;
-      } else if (inc.category === "federal_tax_credit" || inc.category === "state_tax_credit") {
+      } else if (
+        inc.category === "federal_tax_credit" ||
+        inc.category === "state_tax_credit" ||
+        inc.category === "state_discom_subsidy"
+      ) {
         taxCreditsMinor += amount;
       } else {
         postInstallRebatesMinor += amount;
@@ -287,9 +350,16 @@ export function calculateEligibleIncentives(incentives?: IncentiveItem[]): {
   if (incentives && Array.isArray(incentives)) {
     for (const inc of incentives) {
       const amount = Math.max(0, Math.round(inc.amountMinor || 0));
-      if (inc.timing === "instant" && inc.category === "pos_utility_rebate") {
+      if (
+        inc.timing === "instant" &&
+        (inc.category === "pos_utility_rebate" || inc.category === "pm_surya_ghar_cfa")
+      ) {
         upfrontRebatesMinor += amount;
-      } else if (inc.category === "federal_tax_credit" || inc.category === "state_tax_credit") {
+      } else if (
+        inc.category === "federal_tax_credit" ||
+        inc.category === "state_tax_credit" ||
+        inc.category === "state_discom_subsidy"
+      ) {
         futureTaxCreditsMinor += amount;
       } else {
         postInstallMinor += amount;
@@ -402,5 +472,170 @@ export function validateBuyDown(
     isWithinCap,
     maxAllowedMinor,
     clampedMinor,
+  };
+}
+
+/**
+ * Subsidy Treatment Models for Indian Clean Energy Lending:
+ * 
+ * 1. "gross_financing_future_receipt":
+ *    Loan covers entire gross balance (Gross Price - Down Payment).
+ *    Homeowner receives CFA directly in bank account post-inspection/commissioning.
+ * 
+ * 2. "subsidy_part_prepayment":
+ *    Loan initially finances (Gross Price - Down Payment).
+ *    When CFA is credited to borrower's account, it is applied as a part-prepayment,
+ *    reducing remaining principal, tenure, or monthly EMI without penalty.
+ * 
+ * 3. "bridge_financing":
+ *    Optional bank/lender-dependent bridge loan covering the upfront subsidy portion
+ *    pending DBT release, clearly marked as a lender-specific capability.
+ */
+export type SubsidyFinancingTreatment =
+  | "gross_financing_future_receipt"
+  | "subsidy_part_prepayment"
+  | "bridge_financing";
+
+export interface IndianSolarLoanBreakdownInput {
+  grossProjectPriceMinor: number;
+  solarCapacityKw: number;
+  downPaymentMinor: number;
+  annualRatePct: number;
+  termMonths: number;
+  processingFeePct?: number; // e.g. 1.0% processing fee
+  gstPctOnFees?: number;     // e.g. 18.0% GST on banking fees
+  treatment?: SubsidyFinancingTreatment;
+}
+
+export interface IndianSolarLoanBreakdownResult {
+  grossProjectPriceMinor: number;
+  solarCapacityKw: number;
+  eligibleCfaMinor: number;
+  eligibleCfaRupees: number;
+  
+  // Down payment & Principal
+  requestedDownPaymentMinor: number;
+  clampedDownPaymentMinor: number;
+  
+  // Fees & GST
+  processingFeeRatePct: number;
+  baseProcessingFeeMinor: number;
+  gstOnProcessingFeeMinor: number;
+  totalUpfrontBankingChargesMinor: number;
+  
+  // Loan Amounts based on treatment
+  treatment: SubsidyFinancingTreatment;
+  initialPrincipalMinor: number;
+  
+  // Amortization & Repayment
+  annualRatePct: number;
+  termMonths: number;
+  monthlyEmiMinor: number;
+  totalRepaymentMinor: number;
+  totalInterestMinor: number;
+  totalCostOfCreditMinor: number; // totalRepayment + totalUpfrontBankingCharges
+  
+  // All-in APR including processing fee & 18% GST
+  nominalRatePct: number;
+  allInAprPct: number;
+  
+  // Subsidy Post-Credit Simulation (for subsidy_part_prepayment)
+  postSubsidyPrincipalMinor: number;
+  postSubsidyMonthlyEmiMinor: number;
+  postSubsidyInterestSavingsMinor: number;
+}
+
+export function calculateIndianSolarFinancing(
+  input: IndianSolarLoanBreakdownInput
+): IndianSolarLoanBreakdownResult {
+  const grossPrice = Math.max(0, Math.round(input.grossProjectPriceMinor || 0));
+  const cfa = calculatePmSuryaGharCfa(input.solarCapacityKw);
+  const eligibleCfaMinor = cfa.cfaAmountMinor;
+  
+  const treatment = input.treatment || "gross_financing_future_receipt";
+  const requestedDownPayment = Math.max(0, Math.round(input.downPaymentMinor || 0));
+  const clampedDownPayment = Math.min(requestedDownPayment, grossPrice);
+  
+  // Under Indian banking standards, primary loan finances (Gross - DownPayment)
+  // For bridge_financing, upfront subsidy is bridged by the lender
+  let initialPrincipalMinor: number;
+  if (treatment === "bridge_financing") {
+    const netAfterSubsidy = Math.max(0, grossPrice - eligibleCfaMinor);
+    initialPrincipalMinor = Math.max(0, netAfterSubsidy - Math.min(clampedDownPayment, netAfterSubsidy));
+  } else {
+    // Gross financing / Part prepayment
+    initialPrincipalMinor = Math.max(0, grossPrice - clampedDownPayment);
+  }
+
+  // Fees and GST (18% on financial services under Indian GST)
+  const feePct = input.processingFeePct !== undefined ? Math.max(0, input.processingFeePct) : 1.0; // default 1%
+  const gstPct = input.gstPctOnFees !== undefined ? Math.max(0, input.gstPctOnFees) : 18.0;       // default 18%
+  
+  const baseProcessingFeeMinor = Math.round(initialPrincipalMinor * (feePct / 100));
+  const gstOnProcessingFeeMinor = Math.round(baseProcessingFeeMinor * (gstPct / 100));
+  const totalUpfrontBankingChargesMinor = baseProcessingFeeMinor + gstOnProcessingFeeMinor;
+
+  // EMI & Repayment
+  const rate = Math.max(0, Number(input.annualRatePct) || 0);
+  const term = Math.max(1, Math.round(input.termMonths || 60));
+  
+  const emiResult = calculateEmiSafe({
+    amountFinancedMinor: initialPrincipalMinor,
+    annualRatePct: rate,
+    termMonths: term,
+  });
+
+  const monthlyEmiMinor = emiResult.monthlyPaymentMinor;
+  const totalRepaymentMinor = emiResult.totalRepaymentMinor;
+  const totalInterestMinor = emiResult.totalInterestMinor;
+  const totalCostOfCreditMinor = totalRepaymentMinor + totalUpfrontBankingChargesMinor;
+
+  // Actuarial All-In APR calculation including prepaid finance charges (Fee + GST)
+  const allInAprPct = calculateApr(
+    initialPrincipalMinor,
+    monthlyEmiMinor,
+    term,
+    totalUpfrontBankingChargesMinor
+  );
+
+  // Post-Subsidy Prepayment Simulation
+  const postSubsidyPrincipalMinor = Math.max(0, initialPrincipalMinor - eligibleCfaMinor);
+  let postSubsidyMonthlyEmiMinor = 0;
+  let postSubsidyInterestSavingsMinor = 0;
+  
+  if (postSubsidyPrincipalMinor > 0 && initialPrincipalMinor > 0) {
+    const postEmi = calculateEmiSafe({
+      amountFinancedMinor: postSubsidyPrincipalMinor,
+      annualRatePct: rate,
+      termMonths: term,
+    });
+    postSubsidyMonthlyEmiMinor = postEmi.monthlyPaymentMinor;
+    postSubsidyInterestSavingsMinor = Math.max(0, totalInterestMinor - postEmi.totalInterestMinor);
+  }
+
+  return {
+    grossProjectPriceMinor: grossPrice,
+    solarCapacityKw: input.solarCapacityKw,
+    eligibleCfaMinor,
+    eligibleCfaRupees: cfa.cfaAmountRupees,
+    requestedDownPaymentMinor: requestedDownPayment,
+    clampedDownPaymentMinor: clampedDownPayment,
+    processingFeeRatePct: feePct,
+    baseProcessingFeeMinor,
+    gstOnProcessingFeeMinor,
+    totalUpfrontBankingChargesMinor,
+    treatment,
+    initialPrincipalMinor,
+    annualRatePct: rate,
+    termMonths: term,
+    monthlyEmiMinor,
+    totalRepaymentMinor,
+    totalInterestMinor,
+    totalCostOfCreditMinor,
+    nominalRatePct: rate,
+    allInAprPct,
+    postSubsidyPrincipalMinor,
+    postSubsidyMonthlyEmiMinor,
+    postSubsidyInterestSavingsMinor,
   };
 }

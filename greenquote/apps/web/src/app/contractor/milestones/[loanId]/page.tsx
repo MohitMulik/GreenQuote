@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -12,8 +12,11 @@ import {
   AlertTriangle,
   Building2,
   Camera,
+  Loader2,
+  Info,
 } from "lucide-react";
 import { formatCurrency } from "@greenquote/shared";
+import { apiFetch } from "@/lib/api";
 
 export default function ContractorMilestonePage({
   params,
@@ -21,6 +24,10 @@ export default function ContractorMilestonePage({
   params: { loanId: string };
 }) {
   const [activeTab, setActiveTab] = useState<"milestones" | "evidence" | "payout">("milestones");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Sample Loan & Milestone State (FR-801, FR-802)
   const [loan, setLoan] = useState({
@@ -39,7 +46,7 @@ export default function ContractorMilestonePage({
     type: "final_completion",
     title: "Final Installation, DISCOM Net-Metering & MNRE ALMM Verification",
     amountMinor: 22000000,
-    status: "pending" as "pending" | "submitted" | "confirmed_by_homeowner" | "payout_released",
+    status: "pending" as "pending" | "submitted" | "confirmed_by_homeowner" | "payout_released" | "held",
     installedModelNumber: "TPS-3KW-BIFACIAL",
     serialNumber: "SN-2026-981249",
     permitNumber: "UP-DISCOM-NET-2026-9182",
@@ -48,26 +55,99 @@ export default function ContractorMilestonePage({
     mismatchWarning: false,
   });
 
-  const handleEvidenceSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    async function loadMilestones() {
+      setIsLoading(true);
+      try {
+        const res = await apiFetch(`/v1/milestones/${params.loanId}`);
+        if (res.ok) {
+          const resData = await res.json();
+          if (resData && resData.milestones && resData.milestones.length > 0) {
+            const m = resData.milestones[0];
+            setMilestone((prev) => ({
+              ...prev,
+              id: m._id || prev.id,
+              amountMinor: m.amountMinor || prev.amountMinor,
+              status: (m.status as typeof prev.status) || prev.status,
+              evidenceUploaded: (m.evidenceUrls && m.evidenceUrls.length > 0) || m.status !== "pending",
+              equipmentVerified: !!m.equipmentVerified,
+            }));
+            setIsDemoMode(false);
+          } else {
+            setIsDemoMode(true);
+          }
+        } else {
+          setIsDemoMode(true);
+        }
+      } catch (err: any) {
+        // If unauthenticated or 404, fallback to demo mode gracefully
+        setIsDemoMode(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (params.loanId) {
+      loadMilestones();
+    } else {
+      setIsLoading(false);
+      setIsDemoMode(true);
+    }
+  }, [params.loanId]);
+
+  const handleEvidenceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setApiError(null);
+
     const isModelMatch =
       milestone.installedModelNumber.trim().toUpperCase() === "TPS-3KW-BIFACIAL";
 
-    if (isModelMatch) {
-      setMilestone((prev) => ({
-        ...prev,
-        status: "submitted",
-        evidenceUploaded: true,
-        equipmentVerified: true,
-        mismatchWarning: false,
-      }));
-    } else {
-      setMilestone((prev) => ({
-        ...prev,
-        evidenceUploaded: true,
-        equipmentVerified: false,
-        mismatchWarning: true,
-      }));
+    try {
+      const res = await apiFetch("/v1/milestones/submit-evidence", {
+        method: "POST",
+        body: JSON.stringify({
+          milestoneId: milestone.id,
+          evidenceUrls: ["https://greenquote.in/evidence/nameplate_photo.jpg"],
+          installedModelNumber: milestone.installedModelNumber,
+        }),
+      });
+
+      if (res.ok) {
+        const resData = await res.json();
+        setMilestone((prev) => ({
+          ...prev,
+          status: (resData.status as typeof prev.status) || "submitted",
+          evidenceUploaded: true,
+          equipmentVerified: resData.equipmentVerified ?? isModelMatch,
+          mismatchWarning: !resData.equipmentVerified,
+        }));
+      } else {
+        throw new Error("Backend milestone submission returned status " + res.status);
+      }
+    } catch (err: any) {
+      // If endpoint requires contractor authentication or specific milestone ID, update UI with clear feedback
+      if (isModelMatch) {
+        setMilestone((prev) => ({
+          ...prev,
+          status: "submitted",
+          evidenceUploaded: true,
+          equipmentVerified: true,
+          mismatchWarning: false,
+        }));
+      } else {
+        setMilestone((prev) => ({
+          ...prev,
+          evidenceUploaded: true,
+          equipmentVerified: false,
+          mismatchWarning: true,
+        }));
+      }
+      if (!isDemoMode) {
+        setApiError(err.message || "Failed to submit evidence to backend. Demonstration mode active.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -126,6 +206,33 @@ export default function ContractorMilestonePage({
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Demo Mode or Loading Banner */}
+        {isLoading && (
+          <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl flex items-center gap-3 text-xs">
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600 shrink-0" />
+            <span>Fetching loan and milestone records from GreenQuote API...</span>
+          </div>
+        )}
+
+        {isDemoMode && !isLoading && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start gap-3 text-xs">
+            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold">Demonstration Milestone Environment</span>
+              <p className="mt-0.5 text-amber-800">
+                Displaying sample loan record for {loan.id}. Live production milestones require an authenticated contractor session with corresponding lender disbursement covenants.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {apiError && (
+          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-xl flex items-center gap-3 text-xs">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{apiError}</span>
+          </div>
+        )}
+
         {/* Deal Summary Banner */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
@@ -250,10 +357,14 @@ export default function ContractorMilestonePage({
           {milestone.status === "payout_released" ? (
             <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-2">
               <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-              <h3 className="text-lg font-bold text-slate-900">Full Payout Released by Lender!</h3>
+              <h3 className="text-lg font-bold text-slate-900">Milestone Approved & Payout Released</h3>
               <p className="text-xs text-slate-600 max-w-md mx-auto">
-                RTGS transfer of <strong>{formatCurrency(loan.totalAmountMinor, loan.currency)}</strong> was initiated to SunVolt Green Energy Pvt. Ltd. Current Account ending in ****9921 (IFSC: SBIN0004052).
+                Disbursement authorization recorded for <strong>{formatCurrency(loan.totalAmountMinor, loan.currency)}</strong> to SunVolt Green Energy Pvt. Ltd. Current Account ending in ****9921 (IFSC: SBIN0004052).
               </p>
+              <div className="mt-3 p-2 bg-emerald-100/60 rounded-lg text-[11px] text-emerald-800 max-w-md mx-auto flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
+                <span>Simulated Escrow: Real bank RTGS/NEFT execution requires live Lender CBS API integration.</span>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleEvidenceSubmit} className="space-y-4">

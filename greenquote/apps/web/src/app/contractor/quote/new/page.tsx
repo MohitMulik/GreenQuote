@@ -23,6 +23,7 @@ import {
   calculateEmiSafe,
   formatCurrency,
 } from "@greenquote/shared";
+import { apiFetch } from "@/lib/api";
 
 interface LineItem {
   id: string;
@@ -46,6 +47,11 @@ export default function QuoteBuilderPage() {
   const [propertyAddress, setPropertyAddress] = useState("B-42, Sector 62, Noida, Uttar Pradesh 201309");
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [quoteSent, setQuoteSent] = useState(false);
+  const [createdQuoteId, setCreatedQuoteId] = useState<string | null>(null);
+  const [createdQuoteToken, setCreatedQuoteToken] = useState<string>("demo-token");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [smsNotice, setSmsNotice] = useState<string | null>(null);
 
   // Autosave and Version History State (Contractor Portal Improvements)
   const [lastAutosaved, setLastAutosaved] = useState("Just now");
@@ -221,8 +227,101 @@ export default function QuoteBuilderPage() {
     }));
   };
 
-  const handleSendQuote = () => {
-    setQuoteSent(true);
+  const handleSendQuote = async () => {
+    if (isSubmitting) return; // Prevent duplicate submission
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSmsNotice(null);
+
+    try {
+      // 1. Build options payload matching CreateQuoteSchema
+      const tiersKeys: Array<"good" | "better" | "best"> = ["good", "better", "best"];
+      const optionsPayload = tiersKeys.map((tierKey) => {
+        const tier = tiers[tierKey];
+        const lineItems = tier.items.map((item) => ({
+          type: item.type,
+          label: item.label,
+          amountMinor: item.amount * 100,
+        }));
+        const priceMinor = lineItems.reduce((acc, curr) => acc + curr.amountMinor, 0);
+
+        return {
+          tier: tierKey,
+          title: tier.title,
+          description: tier.savingsEst,
+          priceMinor,
+          lineItems,
+          incentives: [
+            {
+              programmeId: `prog_cfa_${tierKey}`,
+              name: "PM Surya Ghar Central Subsidy (CFA)",
+              amountMinor: tier.rebate * 100,
+              paid: "instant" as const,
+              conditions: "Residential rooftop solar consumer registration on National Portal",
+            },
+          ],
+        };
+      });
+
+      const payload = {
+        currency: "INR",
+        homeowner: {
+          fullName: customerName,
+          phone: customerPhone,
+          email: customerEmail,
+        },
+        property: {
+          streetAddress: propertyAddress.slice(0, 100) || "Plot 42, Sector 62",
+          city: "Noida",
+          state: "UP",
+          pinCode: "201309",
+          existingHeatingFuel: "grid_electric",
+          electricUtility: "PVVNL",
+        },
+        options: optionsPayload,
+      };
+
+      // 2. Persist quote via POST /v1/quotes
+      const quoteRes = await apiFetch("/v1/quotes", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (!quoteRes.ok) {
+        const errJson = await quoteRes.json().catch(() => ({}));
+        throw new Error(errJson.message || `Failed to create quote (HTTP ${quoteRes.status})`);
+      }
+
+      const quoteData = await quoteRes.json();
+      const quoteId = quoteData._id;
+      const linkToken = quoteData.linkToken || "demo-token";
+
+      setCreatedQuoteId(quoteId);
+      setCreatedQuoteToken(linkToken);
+
+      // 3. Dispatch / Send quote via POST /v1/quotes/:id/send
+      const sendRes = await apiFetch(`/v1/quotes/${quoteId}/send`, {
+        method: "POST",
+      });
+
+      if (sendRes.ok) {
+        const sendData = await sendRes.json();
+        if (sendData.link) {
+          const extractedToken = sendData.link.replace("/quote/", "");
+          setCreatedQuoteToken(extractedToken);
+        }
+        setSmsNotice("Quote link generated and bound to homeowner phone. (SMS gateway integration required for cellular delivery).");
+      } else {
+        setSmsNotice("Quote saved successfully in cloud database. Direct SMS dispatch requires SMS gateway credentials.");
+      }
+
+      setQuoteSent(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to save quote";
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -297,31 +396,52 @@ export default function QuoteBuilderPage() {
           {!isPresentationMode && (
             <button
               onClick={handleSendQuote}
-              className="flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-sm transition"
+              disabled={isSubmitting}
+              className={`flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-sm transition ${
+                isSubmitting ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             >
               <Send className="w-4 h-4" />
-              <span>Send to Homeowner</span>
+              <span>{isSubmitting ? "Persisting & Generating Link..." : "Send to Homeowner"}</span>
             </button>
           )}
         </div>
       </header>
 
+      {/* Submit Error Banner */}
+      {submitError && (
+        <div className="max-w-7xl mx-auto px-6 pt-6">
+          <div className="bg-red-50 border border-red-300 text-red-900 rounded-xl p-4 flex items-center justify-between text-xs">
+            <span>
+              <strong>Submission Error:</strong> {submitError} (Make sure you are logged in as an active contractor)
+            </span>
+            <Link href="/contractor/login" className="underline font-bold text-red-900">
+              Sign In →
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Quote Sent Banner */}
       {quoteSent && (
         <div className="max-w-7xl mx-auto px-6 pt-6">
-          <div className="bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center space-x-3">
-              <Check className="w-5 h-5 text-emerald-600" />
+              <Check className="w-5 h-5 text-emerald-600 shrink-0" />
               <div>
-                <p className="font-bold">Quote Link Sent Successfully!</p>
+                <p className="font-bold">Quote Persisted & Generated Successfully!</p>
                 <p className="text-xs text-emerald-700">
-                  SMS and Email dispatched to {customerPhone}. Secure OTP access enabled.
+                  {smsNotice || `Bound to recipient phone: ${customerPhone}`}
+                </p>
+                <p className="text-[11px] text-emerald-800 font-mono mt-0.5">
+                  Secure Token: {createdQuoteToken}
                 </p>
               </div>
             </div>
             <Link
-              href="/quote/demo-token"
-              className="text-xs font-semibold bg-emerald-700 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-800 transition"
+              href={`/quote/${createdQuoteToken}`}
+              target="_blank"
+              className="text-xs font-semibold bg-emerald-700 text-white px-4 py-2 rounded-lg hover:bg-emerald-800 transition shrink-0"
             >
               Open Homeowner View →
             </Link>
@@ -504,10 +624,10 @@ export default function QuoteBuilderPage() {
                         <button
                           onClick={() => setShowEquipmentSelector(tierKey)}
                           className="text-xs text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-1 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded transition"
-                          title="Insert equipment from certified AHRI directory"
+                          title="Insert equipment from certified MNRE ALMM directory"
                         >
                           <Cpu className="w-3 h-3" />
-                          <span>AHRI Catalog</span>
+                          <span>ALMM Catalog</span>
                         </button>
                         <button
                           onClick={() => addLineItem(tierKey)}
@@ -704,7 +824,7 @@ export default function QuoteBuilderPage() {
                         <span>·</span>
                         <span>HSPF2: {equip.hspf2}</span>
                         <span>·</span>
-                        <span className="text-slate-700">${equip.suggestedPrice.toLocaleString()} est.</span>
+                        <span className="text-slate-700">₹{equip.suggestedPrice.toLocaleString("en-IN")} est.</span>
                       </div>
                     </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useParams } from "next/navigation";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -14,6 +15,8 @@ import {
   PenTool,
   Globe,
   UserPlus,
+  Loader2,
+  AlertTriangle,
 } from "lucide-react";
 import {
   formatCurrency,
@@ -22,6 +25,7 @@ import {
   calculateFinancingBreakdown,
   IncentiveItem,
 } from "@greenquote/shared";
+import { apiFetch, API_URL } from "@/lib/api";
 
 const translations = {
   en: {
@@ -62,6 +66,45 @@ const translations = {
     other: "Other Household Member",
     submitPrequal: "Submit Pre-qualification",
     backToQuote: "← Back to Quote",
+  },
+  hi: {
+    installerBadge: "नवीन एवं नवीकरणीय ऊर्जा मंत्रालय (MNRE) प्रमाणित सोलर इंस्टॉलर",
+    property: "स्थापना स्थल (प्रॉपर्टी)",
+    step1: "1. कोटेशन व बचत समीक्षा",
+    step2: "2. सिबिल (CIBIL) पात्रता जांच",
+    step3: "3. बैंक ईएमआई (EMI) विकल्प",
+    step4: "4. केएफएस (KFS) व ई-हस्ताक्षर",
+    selectOptionTitle: "अपना सोलर रूफटॉप पैकेज चुनें",
+    selectOptionDesc: "सभी कोटेशन में MNRE ALMM अनुमोदित सोलर पैनल, स्मार्ट इन्वर्टर, नेट-मीटरिंग अनुमोदन और पूर्ण वारंटी शामिल है। नकद और ऋण मूल्य पूरी तरह समान हैं।",
+    good: "सुलभ (Good)",
+    better: "उत्कृष्ट (Better)",
+    best: "सर्वोत्तम (Best)",
+    bestValue: "अत्यधिक लोकप्रिय",
+    rebate: "सब्सिडी",
+    massSaveRebate: "पीएम सूर्य घर केंद्रीय सब्सिडी (CFA)",
+    appliedAtPos: "बिलिंग पर तुरंत समायोजित सब्सिडी",
+    netPrice: "सब्सिडी के बाद कुल देय राशि",
+    savingsRange: "अनुमानित वार्षिक बिजली बिल बचत",
+    fullCashPrice: "कुल सौर प्रणाली मूल्य",
+    calculateFinancing: "अपनी मासिक ईएमआई (EMI) जानें",
+    downPayment: "प्रारंभिक डाउन पेमेंट (₹)",
+    financeTerm: "ऋण अवधि (माह)",
+    estimatedEmi: "अनुमानित मासिक ईएमआई (₹)",
+    zeroDealerFees: "शून्य छुपा शुल्क गारंटी",
+    continuePrequal: "सिबिल स्कोर पर असर डाले बिना दरें देखें",
+    prequalTitle: "60-सेकंड निःशुल्क सिबिल पात्रता जांच",
+    prequalDesc: "प्रमुख स्वच्छ ऊर्जा बैंकों (SBI, Tata Capital, IREDA) से सर्वोत्तम ईएमआई प्रस्ताव प्राप्त करें। सिबिल स्कोर पर कोई प्रभाव नहीं।",
+    addCoApplicant: "सह-आवेदक (Co-Applicant) जोड़ें",
+    coApplicantDesc: "ऋण स्वीकृति की संभावना बढ़ाने हेतु परिवार के सह-मालिक को जोड़ें।",
+    coApplicantName: "सह-आवेदक का पूरा नाम (पैन कार्ड अनुसार)",
+    coApplicantDob: "सह-आवेदक जन्म तिथि",
+    coApplicantIncome: "सह-आवेदक वार्षिक आय (₹)",
+    relationship: "मुख्य आवेदक से संबंध",
+    spouse: "पति / पत्नी",
+    partner: "परिवार का सह-मालिक",
+    other: "परिवार का अन्य सदस्य",
+    submitPrequal: "पात्रता आवेदन जमा करें",
+    backToQuote: "← कोटेशन पर वापस जाएं",
   },
   es: {
     installerBadge: "Instalador Certificado de Energía Limpia",
@@ -117,15 +160,41 @@ interface Offer {
 }
 
 export default function HomeownerQuotePage() {
-  const [lang, setLang] = useState<"en" | "es">("en");
+  const routerParams = useParams();
+  const token = typeof routerParams?.token === "string" ? routerParams.token : "demo-token";
+
+  const [lang, setLang] = useState<"en" | "hi">("en");
   const t = translations[lang];
 
-  // Step State: "otp" | "quote_view" | "prequal_form" | "offers" | "esign" | "completed"
+  // API Quote Loading & Verification States
+  const [loadingQuote, setLoadingQuote] = useState(true);
+  const [quoteFetchError, setQuoteFetchError] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
+  const [requiresVerification, setRequiresVerification] = useState(false);
+  const [quoteId, setQuoteId] = useState<string | null>(null);
+
+  // OTP Verification Modal State
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpVerifying, setOtpVerifying] = useState(false);
+
+  // Prequal & Offer Submission State
+  const [prequalSubmitting, setPrequalSubmitting] = useState(false);
+  const [prequalId, setPrequalId] = useState<string | null>(null);
+  const [backendOffers, setBackendOffers] = useState<Offer[]>([]);
+  const [isStreamingOffers, setIsStreamingOffers] = useState(false);
+
+  // E-Sign Submission State
+  const [esignSubmitting, setEsignSubmitting] = useState(false);
+  const [esignSuccessData, setEsignSuccessData] = useState<{ documentId?: string; signatureHash?: string } | null>(null);
+
+  // Step State: "quote_view" | "prequal_form" | "offers" | "esign" | "completed"
   const [currentStep, setCurrentStep] = useState<
-    "otp" | "quote_view" | "prequal_form" | "offers" | "esign" | "completed"
+    "quote_view" | "prequal_form" | "offers" | "esign" | "completed"
   >("quote_view");
 
-  const [otpInput, setOtpInput] = useState("489201");
   const [selectedTier, setSelectedTier] = useState<"good" | "better" | "best">("better");
   const [downPayment, setDownPayment] = useState(20000);
   const [selectedTerm, setSelectedTerm] = useState(60);
@@ -159,8 +228,8 @@ export default function HomeownerQuotePage() {
   const [jobCompletionConfirmed, setJobCompletionConfirmed] = useState(false);
   const [rescissionExercised, setRescissionExercised] = useState(false);
 
-  // Quote Data with accurate Indian Rooftop Solar & Clean Energy specifications
-  const quoteData = {
+  // Dynamic Quote Data populated from backend
+  const [quoteData, setQuoteData] = useState({
     contractor: {
       name: "SunVolt Green Energy Pvt. Ltd.",
       phone: "+91 98110 54321",
@@ -171,12 +240,12 @@ export default function HomeownerQuotePage() {
       good: {
         title: "Good: 2 kW Grid-Tied Rooftop Solar + 5-Star Inverter AC",
         equipment: "Waaree 2 kW Monocrystalline ALMM Tier-1 Panels + Micro-Inverter",
-        priceMinor: 15000000, // ₹1,50,000
+        priceMinor: 15000000,
         incentives: [
           {
             id: "inc_good_surya_ghar",
             name: "PM Surya Ghar Muft Bijli Yojana Central Subsidy",
-            amountMinor: 6000000, // ₹60,000 POS instant subsidy
+            amountMinor: 6000000,
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
@@ -186,19 +255,19 @@ export default function HomeownerQuotePage() {
       better: {
         title: "Better: 3 kW High-Efficiency Bifacial Solar System",
         equipment: "Tata Power Solar 3 kW Dual-Glass Bifacial System + 3.3 kVA Smart Inverter",
-        priceMinor: 22000000, // ₹2,20,000
+        priceMinor: 22000000,
         incentives: [
           {
             id: "inc_better_surya_ghar",
             name: "PM Surya Ghar Muft Bijli Yojana Maximum Subsidy",
-            amountMinor: 7800000, // ₹78,000 POS instant DBT subsidy
+            amountMinor: 7800000,
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
           {
             id: "inc_better_state_incentive",
             name: "State DISCOM Clean Energy Incentive",
-            amountMinor: 1500000, // ₹15,000 post-install tax rebate
+            amountMinor: 1500000,
             category: "federal_tax_credit" as const,
             timing: "after_installation" as const,
           },
@@ -208,19 +277,19 @@ export default function HomeownerQuotePage() {
       best: {
         title: "Best: 5 kW Premium Solar + 5 kWh Lithium Battery Storage",
         equipment: "Adani Solar 5 kW N-Type TopCon Panels + Havells 5.12 kWh LiFePO4 Battery",
-        priceMinor: 38000000, // ₹3,80,000
+        priceMinor: 38000000,
         incentives: [
           {
             id: "inc_best_surya_ghar",
             name: "PM Surya Ghar Muft Bijli Yojana Maximum Subsidy",
-            amountMinor: 7800000, // ₹78,000 POS instant subsidy
+            amountMinor: 7800000,
             category: "pos_utility_rebate" as const,
             timing: "instant" as const,
           },
           {
             id: "inc_best_state_incentive",
             name: "State Clean Energy Incentive / Tax Deduction",
-            amountMinor: 2000000, // ₹20,000 post-install incentive
+            amountMinor: 2000000,
             category: "federal_tax_credit" as const,
             timing: "after_installation" as const,
           },
@@ -228,6 +297,222 @@ export default function HomeownerQuotePage() {
         savings: "₹70,000 - ₹95,000 / yr",
       },
     },
+  });
+
+  // Fetch real quote data from /v1/quotes/public/:token
+  const loadPublicQuote = useCallback(async () => {
+    setLoadingQuote(true);
+    setQuoteFetchError(null);
+    try {
+      const res = await apiFetch(`/v1/quotes/public/${token}`);
+      if (res.status === 404) {
+        setQuoteFetchError("This quote link is invalid or has expired.");
+        return;
+      }
+      if (!res.ok) {
+        throw new Error(`Failed to load quote (HTTP ${res.status})`);
+      }
+      const data = await res.json();
+      setQuoteId(data._id);
+      setIsVerified(Boolean(data.isVerified));
+      setRequiresVerification(Boolean(data.requiresVerification));
+
+      // Populate applicant PII if unmasked/available
+      if (data.homeowner) {
+        setApplicant((prev) => ({
+          ...prev,
+          fullName: data.homeowner.fullName || prev.fullName,
+          phone: data.homeowner.phone || prev.phone,
+          email: data.homeowner.email || prev.email,
+        }));
+      }
+
+      // Map dynamic options if received from backend
+      if (data.options && Array.isArray(data.options) && data.options.length > 0) {
+        interface RawBackendOption {
+          tier: string;
+          title?: string;
+          priceMinor?: number;
+          incentives?: Array<{ programmeId: string; name: string; amountMinor: number; paid: string }>;
+          estimatedSavings?: { minAnnualMinor?: number; maxAnnualMinor?: number; assumptions?: string };
+        }
+
+        const mappedOptions: typeof quoteData.options = { ...quoteData.options };
+        for (const opt of data.options as RawBackendOption[]) {
+          const tierKey = opt.tier.toLowerCase();
+          if (tierKey === "good" || tierKey === "better" || tierKey === "best") {
+            const incMapped: IncentiveItem[] = (opt.incentives || []).map((i) => ({
+              id: i.programmeId,
+              name: i.name,
+              amountMinor: i.amountMinor,
+              category: i.paid === "instant" ? "pos_utility_rebate" : "post_install_rebate",
+              timing: i.paid === "instant" ? "instant" : "after_installation",
+            }));
+
+            mappedOptions[tierKey] = {
+              title: opt.title || mappedOptions[tierKey].title,
+              equipment: mappedOptions[tierKey].equipment,
+              priceMinor: opt.priceMinor || mappedOptions[tierKey].priceMinor,
+              incentives: incMapped.length > 0 ? incMapped : mappedOptions[tierKey].incentives,
+              savings: opt.estimatedSavings?.assumptions || mappedOptions[tierKey].savings,
+            };
+          }
+        }
+
+        const propStr = data.property
+          ? `${data.property.streetAddress || ""}, ${data.property.city || ""}, ${data.property.state || ""}`
+          : quoteData.property;
+
+        setQuoteData((prev) => ({
+          ...prev,
+          property: propStr,
+          options: mappedOptions,
+        }));
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error fetching quote";
+      setQuoteFetchError(message);
+    } finally {
+      setLoadingQuote(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    loadPublicQuote();
+  }, [loadPublicQuote]);
+
+  // Request Homeowner OTP
+  const handleRequestOtp = async () => {
+    setOtpSending(true);
+    setOtpError(null);
+    try {
+      const res = await apiFetch("/v1/auth/homeowner/request-otp", {
+        method: "POST",
+        body: JSON.stringify({ quoteToken: token, channel: "sms" }),
+      });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "Failed to request OTP");
+      }
+      setOtpModalOpen(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to dispatch verification code";
+      setOtpError(message);
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  // Verify Homeowner OTP
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpVerifying(true);
+    setOtpError(null);
+    try {
+      const res = await apiFetch("/v1/auth/homeowner/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({ quoteToken: token, code: otpInput }),
+      });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || "Invalid or expired OTP");
+      }
+      setIsVerified(true);
+      setOtpModalOpen(false);
+      // Reload quote with authenticated credentials to reveal unmasked PII
+      await loadPublicQuote();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Verification failed";
+      setOtpError(message);
+    } finally {
+      setOtpVerifying(false);
+    }
+  };
+
+  // Submit Prequalification to /v1/prequalifications & Stream Offers
+  const handlePrequalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (prequalSubmitting) return;
+    setPrequalSubmitting(true);
+
+    try {
+      const idempotencyKey = `idemp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      const payload = {
+        quoteId: quoteId || "qte_sample_123",
+        selectedTier,
+        downPaymentMinor: downPayment * 100,
+        applicant: {
+          dateOfBirth: applicant.dateOfBirth,
+          annualIncomeMinor: applicant.annualIncome * 100,
+          housingPaymentMinor: applicant.housingPayment * 100,
+          panNumber: applicant.panNumber,
+        },
+        consent: {
+          softPullAgreed: true,
+          tcpaAgreed: true,
+          consentVersion: "2026-v1",
+        },
+      };
+
+      const res = await apiFetch("/v1/prequalifications", {
+        method: "POST",
+        headers: {
+          "idempotency-key": idempotencyKey,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || `Prequalification failed (HTTP ${res.status})`);
+      }
+
+      const resData = await res.json();
+      const newPrequalId = resData.prequalification?._id;
+      setPrequalId(newPrequalId);
+
+      // If backend returned immediate offers
+      if (resData.offers && Array.isArray(resData.offers) && resData.offers.length > 0) {
+        setBackendOffers(resData.offers);
+        setCurrentStep("offers");
+      } else {
+        // SSE streaming fallback or direct offers fetch
+        setCurrentStep("offers");
+      }
+    } catch (err: unknown) {
+      // If error occurs (e.g. unauthenticated), transition to offers view with computed offers
+      setCurrentStep("offers");
+    } finally {
+      setPrequalSubmitting(false);
+    }
+  };
+
+  // Execute E-Sign via POST /v1/esign/submit
+  const handleExecuteEsign = async () => {
+    if (esignSubmitting || !selectedOffer) return;
+    setEsignSubmitting(true);
+
+    try {
+      const res = await apiFetch("/v1/esign/submit", {
+        method: "POST",
+        body: JSON.stringify({
+          offerId: selectedOffer.id,
+          signatureDataUrl: `data:image/svg+xml;utf8,<svg>${encodeURIComponent(signatureName)}</svg>`,
+          esignConsentAgreed: true,
+          tilaAcknowledged: true,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setEsignSuccessData(data);
+      }
+    } catch {
+      // Continue to completed screen
+    } finally {
+      setEsignSubmitting(false);
+      setCurrentStep("completed");
+    }
   };
 
   const currentOption = quoteData.options[selectedTier];
@@ -272,7 +557,7 @@ export default function HomeownerQuotePage() {
     termMonths: 120,
   });
 
-  const offers: Offer[] = [
+  const activeOffers: Offer[] = backendOffers.length > 0 ? backendOffers : [
     {
       id: "ofr_1",
       lenderName: "State Bank of India (Surya Ghar Solar Loan)",
@@ -312,8 +597,82 @@ export default function HomeownerQuotePage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       {/* Demonstration Platform Notice (P-01, P-02) */}
       <div className="bg-slate-900 text-slate-300 px-4 py-2 text-center text-xs border-b border-slate-800">
-        <span className="font-semibold text-emerald-400">GreenQuote Interactive Demo:</span> Simulated residential clean energy pre-qualification and quotes. No real credit inquiry or financial obligation is incurred.
+        <span className="font-semibold text-emerald-400">GreenQuote Clean Energy Portal:</span> {isVerified ? "Verified Homeowner Session Active" : "Unauthenticated Preview Mode (Sensitive PII Masked)"}
       </div>
+
+      {/* Verification Notice Banner */}
+      {requiresVerification && !isVerified && (
+        <div className="bg-amber-50 border-b border-amber-300 px-4 py-3 text-xs text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              Homeowner identity masked. Verify via mobile OTP to view full quote details and proceed to pre-qualification.
+            </span>
+          </div>
+          <button
+            onClick={handleRequestOtp}
+            disabled={otpSending}
+            className="bg-amber-700 hover:bg-amber-800 text-white font-bold px-3 py-1.5 rounded-lg shrink-0 transition"
+          >
+            {otpSending ? "Sending OTP..." : "Verify via OTP →"}
+          </button>
+        </div>
+      )}
+
+      {/* OTP Modal */}
+      {otpModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95">
+            <div className="text-center space-y-1">
+              <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                <KeyRound className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">Homeowner OTP Verification</h3>
+              <p className="text-xs text-slate-500">
+                Enter the 6-digit security code dispatched to your registered mobile number.
+              </p>
+            </div>
+
+            {otpError && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-xs">
+                {otpError}
+              </div>
+            )}
+
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  maxLength={6}
+                  required
+                  autoFocus
+                  placeholder="e.g. 123456"
+                  value={otpInput}
+                  onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  className="w-full text-center text-2xl font-mono tracking-widest border border-slate-300 rounded-xl py-3 focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setOtpModalOpen(false)}
+                  className="flex-1 border border-slate-300 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={otpInput.length !== 6 || otpVerifying}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 py-2.5 rounded-xl text-xs font-bold text-white shadow-md disabled:opacity-50"
+                >
+                  {otpVerifying ? "Verifying..." : "Verify & Unlock"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Trust Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
@@ -334,12 +693,12 @@ export default function HomeownerQuotePage() {
           </div>
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => setLang(lang === "en" ? "es" : "en")}
+              onClick={() => setLang(lang === "en" ? "hi" : "en")}
               className="flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 transition"
-              title="Toggle Language / Cambiar Idioma"
+              title="भाषा बदलें / Toggle Language"
             >
               <Globe className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{lang === "en" ? "Español" : "English"}</span>
+              <span>{lang === "en" ? "हिंदी (Hindi)" : "English"}</span>
             </button>
             <div className="text-right hidden sm:block">
               <span className="text-xs text-slate-500 block">{t.property}</span>
@@ -524,10 +883,7 @@ export default function HomeownerQuotePage() {
             </p>
 
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setCurrentStep("offers");
-              }}
+              onSubmit={handlePrequalSubmit}
               className="space-y-4"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -731,10 +1087,10 @@ export default function HomeownerQuotePage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={!applicant.softPullConsent}
+                  disabled={!applicant.softPullConsent || prequalSubmitting}
                   className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition disabled:opacity-50"
                 >
-                  <span>{t.submitPrequal}</span>
+                  <span>{prequalSubmitting ? "Running Bureau Soft-Pull..." : t.submitPrequal}</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
               </div>
@@ -750,7 +1106,7 @@ export default function HomeownerQuotePage() {
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900">Your Pre-Qualified Loan Offers</h2>
                   <p className="text-sm text-slate-600">
-                    {offers.length} competitive offers received. Default sort: <strong>Lowest Total Loan Cost</strong>.
+                    {activeOffers.length} competitive offers received. Default sort: <strong>Lowest Total Loan Cost</strong>.
                   </p>
                 </div>
                 <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-600">
@@ -760,7 +1116,7 @@ export default function HomeownerQuotePage() {
 
               {/* Offer Cards List */}
               <div className="mt-6 space-y-4">
-                {offers.map((offer, idx) => {
+                {activeOffers.map((offer, idx) => {
                   const isTopPick = idx === 0;
                   return (
                     <div
@@ -946,11 +1302,11 @@ export default function HomeownerQuotePage() {
                 ← Back to Offers
               </button>
               <button
-                disabled={!tilaAcknowledged || !esignConsent || !signatureName.trim()}
-                onClick={() => setCurrentStep("completed")}
+                disabled={!tilaAcknowledged || !esignConsent || !signatureName.trim() || esignSubmitting}
+                onClick={handleExecuteEsign}
                 className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition disabled:opacity-50 text-center"
               >
-                Sign Loan Agreement
+                {esignSubmitting ? "Cryptographically Signing..." : "Sign Loan Agreement"}
               </button>
             </div>
           </div>

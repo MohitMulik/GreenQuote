@@ -340,10 +340,10 @@ export default function LenderDashboardPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start space-x-3 text-xs text-amber-900">
               <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
-                <strong className="font-bold">Statutory Cooling-Off & Rescission Safeguard (CMP-07 / FR-805):</strong>{" "}
-                Federal Truth in Lending Act (Reg Z §1026.23) and FTC Cooling-Off Rules strictly prohibit lender
-                capital disbursements until the 3-business-day right-of-rescission period has elapsed and homeowner
-                affirmative completion has been recorded.
+                <strong className="font-bold">RBI Digital Lending Cooling-Off & Milestone Safeguard (CMP-07 / FR-805):</strong>{" "}
+                RBI Digital Lending Guidelines (2022/2024) mandate a minimum 3-day look-up / cooling-off period during which
+                the borrower may exit without penalty. Capital disbursements are released only upon DISCOM net-meter synchronization
+                and affirmative homeowner job completion.
               </div>
             </div>
 

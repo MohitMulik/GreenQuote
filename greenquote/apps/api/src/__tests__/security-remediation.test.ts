@@ -281,11 +281,11 @@ describe("Day 1 FinTech Application Security Remediation Suite", () => {
   describe("6. Public Quote PII Masking & Verification Gate", () => {
     it("masks homeowner PII on unauthenticated public quote preview", async () => {
       // Mock quote in db or create in memory
-      const sampleLinkToken = "sec_test_quote_token_999";
+      const sampleLinkToken = `sec_test_quote_token_${Date.now()}`;
+      await QuoteModel.deleteMany({ linkToken: { $regex: /^sec_test_quote_token_/ } });
       await QuoteModel.create({
         contractorId: "cnt_org_A",
         advisorId: "usr_contractor_A",
-        quoteNumber: "GQ-SEC-2026-999",
         currency: "INR",
         status: "draft",
         version: 1,
