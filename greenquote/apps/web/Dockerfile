@@ -5,8 +5,6 @@ WORKDIR /app
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/ui/package.json ./packages/ui/
-COPY apps/api/package.json ./apps/api/
-COPY apps/worker/package.json ./apps/worker/
 COPY apps/web/package.json ./apps/web/
 
 # Install monorepo dependencies
@@ -19,7 +17,7 @@ COPY apps/web ./apps/web
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://localhost:4000
+ENV NEXT_PUBLIC_API_URL=
 
 # Build shared library and Next.js web application
 RUN npm run build --workspace=@greenquote/shared

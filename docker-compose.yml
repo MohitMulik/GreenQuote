@@ -19,28 +19,6 @@ services:
     networks:
       - greenquote-network
 
-  api:
-    build:
-      context: ./greenquote
-      dockerfile: apps/api/Dockerfile
-    container_name: greenquote-api
-    restart: always
-    ports:
-      - "4000:4000"
-    environment:
-      PORT: 4000
-      NODE_ENV: production
-      MONGODB_URI: mongodb://mongodb:27017/greenquote
-      JWT_SECRET: production_jwt_secret_must_be_minimum_32_characters_long
-      JWT_REFRESH_SECRET: production_refresh_secret_must_be_minimum_32_chars
-      CORS_ORIGIN: http://localhost:3000
-      PII_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    networks:
-      - greenquote-network
-
   web:
     build:
       context: ./greenquote
@@ -48,6 +26,26 @@ services:
     container_name: greenquote-web
     restart: always
     ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/greenquote
+      JWT_SECRET: production_jwt_secret_must_be_minimum_32_characters_long
+      JWT_REFRESH_SECRET: production_refresh_secret_must_be_minimum_32_chars
+      PII_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - greenquote-network
+
+volumes:
+  mongo_data:
+
+networks:
+  greenquote-network:
+    driver: bridge
       - "3000:3000"
     environment:
       NODE_ENV: production

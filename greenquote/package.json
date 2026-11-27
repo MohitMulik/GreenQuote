@@ -10,18 +10,12 @@
   "scripts": {
     "dev": "npm run dev -w apps/web",
     "start": "npm run start -w apps/web",
-    "dev:web": "npm run dev -w apps/web",
-    "dev:api": "npm run dev -w apps/api",
-    "dev:all": "npm run dev --workspaces --if-present",
     "build": "npm run build -w apps/web",
-    "build:web": "npm run build -w apps/web",
-    "build:api": "npm run build -w apps/api",
-    "lint": "npm run lint --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "test:api": "npm run test -w apps/api",
+    "lint": "npm run lint -w apps/web",
+    "test": "npm run test:e2e -w apps/web",
     "test:e2e": "npm run test:e2e -w apps/web",
     "pretypecheck": "npm run build -w @greenquote/shared",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "typecheck": "npm run typecheck -w apps/web",
     "clean": "npm run clean --workspaces --if-present"
   },
   "engines": {
